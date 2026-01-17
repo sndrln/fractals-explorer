@@ -1,20 +1,95 @@
 import { defineStore } from "pinia";
 import gsap from "gsap";
 
+interface ParamConfig {
+  min?: number;
+  max?: number;
+}
+
+export const palettes = [
+  {
+    id: 0,
+    brightness: [0.5, 0.5, 0.5],
+    contrast: [0.5, 0.5, 0.5],
+    osc: [1.0, 1.0, 1.0],
+    phase: [0.0, 0.33, 0.67],
+  },
+  {
+    id: 1,
+    brightness: [0.5, 0.5, 0.5],
+    contrast: [0.5, 0.5, 0.5],
+    osc: [1.0, 1.0, 1.0],
+    phase: [0.0, 0.1, 0.2],
+  },
+  {
+    id: 2,
+    brightness: [0.5, 0.5, 0.5],
+    contrast: [0.5, 0.5, 0.5],
+    osc: [1.0, 1.0, 0.5],
+    phase: [0.8, 0.9, 0.3],
+  },
+  {
+    id: 3,
+    brightness: [0.8, 0.5, 0.4],
+    contrast: [0.2, 0.4, 0.2],
+    osc: [2.0, 1.0, 1.0],
+    phase: [0.0, 0.25, 0.25],
+  },
+  {
+    id: 4,
+    brightness: [0.5, 0.5, 0.5],
+    contrast: [0.5, 0.5, 0.5],
+    osc: [1.0, 0.7, 0.4],
+    phase: [0.0, 0.15, 0.2],
+  },
+  {
+    id: 5,
+    brightness: [0.5, 0.5, 0.5],
+    contrast: [0.5, 0.5, 0.5],
+    osc: [1.0, 1.0, 1.0],
+    phase: [0.3, 0.2, 0.2],
+  },
+  {
+    id: 6,
+    brightness: [0.5, 0.5, 0.5],
+    contrast: [0.5, 0.5, 0.5],
+    osc: [0.8, 0.8, 0.5],
+    phase: [0.0, 0.2, 0.5],
+  },
+  {
+    id: 7,
+    brightness: [0.2, 0.1, 0.0],
+    contrast: [0.8, 0.8, 0.8],
+    osc: [1.0, 0.5, 0.2],
+    phase: [0.0, 0.1, 0.2],
+  },
+];
+
 export const useFractalStore = defineStore("fractal", {
   state: () => ({
     zoom: 2.0,
     params: {
       relaxation: 0.3,
       powerMain: 3.0,
+      powerMainImaginary: 0.0,
       powerDerivative: 2.0,
+      powerDerivativeImaginary: 0.0,
       subtrahend: 1.0,
       maxIterations: 80,
-      seedX: 1.0,
+      memoryR: 0.0,
+      memoryI: 0.0,
+      // seedX: 1.0,
+      seedX: 0.0,
       seedY: 0.0,
       juliaMorph: 0.0,
     },
-    isJulia: false,
+    paramConfigs: {
+      relaxation: { min: -2.0, max: 2.0 },
+      powerMain: { min: -10.0, max: 10.0 },
+      maxIterations: { min: 1, max: 200 },
+      juliaMorph: { min: -1.0, max: 3.0 },
+    } as Record<string, ParamConfig>,
+    // isJulia: false,
     offsetShiftX: 0.0,
     offsetShiftY: 0.0,
     liveParams: {} as Record<string, number>,
@@ -24,13 +99,25 @@ export const useFractalStore = defineStore("fractal", {
     smoothedX: 0, // The "Current" (the value that follows with a delay)
     smoothedY: 0,
     activeTargetAxis: null as "x" | "y" | null,
-    bindingsX: [] as string[],
-    bindingsY: [] as string[],
+    bindingsX: ["seedX"] as string[],
+    bindingsY: ["seedY"] as string[],
+    selectedPalette: 0,
     isPaused: false,
     frozenValues: {} as Record<string, number>,
     isUiVisible: true,
   }),
   actions: {
+    setPalette(id: number) {
+      this.selectedPalette = id;
+    },
+    nextPalette() {
+      const len = palettes.length;
+      this.selectedPalette = (this.selectedPalette + 1) % len;
+    },
+    prevPalette() {
+      const len = palettes.length;
+      this.selectedPalette = (this.selectedPalette - 1 + len) % len;
+    },
     togglePause() {
       this.isPaused = !this.isPaused;
     },

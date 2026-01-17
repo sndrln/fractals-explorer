@@ -1,6 +1,8 @@
 <script setup lang="ts">
+import { ref } from "vue";
 import { useFractalStore } from "../store/fractalStore";
 import SlidableValue from "./SlidableValue.vue";
+import PaletteSelector from "./PaletteSelector.vue";
 
 const store = useFractalStore();
 
@@ -18,7 +20,16 @@ const getVarColor = (varName: string): string => {
 <template>
   <Transition name="fade">
     <div id="ui" v-show="store.isUiVisible">
-      <h1>Nova</h1>
+      <div class="ui-header">
+        <h1>Nova</h1>
+        <button
+          class="close-ui-btn"
+          @click="store.toggleUi()"
+          title="Close UI (`) "
+        >
+          <span class="icon">◀</span>
+        </button>
+      </div>
 
       <div id="formula-display">
         z<sub>n+1</sub> = z<sub>n</sub> -
@@ -74,6 +85,38 @@ const getVarColor = (varName: string): string => {
       </div>
 
       <div>
+        <span>Power I: </span>
+        <SlidableValue
+          v-model="store.params.powerMainImaginary"
+          varName="powerMainImaginary"
+          color="#ff00aa"
+        />
+        <span> + </span>
+        <SlidableValue
+          v-model="store.params.powerDerivativeImaginary"
+          varName="powerDerivativeImaginary"
+          color="#ff00aa"
+        />
+        <span>i</span>
+      </div>
+
+      <div>
+        <span>Memory </span>
+        <SlidableValue
+          v-model="store.params.memoryR"
+          varName="memoryR"
+          color="#ff00aa"
+        />
+        <span> + </span>
+        <SlidableValue
+          v-model="store.params.memoryI"
+          varName="memoryI"
+          color="#ff00aa"
+        />
+        <span>i</span>
+      </div>
+
+      <div>
         <span>Julia morph</span>
         <SlidableValue
           v-model="store.params.juliaMorph"
@@ -84,13 +127,13 @@ const getVarColor = (varName: string): string => {
         <span>i</span>
       </div>
 
-      <div class="toggle-container">
+      <!-- <div class="toggle-container">
         <label class="switch">
           <input type="checkbox" v-model="store.isJulia" />
           <span class="slider"></span>
         </label>
         <span>Julia Mode</span>
-      </div>
+      </div> -->
 
       <div class="axis-container">
         <div
@@ -138,6 +181,7 @@ const getVarColor = (varName: string): string => {
         </div>
       </div>
 
+      <PaletteSelector />
       <button @click="store.resetView" class="reset-btn" title="Reset View">
         ⟲
       </button>
@@ -169,6 +213,50 @@ const getVarColor = (varName: string): string => {
   width: 340px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
+}
+
+.ui-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.ui-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #646cff;
+}
+
+.close-ui-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #888;
+  width: 28px;
+  height: 28px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.close-ui-btn:hover {
+  background: rgba(100, 108, 255, 0.2);
+  color: #fff;
+  border-color: #646cff;
+}
+
+.close-ui-btn .icon {
+  font-size: 0.8rem;
+  transition: transform 0.2s ease;
+}
+
+.close-ui-btn:hover .icon {
+  transform: translateX(-2px); /* Subtle hint of the closing direction */
 }
 
 #formula-display {

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue"; // Added computed
 import gsap from "gsap";
 import { useFractalStore } from "../store/fractalStore";
 
@@ -11,14 +11,14 @@ const props = defineProps<{
 }>();
 
 const store = useFractalStore();
-
 const emit = defineEmits(["update:modelValue"]);
 const isDragging = ref(false);
 
-// We animate this PLAIN object, which Vue doesn't track as a Proxy
+// 1. Grab config from store
+const config = computed(() => store.paramConfigs[props.varName] || {});
+
 const tweenTarget = { val: props.modelValue };
 
-// Keep the tweenTarget in sync if the value changes from outside (like a Reset)
 watch(
   () => props.modelValue,
   (newVal) => {
@@ -31,10 +31,9 @@ let startValue = 0;
 
 const handleClick = (e: MouseEvent) => {
   if (store.activeTargetAxis) {
-    // If we are in "Select Mode", don't drag—just bind!
     store.bindVariable(props.varName);
   } else {
-    startDrag(e); // Your existing drag logic
+    startDrag(e);
   }
 };
 
@@ -51,16 +50,21 @@ const startDrag = (e: MouseEvent) => {
 const onDrag = (e: MouseEvent) => {
   const sensitivity = props.step || 0.01;
   const delta = (e.clientX - startX) * sensitivity;
-  const targetVal = startValue + delta;
+  let targetVal = startValue + delta;
 
-  // Animate the plain object 'tweenTarget'
+  if (config.value.min !== undefined) {
+    targetVal = Math.max(config.value.min, targetVal);
+  }
+  if (config.value.max !== undefined) {
+    targetVal = Math.min(config.value.max, targetVal);
+  }
+
   gsap.to(tweenTarget, {
     val: targetVal,
-    duration: 0.25, // This provides the "fluid" easing
+    duration: 0.25,
     ease: "power2.out",
-    overwrite: true, // Prevents multiple tweens from fighting
+    overwrite: true,
     onUpdate: () => {
-      // Push the smoothed value back to the store
       emit("update:modelValue", tweenTarget.val);
     },
   });

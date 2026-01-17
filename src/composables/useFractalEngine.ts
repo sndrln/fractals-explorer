@@ -1,5 +1,5 @@
 import { onMounted, onUnmounted, type Ref } from "vue";
-import { useFractalStore } from "../store/fractalStore";
+import { palettes, useFractalStore } from "../store/fractalStore";
 import vertSource from "../shaders/base.vert";
 import fragSource from "../shaders/nova.frag";
 
@@ -55,15 +55,21 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
       "zoom",
       "relaxation",
       "powerMain",
+      "powerMainImaginary",
       "powerDerivative",
+      "powerDerivativeImaginary",
       "maxIterations",
       "subtrahend",
       "offsetShiftX",
       "offsetShiftY",
       "seedX",
       "seedY",
-      "isJulia",
+      "memory",
       "juliaMorph",
+      "brightness",
+      "contrast",
+      "osc",
+      "phase",
     ];
 
     uniformNames.forEach((name) => {
@@ -141,11 +147,28 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     setUniform("offsetShiftX", store.offsetShiftX);
     setUniform("offsetShiftY", store.offsetShiftY);
 
-    const locJulia = uniformLocations["isJulia"];
-    if (locJulia) {
-      // Pass 1 for true, 0 for false
-      gl.uniform1i(locJulia, store.isJulia ? 1 : 0);
-    }
+    const palette = palettes[store.selectedPalette] as any;
+
+    // 2. Helper to get and set uniform (you can cache these locations for better perf)
+    const setVec3 = (name: string, value: number[]) => {
+      const loc = gl.getUniformLocation(program, name);
+      gl.uniform3fv(loc, new Float32Array(value));
+    };
+
+    const memLoc = gl.getUniformLocation(program, "memory");
+    gl.uniform2f(memLoc, store.params.memoryR, store.params.memoryI);
+
+    // 3. Update the GPU
+    setVec3("brightness", palette.brightness);
+    setVec3("contrast", palette.contrast);
+    setVec3("osc", palette.osc);
+    setVec3("phase", palette.phase);
+
+    // const locJulia = uniformLocations["isJulia"];
+    // if (locJulia) {
+    //   // Pass 1 for true, 0 for false
+    //   gl.uniform1i(locJulia, store.isJulia ? 1 : 0);
+    // }
 
     // 4. Time Calculation (Local)
 
