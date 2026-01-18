@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { ref, watch } from "vue"; // Added computed
+import { onMounted, onUnmounted, ref, watch } from "vue"; // Added computed
 import gsap from "gsap";
-import { useFractalStore, type FractalParams } from "../store/fractalStore";
+import { useFractalStore } from "../store/fractalStore";
+import type { FractalParams } from "../types/fractal-params";
 
 const props = defineProps<{
-  modelValue: number; // This is the 'live' value from the parent
+  modelValue: number;
   step?: number;
-  varName: keyof FractalParams; // Use keyof for better TS support
+  varName: string;
   color?: string;
 }>();
 
@@ -30,7 +31,7 @@ let startValue = 0;
 
 const handleClick = (e: MouseEvent) => {
   if (store.activeTargetAxis) {
-    store.bindVariable(props.varName);
+    store.bindVariable(props.varName as keyof FractalParams);
   } else {
     startDrag(e);
   }
@@ -38,7 +39,7 @@ const handleClick = (e: MouseEvent) => {
 
 const handleReset = (e: MouseEvent) => {
   e.stopPropagation();
-  // Reset back to INITIAL, not current
+  // @ts-ignore
   const defaultValue = store.initialParams[props.varName];
 
   gsap.to(tweenTarget, {
@@ -63,7 +64,6 @@ const onDrag = (e: MouseEvent) => {
   const delta = (e.clientX - startX) * sensitivity;
   let targetVal = startValue + delta;
 
-  // Clamp values based on your config
   const config = store.paramConfigs[props.varName as string];
   if (config) {
     if (config.min !== undefined) targetVal = Math.max(config.min, targetVal);
@@ -88,6 +88,13 @@ const stopDrag = () => {
   document.removeEventListener("mouseup", stopDrag);
   document.body.style.cursor = "default";
 };
+
+onUnmounted(() => {
+  gsap.killTweensOf(tweenTarget);
+  // Remove listeners just in case a drag was interrupted by a fractal switch
+  document.removeEventListener("mousemove", onDrag);
+  document.removeEventListener("mouseup", stopDrag);
+});
 </script>
 
 <template>
@@ -101,7 +108,7 @@ const stopDrag = () => {
     @mousedown="handleClick"
     @dblclick="handleReset"
   >
-    {{ store.liveParams[varName].toFixed(2) }}
+    {{ store.liveParams[props.varName]?.toFixed(2) ?? "0.00" }}
   </span>
 </template>
 

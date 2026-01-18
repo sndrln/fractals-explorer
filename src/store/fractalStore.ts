@@ -1,120 +1,30 @@
 import { defineStore } from "pinia";
 import gsap from "gsap";
-
-interface ParamConfig {
-  min?: number;
-  max?: number;
-}
-
-export interface FractalParams {
-  relaxation: number;
-  powerMain: number;
-  powerMainImaginary: number;
-  powerDerivative: number;
-  powerDerivativeImaginary: number;
-  subtrahend: number;
-  maxIterations: number;
-  memoryR: number;
-  memoryI: number;
-  seedX: number;
-  seedY: number;
-  juliaMorph: number;
-}
-
-export const palettes = [
-  {
-    id: 0,
-    brightness: [0.5, 0.5, 0.5],
-    contrast: [0.5, 0.5, 0.5],
-    osc: [1.0, 1.0, 1.0],
-    phase: [0.0, 0.33, 0.67],
-  },
-  {
-    id: 1,
-    brightness: [0.5, 0.5, 0.5],
-    contrast: [0.5, 0.5, 0.5],
-    osc: [1.0, 1.0, 1.0],
-    phase: [0.0, 0.1, 0.2],
-  },
-  {
-    id: 2,
-    brightness: [0.5, 0.5, 0.5],
-    contrast: [0.5, 0.5, 0.5],
-    osc: [1.0, 1.0, 0.5],
-    phase: [0.8, 0.9, 0.3],
-  },
-  {
-    id: 3,
-    brightness: [0.8, 0.5, 0.4],
-    contrast: [0.2, 0.4, 0.2],
-    osc: [2.0, 1.0, 1.0],
-    phase: [0.0, 0.25, 0.25],
-  },
-  {
-    id: 4,
-    brightness: [0.5, 0.5, 0.5],
-    contrast: [0.5, 0.5, 0.5],
-    osc: [1.0, 0.7, 0.4],
-    phase: [0.0, 0.15, 0.2],
-  },
-  {
-    id: 5,
-    brightness: [0.5, 0.5, 0.5],
-    contrast: [0.5, 0.5, 0.5],
-    osc: [1.0, 1.0, 1.0],
-    phase: [0.3, 0.2, 0.2],
-  },
-  {
-    id: 6,
-    brightness: [0.5, 0.5, 0.5],
-    contrast: [0.5, 0.5, 0.5],
-    osc: [0.8, 0.8, 0.5],
-    phase: [0.0, 0.2, 0.5],
-  },
-  {
-    id: 7,
-    brightness: [0.2, 0.1, 0.0],
-    contrast: [0.8, 0.8, 0.8],
-    osc: [1.0, 0.5, 0.2],
-    phase: [0.0, 0.1, 0.2],
-  },
-];
-
-const initialParams: FractalParams = {
-  relaxation: 0.3,
-  powerMain: 3.0,
-  powerMainImaginary: 0.0,
-  powerDerivative: 2.0,
-  powerDerivativeImaginary: 0.0,
-  subtrahend: 1.0,
-  maxIterations: 80,
-  memoryR: 0.0,
-  memoryI: 0.0,
-  // seedX: 1.0,
-  seedX: 0.0,
-  seedY: 0.0,
-  juliaMorph: 0.0,
-};
+import { palettes } from "../constants/palettes";
+import type { ParamRange } from "../types/param-range";
+import { FRACTAL_DEFAULTS } from "../constants/fractal-defaults";
+import type { FractalParams } from "../types/fractal-params";
+import type { FractalType } from "../types/fractal-type";
 
 export const useFractalStore = defineStore("fractal", {
   state: () => ({
+    currentFractal: "mandelbrot" as FractalType,
     zoom: 2.0,
-    initialParams: { ...initialParams },
-    sliderParams: { ...initialParams },
-    liveParams: { ...initialParams },
+    initialParams: { ...FRACTAL_DEFAULTS.mandelbrot } as FractalParams,
+    sliderParams: { ...FRACTAL_DEFAULTS.mandelbrot } as FractalParams,
+    liveParams: { ...FRACTAL_DEFAULTS.mandelbrot } as FractalParams,
     paramConfigs: {
       relaxation: { min: -2.0, max: 2.0 },
       powerMain: { min: -10.0, max: 10.0 },
       maxIterations: { min: 1, max: 200 },
       juliaMorph: { min: -1.0, max: 3.0 },
-    } as Record<string, ParamConfig>,
-    // isJulia: false,
+    } as Record<string, ParamRange>,
     offsetShiftX: 0.0,
     offsetShiftY: 0.0,
     time: 0,
-    mouseX: 0, // The "Target" (where the mouse actually is)
+    mouseX: 0,
     mouseY: 0,
-    smoothedX: 0, // The "Current" (the value that follows with a delay)
+    smoothedX: 0,
     smoothedY: 0,
     activeTargetAxis: null as "x" | "y" | null,
     bindingsX: ["seedX"] as string[],
@@ -125,6 +35,18 @@ export const useFractalStore = defineStore("fractal", {
     isUiVisible: true,
   }),
   actions: {
+    switchFractal() {
+      const defaults = FRACTAL_DEFAULTS[this.currentFractal];
+
+      const copy = (obj: any) => JSON.parse(JSON.stringify(obj));
+
+      this.$patch({
+        initialParams: copy(defaults),
+        sliderParams: copy(defaults),
+        liveParams: copy(defaults),
+        frozenValues: {},
+      });
+    },
     setPalette(id: number) {
       this.selectedPalette = id;
     },
@@ -168,8 +90,8 @@ export const useFractalStore = defineStore("fractal", {
     resetView() {
       gsap.to(this, {
         zoom: 2.0,
-        offsetShiftX: 0,
-        offsetShiftY: 0,
+        offsetShiftX: 0.0,
+        offsetShiftY: 0.0,
         duration: 1.5,
         ease: "expo.inOut",
       });
@@ -179,12 +101,9 @@ export const useFractalStore = defineStore("fractal", {
       const factor = delta > 0 ? 1 + zoomSpeed : 1 - zoomSpeed;
       const newZoom = this.zoom * factor;
 
-      // 1. Correct Delta Math
-      // The amount of shift needed is relative to the scale change
       const dx = this.mouseX * (this.zoom - newZoom);
       const dy = this.mouseY * (this.zoom - newZoom);
 
-      // 2. Correct Property Names (matching your state keys)
       gsap.to(this, {
         zoom: newZoom,
         offsetShiftX: this.offsetShiftX + dx,
@@ -193,18 +112,15 @@ export const useFractalStore = defineStore("fractal", {
         ease: "power2.out",
       });
     },
-    // inside your useFractalStore actions:
     randomizeParams() {
       const targetValues: Record<string, number> = {};
       const keys = Object.keys(this.sliderParams) as Array<keyof FractalParams>;
 
       keys.forEach((key) => {
-        // 1. Calculate the new random target
         const currentVal = this.initialParams[key];
         const offset = Math.random() / 2 - 0.25;
         let targetVal = currentVal + offset;
 
-        // 2. Clamp based on config
         const config = this.paramConfigs[key];
         if (config) {
           if (config.min !== undefined)
@@ -213,17 +129,14 @@ export const useFractalStore = defineStore("fractal", {
             targetVal = Math.min(config.max, targetVal);
         }
 
-        // 3. Store the target in our temporary object
         targetValues[key] = targetVal;
       });
 
-      // 4. Animate the ENTIRE object in one go
-      // This avoids the overwrite conflict and is much better for performance
       gsap.to(this.sliderParams, {
         ...targetValues,
         duration: 1.5,
         ease: "expo.out",
-        overwrite: true, // Now this is safe because it's only one tween
+        overwrite: true,
       });
     },
   },

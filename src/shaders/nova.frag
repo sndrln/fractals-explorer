@@ -18,7 +18,8 @@ uniform float seedX;
 uniform float seedY;
 uniform float juliaMorph;
 uniform float time;
-uniform vec2 memory;
+uniform float memoryR;
+uniform float memoryI;
 
 uniform vec3 brightness;
 uniform vec3 contrast;
@@ -52,7 +53,7 @@ vec3 get_nova_color(vec2 uv) {
         vec2 derivativeValue = complexPower(currentZ, vec2(powerDerivative, powerDerivativeImaginary));
         vec2 newtonStep = complexDivide(functionValue, derivativeValue);
 
-        vec2 memoryEffect = complexMul(memory, previousZ);
+        vec2 memoryEffect = complexMul(vec2(memoryR, memoryI), previousZ);
         currentZ = currentZ - (relaxation * newtonStep) + constantOffset + memoryEffect;
 
         previousZ = tempZ;
@@ -94,13 +95,10 @@ vec3 get_nova_color(vec2 uv) {
 // }
 
 void main() {
-    // 1. Calculate the normalized UV for the current pixel (no offset)
-    // We subtract 0.5 * resolution to center the fractal
     vec2 uv = (gl_FragCoord.xy - 0.5 * resolution.xy) / min(resolution.y, resolution.x);
-    
-    // 2. Call the core function just once
-    vec3 finalCol = get_nova_color(uv);
-    
-    // 3. Output the result
-    gl_FragColor = vec4(finalCol, 1.0);
+    // Draw a red line at the vertical center and a green line at the horizontal center
+    vec3 col = vec3(0.0);
+    if (abs(uv.x) < 0.01) col.r = 1.0; 
+    if (abs(uv.y) < 0.01) col.g = 1.0;
+    gl_FragColor = vec4(col, 1.0);
 }

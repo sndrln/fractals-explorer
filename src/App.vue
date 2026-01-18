@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useFractalEngine } from "./composables/useFractalEngine";
-import NovaControls from "./components/NovaControls.vue";
 import { useMouseInteraction } from "./composables/useMouseInteraction";
 import { useFractalStore } from "./store/fractalStore";
+import FractalUI from "./components/FractalUI.vue";
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const store = useFractalStore();
@@ -20,7 +20,7 @@ useMouseInteraction(canvasRef);
       'selecting-y': store.activeTargetAxis === 'y',
     }"
   >
-    <NovaControls />
+    <FractalUI />
     <canvas ref="canvasRef"></canvas>
   </div>
 </template>

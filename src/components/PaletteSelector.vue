@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useFractalStore, palettes } from "../store/fractalStore";
+import { useFractalStore } from "../store/fractalStore";
 import { getPaletteCSS } from "../utils/getPaletteCss";
+import { palettes } from "../constants/palettes";
 
 const store = useFractalStore();
 const isOpen = ref(false);
