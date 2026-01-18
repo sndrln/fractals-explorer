@@ -77,6 +77,29 @@ export function useMouseInteraction(canvasRef: {
     if (e.code === "KeyR") {
       store.randomizeParams();
     }
+
+    if (e.code === "KeyA") {
+      store.toggleTargetAxis("x");
+    }
+
+    if (e.code === "KeyD") {
+      store.toggleTargetAxis("y");
+    }
+
+    if (e.code === "Digit1") {
+      store.currentFractal = "mandelbrot";
+      store.switchFractal();
+    }
+
+    if (e.code === "Digit2") {
+      store.currentFractal = "nova";
+      store.switchFractal();
+    }
+
+    if (e.code === "Digit3") {
+      store.currentFractal = "burningShip";
+      store.switchFractal();
+    }
   };
 
   const handleWheel = (e: WheelEvent) => {

@@ -1,1 +1,1 @@
-export type FractalType = "nova" | "mandelbrot";
+export type FractalType = "nova" | "mandelbrot" | "burningShip";

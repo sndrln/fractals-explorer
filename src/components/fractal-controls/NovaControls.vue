@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useFractalStore } from "../store/fractalStore";
-import SlidableValue from "./SlidableValue.vue";
-import type { NovaParams } from "../types/nova-params";
+import { useFractalStore } from "../../store/fractalStore";
+import SlidableValue from "./../SlidableValue.vue";
+import type { NovaParams } from "../../types/nova-params";
 
 const store = useFractalStore();
 

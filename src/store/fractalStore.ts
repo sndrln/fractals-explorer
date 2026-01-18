@@ -121,6 +121,10 @@ export const useFractalStore = defineStore("fractal", {
         const offset = Math.random() / 2 - 0.25;
         let targetVal = currentVal + offset;
 
+        if (key === "juliaMorph" || key === "maxIterations") {
+          return;
+        }
+
         const config = this.paramConfigs[key];
         if (config) {
           if (config.min !== undefined)

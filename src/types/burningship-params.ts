@@ -1,4 +1,4 @@
-export interface MandelbrotParams {
+export interface BurningShipParams {
   power: number;
   seedX: number;
   seedY: number;

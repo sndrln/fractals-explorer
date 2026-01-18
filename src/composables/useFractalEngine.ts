@@ -3,6 +3,7 @@ import { useFractalStore } from "../store/fractalStore";
 import vertSource from "../shaders/base.vert";
 import novaFrag from "../shaders/nova.frag";
 import mandelFrag from "../shaders/mandelbrot.frag";
+import burningShipFrag from "../shaders/burningShip.frag";
 import { palettes } from "../constants/palettes";
 
 export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
@@ -25,11 +26,12 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     "contrast",
     "osc",
     "phase",
-    // Nova specific (now as floats)
+
     "relaxation",
     "subtrahend",
     "powerMain",
     "powerMainImaginary",
+    "powerImaginary",
     "powerDerivative",
     "powerDerivativeImaginary",
     "memoryR",
@@ -37,7 +39,6 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     "seedX",
     "seedY",
     "juliaMorph",
-    // Mandelbrot specific
     "power",
   ];
 
@@ -66,9 +67,13 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
         activeProgram = programs.mandelbrot;
         break;
       case "nova":
-      default:
         // @ts-ignore
         activeProgram = programs.nova;
+        break;
+      case "burningShip":
+      default:
+        // @ts-ignore
+        activeProgram = programs.burningShip;
         break;
     }
 
@@ -85,6 +90,7 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
 
     programs.nova = createProgram(novaFrag);
     programs.mandelbrot = createProgram(mandelFrag);
+    programs.burningShip = createProgram(burningShipFrag);
 
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);

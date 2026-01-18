@@ -3,14 +3,19 @@ import { useFractalStore } from "../store/fractalStore";
 import PaletteSelector from "./PaletteSelector.vue";
 import Randomizer from "./Randomizer.vue";
 import AxisBindings from "./AxisBindings.vue";
-import NovaControls from "./NovaControls.vue";
-import MandelbrotControls from "./MandelbrotControls.vue";
 import { computed } from "vue";
+import NovaControls from "./fractal-controls/NovaControls.vue";
+import BurningShipControls from "./fractal-controls/BurningShipControls.vue";
+import MandelbrotControls from "./fractal-controls/MandelbrotControls.vue";
 
 const store = useFractalStore();
 
 const currentControlsComponent = computed(() => {
-  return store.currentFractal === "nova" ? NovaControls : MandelbrotControls;
+  return store.currentFractal === "nova"
+    ? NovaControls
+    : store.currentFractal === "mandelbrot"
+    ? MandelbrotControls
+    : BurningShipControls;
 });
 </script>
 
@@ -25,6 +30,7 @@ const currentControlsComponent = computed(() => {
         >
           <option value="nova">Nova</option>
           <option value="mandelbrot">Mandelbrot</option>
+          <option value="burningShip">Burning Ship</option>
         </select>
         <button class="close-ui-btn" @click="store.toggleUi()">
           <span class="icon">◀</span>

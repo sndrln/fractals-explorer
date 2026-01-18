@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref, watch } from "vue"; // Added computed
+import { computed, onUnmounted, ref, watch } from "vue"; // Added computed
 import gsap from "gsap";
 import { useFractalStore } from "../store/fractalStore";
 import type { FractalParams } from "../types/fractal-params";
@@ -28,6 +28,11 @@ watch(
 
 let startX = 0;
 let startValue = 0;
+
+const currentValue = computed(() => {
+  const key = props.varName as keyof typeof store.liveParams;
+  return store.liveParams[key];
+});
 
 const handleClick = (e: MouseEvent) => {
   if (store.activeTargetAxis) {
@@ -108,7 +113,7 @@ onUnmounted(() => {
     @mousedown="handleClick"
     @dblclick="handleReset"
   >
-    {{ store.liveParams[props.varName]?.toFixed(2) ?? "0.00" }}
+    {{ currentValue?.toFixed(2) ?? "0.00" }}
   </span>
 </template>
 
