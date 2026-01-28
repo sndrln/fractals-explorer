@@ -9,6 +9,7 @@ import BurningShipControls from "./fractal-controls/BurningShipControls.vue";
 import MandelbrotControls from "./fractal-controls/MandelbrotControls.vue";
 import PresetGallery from "./PresetGallery.vue";
 import NewtonControls from "./fractal-controls/NewtonControls.vue";
+import MagnetControls from "./fractal-controls/MagnetControls.vue";
 
 const store = useFractalStore();
 
@@ -22,6 +23,8 @@ const currentControlsComponent = computed(() => {
       return NewtonControls;
     case "burningShip":
       return BurningShipControls;
+    case "magnet":
+      return MagnetControls;
   }
 });
 </script>
@@ -39,6 +42,7 @@ const currentControlsComponent = computed(() => {
           <option value="mandelbrot">Mandelbrot</option>
           <option value="burningShip">Burning Ship</option>
           <option value="newton">Newton</option>
+          <option value="magnet">Magnet</option>
         </select>
         <button class="close-ui-btn" @click="store.toggleUi()">
           <span class="icon">◀</span>
@@ -64,7 +68,9 @@ const currentControlsComponent = computed(() => {
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.4s ease, transform 0.4s ease;
+  transition:
+    opacity 0.4s ease,
+    transform 0.4s ease;
 }
 
 .fade-enter-from,

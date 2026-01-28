@@ -2,42 +2,30 @@
 import { computed } from "vue";
 import { useFractalStore } from "../../store/fractalStore";
 import SlidableValue from "./../SlidableValue.vue";
-import type { NovaParams } from "../../types/fractals/nova-params";
+import type { MagnetParams } from "../../types/fractals/magnet-params";
 
 const store = useFractalStore();
 
-const params = computed(() => store.sliderParams as NovaParams);
+const params = computed(() => store.sliderParams as MagnetParams);
 </script>
 
 <template>
   <div id="formula-display">
-    z<sub>n+1</sub> = z<sub>n</sub> -
-    <SlidableValue
-      v-model="params.relaxation"
-      varName="relaxation"
-      color="#ff55ff"
-      :step="0.005"
-    />
-    &times; (z<sup
+    z<sub>n+1</sub> = [ (z<sup
       ><SlidableValue
-        v-model="params.powerMain"
-        varName="powerMain"
+        v-model="params.power"
+        varName="power"
         color="#ffaa00"
         :step="0.01"
     /></sup>
-    -
+    + c - (1 +
     <SlidableValue
       v-model="params.subtrahend"
       varName="subtrahend"
       :step="0.01"
       color="#ffffff"
-    />) / z<sup
-      ><SlidableValue
-        v-model="params.powerDerivative"
-        varName="powerDerivative"
-        color="#00ffaa"
-        :step="0.01"
-    /></sup>
+    />)) / (p &sdot; z + c - (2 + subtrahend)) ]<sup>p</sup>
+
     <div>
       Iterations:
       <SlidableValue
@@ -58,16 +46,10 @@ const params = computed(() => store.sliderParams as NovaParams);
   </div>
 
   <div>
-    <span>Power I: </span>
+    <span>Power Imaginary: </span>
     <SlidableValue
-      v-model="params.powerMainImaginary"
-      varName="powerMainImaginary"
-      color="#ff00aa"
-    />
-    <span> + </span>
-    <SlidableValue
-      v-model="params.powerDerivativeImaginary"
-      varName="powerDerivativeImaginary"
+      v-model="params.powerImaginary"
+      varName="powerImaginary"
       color="#ff00aa"
     />
     <span>i</span>
@@ -82,7 +64,7 @@ const params = computed(() => store.sliderParams as NovaParams);
   </div>
 
   <div>
-    <span>Julia morph</span>
+    <span>Julia morph: </span>
     <SlidableValue
       v-model="params.juliaMorph"
       varName="juliaMorph"
@@ -104,5 +86,10 @@ const params = computed(() => store.sliderParams as NovaParams);
   line-height: 1.8;
   min-height: 40px;
   color: #eee;
+}
+
+sub,
+sup {
+  font-size: 0.75em;
 }
 </style>

@@ -5,6 +5,7 @@ import novaFrag from "../shaders/nova.frag";
 import mandelFrag from "../shaders/mandelbrot.frag";
 import burningShipFrag from "../shaders/burningShip.frag";
 import newtonFrag from "../shaders/newton.frag";
+import magnetFrag from "../shaders/magnet.frag";
 import { usePaletteStore } from "../store/paletteStore";
 
 export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
@@ -72,6 +73,9 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
       case "nova":
         activeProgram = programs.nova;
         break;
+      case "magnet":
+        activeProgram = programs.magnet;
+        break;
       case "newton":
         activeProgram = programs.newton;
         break;
@@ -96,6 +100,7 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     programs.mandelbrot = createProgram(mandelFrag);
     programs.burningShip = createProgram(burningShipFrag);
     programs.newton = createProgram(newtonFrag);
+    programs.magnet = createProgram(magnetFrag);
 
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);

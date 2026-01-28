@@ -31,6 +31,7 @@ export function useKeyboardShortcuts() {
     Digit2: () => fractalStore.switchFractal("nova"),
     Digit3: () => fractalStore.switchFractal("burningShip"),
     Digit4: () => fractalStore.switchFractal("newton"),
+    Digit5: () => fractalStore.switchFractal("magnet"),
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {

@@ -1,5 +1,6 @@
 import type { FractalParams } from "../types/fractal-params";
 import type { BurningShipParams } from "../types/fractals/burningship-params";
+import type { MagnetParams } from "../types/fractals/magnet-params";
 import type { MandelbrotParams } from "../types/fractals/mandelbrot-params";
 import type { NewtonParams } from "../types/fractals/newton-params";
 import type { NovaParams } from "../types/fractals/nova-params";
@@ -53,4 +54,15 @@ export const FRACTAL_DEFAULTS: Record<string, FractalParams> = {
     maxIterations: 60,
     juliaMorph: 0.0,
   } as NewtonParams,
+  magnet: {
+    maxIterations: 100,
+    power: 2.0,
+    seedX: 0.0,
+    seedY: 0.0,
+    powerImaginary: 0.0,
+    juliaMorph: 0.0,
+    memoryR: 0.0,
+    memoryI: 0.0,
+    subtrahend: 0.0,
+  } as MagnetParams,
 };
