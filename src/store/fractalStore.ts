@@ -36,7 +36,10 @@ export const useFractalStore = defineStore("fractal", {
     isUiVisible: true,
   }),
   actions: {
-    switchFractal() {
+    switchFractal(fractalType?: FractalType) {
+      if (fractalType) {
+        this.currentFractal = fractalType;
+      }
       const defaults = FRACTAL_DEFAULTS[this.currentFractal];
 
       const copy = (obj: any) => JSON.parse(JSON.stringify(obj));
@@ -81,14 +84,16 @@ export const useFractalStore = defineStore("fractal", {
       if (this.activeTargetAxis === "x") this.bindingsX.push(varName);
       if (this.activeTargetAxis === "y") this.bindingsY.push(varName);
     },
-
     unbindVariable(varName: string, axis: "x" | "y") {
       if (axis === "x")
         this.bindingsX = this.bindingsX.filter((v) => v !== varName);
       if (axis === "y")
         this.bindingsY = this.bindingsY.filter((v) => v !== varName);
     },
-
+    unbindAllVariables() {
+      this.bindingsX = [];
+      this.bindingsY = [];
+    },
     resetView() {
       gsap.to(this, {
         zoom: 2.0,

@@ -4,11 +4,13 @@ import { useFractalEngine } from "./composables/useFractalEngine";
 import { useMouseInteraction } from "./composables/useMouseInteraction";
 import { useFractalStore } from "./store/fractalStore";
 import FractalUI from "./components/FractalUI.vue";
+import { useKeyboardShortcuts } from "./composables/useKeyboardShortcuts";
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const store = useFractalStore();
 
 useFractalEngine(canvasRef);
+useKeyboardShortcuts();
 useMouseInteraction(canvasRef);
 </script>
 
