@@ -1,55 +1,76 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useFractalStore } from "../store/fractalStore";
 import { getPaletteCSS } from "../utils/getPaletteCss";
 import { palettes } from "../constants/palettes";
+import { usePaletteStore } from "../store/paletteStore";
 
-const store = useFractalStore();
+const paletteStore = usePaletteStore();
 const isOpen = ref(false);
 
 const selectPalette = (id: number) => {
-  store.setPalette(id);
+  paletteStore.setPalette(id);
   isOpen.value = false;
 };
 </script>
 
 <template>
-  <div class="palette-dropdown">
-    <button class="dropdown-trigger" @click="isOpen = !isOpen">
-      <div
-        class="preview-bar"
-        :style="{
-          background: getPaletteCSS(store.selectedPalette),
-        }"
-      ></div>
-      <span class="arrow">{{ isOpen ? "▲" : "▼" }}</span>
-    </button>
+  <div class="palette-controls">
+    <div class="palette-dropdown">
+      <button class="dropdown-trigger" @click="isOpen = !isOpen">
+        <div
+          class="preview-bar"
+          :style="{
+            background: getPaletteCSS(paletteStore.selectedPalette),
+          }"
+        ></div>
+        <span class="arrow">{{ isOpen ? "▲" : "▼" }}</span>
+      </button>
 
-    <transition name="fade">
-      <div v-if="isOpen" class="dropdown-menu">
-        <div class="palette-grid">
-          <div
-            v-for="p in palettes"
-            :key="p.id"
-            class="palette-brick"
-            :class="{ active: store.selectedPalette.id === p.id }"
-            :style="{
-              background: getPaletteCSS(p),
-            }"
-            @click="selectPalette(p.id)"
-          >
-            <div v-if="store.selectedPalette.id === p.id" class="check">✓</div>
+      <transition name="fade">
+        <div v-if="isOpen" class="dropdown-menu">
+          <div class="palette-grid">
+            <div
+              v-for="p in palettes"
+              :key="p.id"
+              class="palette-brick"
+              :class="{ active: paletteStore.selectedPalette.id === p.id }"
+              :style="{ background: getPaletteCSS(p) }"
+              @click="selectPalette(p.id)"
+            >
+              <div
+                v-if="paletteStore.selectedPalette.id === p.id"
+                class="check"
+              >
+                ✓
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </transition>
+      </transition>
+    </div>
+
+    <button
+      class="dice-button"
+      title="Randomize Colors"
+      @click="paletteStore.generateRandomPalette"
+    >
+      🎲
+    </button>
   </div>
 </template>
 
 <style scoped>
 .palette-dropdown {
   position: relative;
+  flex-grow: 1;
   width: 100%;
+  margin: 10px 0;
+}
+
+.palette-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 10px 0;
 }
 
@@ -104,7 +125,9 @@ const selectPalette = (id: number) => {
   cursor: pointer;
   position: relative;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  transition: transform 0.1s, border-color 0.2s;
+  transition:
+    transform 0.1s,
+    border-color 0.2s;
 }
 
 .palette-brick:hover {
@@ -129,11 +152,37 @@ const selectPalette = (id: number) => {
 /* Simple Transition */
 .fade-enter-active,
 .fade-leave-active {
-  transition: opacity 0.2s, transform 0.2s;
+  transition:
+    opacity 0.2s,
+    transform 0.2s;
 }
 .fade-enter-from,
 .fade-leave-to {
   opacity: 0;
   transform: translateY(-10px);
+}
+
+.dice-button {
+  width: 32px;
+  height: 32px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  transition: all 0.2s;
+}
+
+.dice-button:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: rotate(15deg);
+}
+
+.dice-button:active {
+  transform: scale(0.9);
 }
 </style>

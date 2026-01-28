@@ -1,33 +1,36 @@
 import { onMounted, onUnmounted } from "vue";
 import { useFractalStore } from "../store/fractalStore";
+import { usePaletteStore } from "../store/paletteStore";
 
 export function useKeyboardShortcuts() {
-  const store = useFractalStore();
+  const fractalStore = useFractalStore();
+  const paletteStore = usePaletteStore();
 
   const shortcuts: Record<string, (e: KeyboardEvent) => void> = {
     Space: (e) => {
       e.preventDefault();
-      store.togglePause();
+      fractalStore.togglePause();
     },
     KeyW: (e) => {
       e.preventDefault();
-      store.resetView();
+      fractalStore.resetView();
     },
     Backquote: (e) => {
       e.preventDefault();
-      store.toggleUi();
+      fractalStore.toggleUi();
     },
-    KeyQ: () => store.prevPalette(),
-    KeyE: () => store.nextPalette(),
-    KeyR: () => store.randomizeParams(),
-    KeyA: () => store.toggleTargetAxis("x"),
-    KeyD: () => store.toggleTargetAxis("y"),
-    KeyG: () => store.unbindAllVariables(),
+    KeyQ: () => paletteStore.prevPalette(),
+    KeyE: () => paletteStore.nextPalette(),
 
-    Digit1: () => store.switchFractal("mandelbrot"),
-    Digit2: () => store.switchFractal("nova"),
-    Digit3: () => store.switchFractal("burningShip"),
-    Digit4: () => store.switchFractal("newton"),
+    KeyR: () => fractalStore.randomizeParams(),
+    KeyA: () => fractalStore.toggleTargetAxis("x"),
+    KeyD: () => fractalStore.toggleTargetAxis("y"),
+    KeyG: () => fractalStore.unbindAllVariables(),
+
+    Digit1: () => fractalStore.switchFractal("mandelbrot"),
+    Digit2: () => fractalStore.switchFractal("nova"),
+    Digit3: () => fractalStore.switchFractal("burningShip"),
+    Digit4: () => fractalStore.switchFractal("newton"),
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {

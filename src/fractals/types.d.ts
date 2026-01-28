@@ -10,7 +10,7 @@ export interface FractalVar {
 export interface FractalDefinition {
   id: string;
   title: string;
-  shaderSource: string; // The imported .frag content
+  shaderSource: string;
   formula: (vars: Record<string, number>) => string;
   vars: FractalVar[];
 }

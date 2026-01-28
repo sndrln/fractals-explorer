@@ -5,9 +5,11 @@ import novaFrag from "../shaders/nova.frag";
 import mandelFrag from "../shaders/mandelbrot.frag";
 import burningShipFrag from "../shaders/burningShip.frag";
 import newtonFrag from "../shaders/newton.frag";
+import { usePaletteStore } from "../store/paletteStore";
 
 export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
-  const store = useFractalStore();
+  const fractalStore = useFractalStore();
+  const paletteStore = usePaletteStore();
   let gl: WebGLRenderingContext;
   let animationFrameId: number;
 
@@ -103,13 +105,13 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
       gl.STATIC_DRAW,
     );
 
-    switchProgram(store.currentFractal);
+    switchProgram(fractalStore.currentFractal);
 
     render();
   };
 
   watch(
-    () => store.currentFractal,
+    () => fractalStore.currentFractal,
     (newType) => {
       switchProgram(newType);
     },
@@ -119,8 +121,10 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     if (!gl || !activeProgram) return;
     const canvas = canvasRef.value!;
 
-    store.smoothedX += (store.mouseX - store.smoothedX) * 0.08;
-    store.smoothedY += (store.mouseY - store.smoothedY) * 0.08;
+    fractalStore.smoothedX +=
+      (fractalStore.mouseX - fractalStore.smoothedX) * 0.08;
+    fractalStore.smoothedY +=
+      (fractalStore.mouseY - fractalStore.smoothedY) * 0.08;
     const w = Math.floor(canvas.clientWidth);
     const h = Math.floor(canvas.clientHeight);
     if (Math.abs(canvas.width - w) > 1 || Math.abs(canvas.height - h) > 1) {
@@ -130,39 +134,41 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     }
 
     gl.uniform2f(uniformLocations.resolution, w, h);
-    gl.uniform1f(uniformLocations.zoom, store.zoom);
-    gl.uniform1f(uniformLocations.offsetShiftX, store.offsetShiftX);
-    gl.uniform1f(uniformLocations.offsetShiftY, store.offsetShiftY);
+    gl.uniform1f(uniformLocations.zoom, fractalStore.zoom);
+    gl.uniform1f(uniformLocations.offsetShiftX, fractalStore.offsetShiftX);
+    gl.uniform1f(uniformLocations.offsetShiftY, fractalStore.offsetShiftY);
     gl.uniform1f(
       uniformLocations.maxIterations,
-      store.sliderParams.maxIterations,
+      fractalStore.sliderParams.maxIterations,
     );
     gl.uniform1f(uniformLocations.time, performance.now() / 1000);
 
-    const keys = Object.keys(store.sliderParams);
+    const keys = Object.keys(fractalStore.sliderParams);
     keys.forEach((key) => {
       const loc = uniformLocations[key];
       if (!loc) return;
 
-      const baseVal = (store.sliderParams as any)[key];
+      const baseVal = (fractalStore.sliderParams as any)[key];
       const sens = key.includes("power") ? 0.3 : 1.0;
       let liveVal = baseVal;
-      if (store.bindingsX.includes(key)) liveVal += store.smoothedX * sens;
-      if (store.bindingsY.includes(key)) liveVal += store.smoothedY * sens;
+      if (fractalStore.bindingsX.includes(key))
+        liveVal += fractalStore.smoothedX * sens;
+      if (fractalStore.bindingsY.includes(key))
+        liveVal += fractalStore.smoothedY * sens;
 
-      if (store.isPaused) {
-        if (store.frozenValues[key] === undefined) {
-          store.frozenValues[key] = liveVal;
+      if (fractalStore.isPaused) {
+        if (fractalStore.frozenValues[key] === undefined) {
+          fractalStore.frozenValues[key] = liveVal;
         }
-        gl.uniform1f(loc, store.frozenValues[key]);
+        gl.uniform1f(loc, fractalStore.frozenValues[key]);
       } else {
-        delete store.frozenValues[key];
+        delete fractalStore.frozenValues[key];
         gl.uniform1f(loc, liveVal);
-        (store.liveParams as any)[key] = liveVal;
+        (fractalStore.liveParams as any)[key] = liveVal;
       }
     });
 
-    const palette = store.selectedPalette;
+    const palette = paletteStore.selectedPalette;
     const setVec3 = (name: string, val: number[]) => {
       gl.uniform3fv(uniformLocations[name], new Float32Array(val));
     };

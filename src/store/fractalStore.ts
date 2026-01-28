@@ -1,8 +1,8 @@
 import { defineStore } from "pinia";
 import gsap from "gsap";
-import { palettes } from "../constants/palettes";
-import type { ParamRange } from "../types/param-range";
+import { usePaletteStore } from "./paletteStore";
 import { FRACTAL_DEFAULTS } from "../constants/fractal-defaults";
+import type { ParamRange } from "../types/param-range";
 import type { FractalParams } from "../types/fractal-params";
 import type { FractalType } from "../types/fractal-type";
 import type { FractalState } from "../types/fractal-state";
@@ -30,18 +30,17 @@ export const useFractalStore = defineStore("fractal", {
     activeTargetAxis: null as "x" | "y" | null,
     bindingsX: ["seedX"] as string[],
     bindingsY: ["seedY"] as string[],
-    selectedPalette: palettes[0],
     isPaused: false,
     frozenValues: {} as Record<string, number>,
     isUiVisible: true,
   }),
+
   actions: {
     switchFractal(fractalType?: FractalType) {
       if (fractalType) {
         this.currentFractal = fractalType;
       }
       const defaults = FRACTAL_DEFAULTS[this.currentFractal];
-
       const copy = (obj: any) => JSON.parse(JSON.stringify(obj));
 
       this.$patch({
@@ -51,49 +50,43 @@ export const useFractalStore = defineStore("fractal", {
         frozenValues: {},
       });
     },
-    setPalette(id: number) {
-      this.selectedPalette = palettes[id];
-    },
-    nextPalette() {
-      const len = palettes.length;
-      this.selectedPalette = palettes[(this.selectedPalette.id + 1) % len];
-    },
-    prevPalette() {
-      const len = palettes.length;
-      this.selectedPalette =
-        palettes[(this.selectedPalette.id - 1 + len) % len];
-    },
+
     togglePause() {
       this.isPaused = !this.isPaused;
     },
+
     toggleUi() {
       this.isUiVisible = !this.isUiVisible;
       if (!this.isUiVisible) {
         this.activeTargetAxis = null;
       }
     },
+
     toggleTargetAxis(axis: "x" | "y") {
       this.activeTargetAxis = this.activeTargetAxis === axis ? null : axis;
     },
+
     bindVariable(varName: keyof FractalParams) {
       if (!this.activeTargetAxis) return;
-
       this.bindingsX = this.bindingsX.filter((v) => v !== varName);
       this.bindingsY = this.bindingsY.filter((v) => v !== varName);
 
       if (this.activeTargetAxis === "x") this.bindingsX.push(varName);
       if (this.activeTargetAxis === "y") this.bindingsY.push(varName);
     },
+
     unbindVariable(varName: string, axis: "x" | "y") {
       if (axis === "x")
         this.bindingsX = this.bindingsX.filter((v) => v !== varName);
       if (axis === "y")
         this.bindingsY = this.bindingsY.filter((v) => v !== varName);
     },
+
     unbindAllVariables() {
       this.bindingsX = [];
       this.bindingsY = [];
     },
+
     resetView() {
       gsap.to(this, {
         zoom: 2.0,
@@ -103,6 +96,7 @@ export const useFractalStore = defineStore("fractal", {
         ease: "expo.inOut",
       });
     },
+
     smoothZoom(delta: number) {
       const zoomSpeed = 0.2;
       const factor = delta > 0 ? 1 + zoomSpeed : 1 - zoomSpeed;
@@ -119,18 +113,17 @@ export const useFractalStore = defineStore("fractal", {
         ease: "power2.out",
       });
     },
+
     randomizeParams() {
       const targetValues: Record<string, number> = {};
       const keys = Object.keys(this.sliderParams) as Array<keyof FractalParams>;
 
       keys.forEach((key) => {
+        if (key === "juliaMorph" || key === "maxIterations") return;
+
         const currentVal = this.initialParams[key];
         const offset = Math.random() / 2 - 0.25;
         let targetVal = currentVal + offset;
-
-        if (key === "juliaMorph" || key === "maxIterations") {
-          return;
-        }
 
         const config = this.paramConfigs[key];
         if (config) {
@@ -139,7 +132,6 @@ export const useFractalStore = defineStore("fractal", {
           if (config.max !== undefined)
             targetVal = Math.min(config.max, targetVal);
         }
-
         targetValues[key] = targetVal;
       });
 
@@ -157,29 +149,19 @@ export const useFractalStore = defineStore("fractal", {
         zoom: this.zoom,
         offsetX: this.offsetShiftX,
         offsetY: this.offsetShiftY,
-        params: JSON.parse(JSON.stringify(this.sliderParams)),
-        palette: {
-          brightness: [...this.selectedPalette.brightness],
-          contrast: [...this.selectedPalette.contrast],
-          osc: [...this.selectedPalette.osc],
-          phase: [...this.selectedPalette.phase],
-        },
+        params: { ...this.sliderParams },
+        paletteId: usePaletteStore().selectedPalette.id,
       };
     },
 
     loadState(state: FractalState) {
       this.currentFractal = state.type;
-
       this.zoom = state.zoom;
       this.offsetShiftX = state.offsetX;
       this.offsetShiftY = state.offsetY;
 
       Object.assign(this.sliderParams, state.params);
-
-      this.selectedPalette.brightness = [...state.palette.brightness];
-      this.selectedPalette.contrast = [...state.palette.contrast];
-      this.selectedPalette.osc = [...state.palette.osc];
-      this.selectedPalette.phase = [...state.palette.phase];
+      usePaletteStore().setPalette(state.paletteId);
     },
   },
 });
