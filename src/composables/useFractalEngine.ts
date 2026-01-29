@@ -111,9 +111,9 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     const canvas = canvasRef.value!;
 
     fractalStore.smoothedX +=
-      (fractalStore.mouseX - fractalStore.smoothedX) * 0.08;
+      (fractalStore.boundMouseX - fractalStore.smoothedX) * 0.08;
     fractalStore.smoothedY +=
-      (fractalStore.mouseY - fractalStore.smoothedY) * 0.08;
+      (fractalStore.boundMouseY - fractalStore.smoothedY) * 0.08;
     const w = Math.floor(canvas.clientWidth);
     const h = Math.floor(canvas.clientHeight);
     if (Math.abs(canvas.width - w) > 1 || Math.abs(canvas.height - h) > 1) {
@@ -145,16 +145,8 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
       if (fractalStore.bindingsY.includes(key))
         liveVal += fractalStore.smoothedY * sens;
 
-      if (fractalStore.isPaused) {
-        if (fractalStore.frozenValues[key] === undefined) {
-          fractalStore.frozenValues[key] = liveVal;
-        }
-        gl.uniform1f(loc, fractalStore.frozenValues[key]);
-      } else {
-        delete fractalStore.frozenValues[key];
-        gl.uniform1f(loc, liveVal);
-        (fractalStore.liveParams as any)[key] = liveVal;
-      }
+      gl.uniform1f(loc, liveVal);
+      (fractalStore.liveParams as any)[key] = liveVal;
     });
 
     const palette = paletteStore.selectedPalette;

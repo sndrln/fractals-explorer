@@ -27,13 +27,14 @@ export const useFractalStore = defineStore("fractal", {
     time: 0,
     mouseX: 0,
     mouseY: 0,
+    boundMouseX: 0,
+    boundMouseY: 0,
     smoothedX: 0,
     smoothedY: 0,
     activeTargetAxis: null as "x" | "y" | null,
     bindingsX: ["seedX"] as string[],
     bindingsY: ["seedY"] as string[],
     isPaused: false,
-    frozenValues: {} as Record<string, number>,
     isUiVisible: true,
   }),
   getters: {
@@ -74,8 +75,6 @@ export const useFractalStore = defineStore("fractal", {
       if (zoom !== undefined) this.zoom = zoom;
       if (offsetShiftX !== undefined) this.offsetShiftX = offsetShiftX;
       if (offsetShiftY !== undefined) this.offsetShiftY = offsetShiftY;
-
-      this.frozenValues = {};
     },
 
     nextFormula() {
@@ -93,7 +92,15 @@ export const useFractalStore = defineStore("fractal", {
       const prevIndex = (currentIndex - 1 + FORMULAS.length) % FORMULAS.length;
       this.setFormula(FORMULAS[prevIndex].id);
     },
+    updateMouse(x: number, y: number) {
+      this.mouseX = x;
+      this.mouseY = y;
 
+      if (!this.isPaused) {
+        this.boundMouseX = x;
+        this.boundMouseY = y;
+      }
+    },
     togglePause() {
       this.isPaused = !this.isPaused;
     },

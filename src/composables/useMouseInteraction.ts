@@ -4,7 +4,7 @@ import { useFractalStore } from "../store/fractalStore";
 export function useMouseInteraction(canvasRef: {
   value: HTMLCanvasElement | null;
 }) {
-  const store = useFractalStore();
+  const fractalStore = useFractalStore();
   let isCanvasDragging = false;
 
   const updateMousePos = (e: MouseEvent) => {
@@ -14,8 +14,10 @@ export function useMouseInteraction(canvasRef: {
     const rect = canvas.getBoundingClientRect();
     const divisor = Math.min(canvas.clientWidth, canvas.clientHeight);
 
-    store.mouseX = (e.clientX - rect.left - canvas.clientWidth / 2) / divisor;
-    store.mouseY = -(e.clientY - rect.top - canvas.clientHeight / 2) / divisor;
+    const x = (e.clientX - rect.left - canvas.clientWidth / 2) / divisor;
+    const y = -(e.clientY - rect.top - canvas.clientHeight / 2) / divisor;
+
+    fractalStore.updateMouse(x, y);
   };
 
   const handleMouseMove = (e: MouseEvent) => {
@@ -24,22 +26,22 @@ export function useMouseInteraction(canvasRef: {
       if (!canvas) return;
       const divisor = Math.min(canvas.clientWidth, canvas.clientHeight);
 
-      store.offsetShiftX -= (e.movementX / divisor) * store.zoom;
-      store.offsetShiftY += (e.movementY / divisor) * store.zoom;
+      fractalStore.offsetShiftX -= (e.movementX / divisor) * fractalStore.zoom;
+      fractalStore.offsetShiftY += (e.movementY / divisor) * fractalStore.zoom;
     }
+
     updateMousePos(e);
   };
-
   const handleGlobalClick = (e: MouseEvent) => {
-    if (!store.activeTargetAxis) return;
+    if (!fractalStore.activeTargetAxis) return;
     if (!(e.target as HTMLElement).closest(".slidable-number")) {
-      store.activeTargetAxis = null;
+      fractalStore.activeTargetAxis = null;
     }
   };
 
   const handleWheel = (e: WheelEvent) => {
     e.preventDefault();
-    store.smoothZoom(e.deltaY);
+    fractalStore.smoothZoom(e.deltaY);
   };
 
   onMounted(() => {
