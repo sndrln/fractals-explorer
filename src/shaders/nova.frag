@@ -6,10 +6,10 @@ precision highp float;
 uniform vec2 resolution;
 uniform float zoom;
 uniform float relaxation;
-uniform float powerMain;
-uniform float powerMainImaginary;
-uniform float powerDerivative;
-uniform float powerDerivativeImaginary;
+uniform float power;
+uniform float powerI;
+uniform float powerSecondary;
+uniform float powerSecondaryI;
 uniform float maxIterations;
 uniform float subtrahend;
 uniform float offsetShiftX;
@@ -50,11 +50,10 @@ vec3 get_nova_color(vec2 uv) {
 
     if (i >= maxIterations) break;
     vec2 functionValue =
-      complexPower(currentZ, vec2(powerMain, powerMainImaginary)) -
-      vec2(subtrahend, 0.0);
+      complexPower(currentZ, vec2(power, powerI)) - vec2(subtrahend, 0.0);
     vec2 derivativeValue = complexPower(
       currentZ,
-      vec2(powerDerivative, powerDerivativeImaginary)
+      vec2(powerSecondary, powerSecondaryI)
     );
     vec2 newtonStep = complexDivide(functionValue, derivativeValue);
 

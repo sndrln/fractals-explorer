@@ -1,6 +1,1 @@
-export type FractalType =
-  | "nova"
-  | "mandelbrot"
-  | "burningShip"
-  | "newton"
-  | "magnet";
+export type FractalType = "escape" | "newton" | "nova";

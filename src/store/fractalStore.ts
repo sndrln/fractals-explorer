@@ -1,27 +1,29 @@
 import { defineStore } from "pinia";
 import gsap from "gsap";
-import { usePaletteStore } from "./paletteStore";
-import { FRACTAL_DEFAULTS } from "../constants/fractal-defaults";
-import type { ParamRange } from "../types/param-range";
-import type { FractalParams } from "../types/fractal-params";
+import { FORMULAS } from "../constants/formulas";
 import type { FractalType } from "../types/fractal-type";
-import type { FractalState } from "../types/fractal-state";
+import type { ParamRange } from "../types/param-range";
+import type { BaseFractalParams } from "../types/base-fractal-params";
+import { BASE_FRACTAL_PARAMS } from "../constants/base-fractal-params";
 
 export const useFractalStore = defineStore("fractal", {
   state: () => ({
-    currentFractal: "mandelbrot" as FractalType,
+    currentFractalType: "escape" as FractalType,
+    currentFormulaId: "mandelbrot",
     zoom: 2.0,
-    initialParams: { ...FRACTAL_DEFAULTS.mandelbrot } as FractalParams,
-    sliderParams: { ...FRACTAL_DEFAULTS.mandelbrot } as FractalParams,
-    liveParams: { ...FRACTAL_DEFAULTS.mandelbrot } as FractalParams,
-    paramConfigs: {
-      relaxation: { min: -2.0, max: 2.0 },
-      powerMain: { min: -10.0, max: 10.0 },
-      maxIterations: { min: 1, max: 200 },
-      juliaMorph: { min: 0.0, max: 1.0 },
-    } as Record<string, ParamRange>,
     offsetShiftX: 0.0,
     offsetShiftY: 0.0,
+
+    initialParams: { ...BASE_FRACTAL_PARAMS },
+    sliderParams: { ...BASE_FRACTAL_PARAMS },
+    liveParams: { ...BASE_FRACTAL_PARAMS },
+
+    paramConfigs: {
+      relaxation: { min: -2.0, max: 2.0 },
+      power: { min: -10.0, max: 10.0 },
+      maxIterations: { min: 1, max: 500 },
+      juliaMorph: { min: 0.0, max: 1.0 },
+    } as Record<string, ParamRange>,
     time: 0,
     mouseX: 0,
     mouseY: 0,
@@ -34,21 +36,46 @@ export const useFractalStore = defineStore("fractal", {
     frozenValues: {} as Record<string, number>,
     isUiVisible: true,
   }),
-
+  getters: {
+    currentFormula: (state) =>
+      FORMULAS.find((f) => f.id === state.currentFormulaId) || FORMULAS[0],
+    // currentEngine: (getters) => getters.currentFormula.engine,
+  },
   actions: {
-    switchFractal(fractalType?: FractalType) {
+    switchFractalType(fractalType?: FractalType) {
       if (fractalType) {
-        this.currentFractal = fractalType;
+        this.currentFractalType = fractalType;
       }
-      const defaults = FRACTAL_DEFAULTS[this.currentFractal];
-      const copy = (obj: any) => JSON.parse(JSON.stringify(obj));
+      const firstFormula = FORMULAS.find(
+        (f) => f.fractalType === this.currentFractalType,
+      );
+      if (firstFormula) {
+        this.setFormula(firstFormula.id);
+      }
+    },
+    setFormula(id: string) {
+      const formula = FORMULAS.find((f) => f.id === id);
+      if (!formula) return;
 
-      this.$patch({
-        initialParams: copy(defaults),
-        sliderParams: copy(defaults),
-        liveParams: copy(defaults),
-        frozenValues: {},
-      });
+      this.currentFormulaId = id;
+      this.currentFractalType = formula.fractalType;
+
+      // 1. Separate Coordinates from Math Parameters
+      const { zoom, offsetShiftX, offsetShiftY, ...mathParams } =
+        formula.defaults;
+
+      // 2. Apply Math Parameters to Sliders (merged with base)
+      const mergedParams = { ...BASE_FRACTAL_PARAMS, ...mathParams };
+      this.sliderParams = mergedParams;
+      this.initialParams = { ...mergedParams };
+      this.liveParams = { ...mergedParams };
+
+      // 3. Apply View Coordinates to the Store Root
+      if (zoom !== undefined) this.zoom = zoom;
+      if (offsetShiftX !== undefined) this.offsetShiftX = offsetShiftX;
+      if (offsetShiftY !== undefined) this.offsetShiftY = offsetShiftY;
+
+      this.frozenValues = {};
     },
 
     togglePause() {
@@ -66,7 +93,7 @@ export const useFractalStore = defineStore("fractal", {
       this.activeTargetAxis = this.activeTargetAxis === axis ? null : axis;
     },
 
-    bindVariable(varName: keyof FractalParams) {
+    bindVariable(varName: keyof BaseFractalParams) {
       if (!this.activeTargetAxis) return;
       this.bindingsX = this.bindingsX.filter((v) => v !== varName);
       this.bindingsY = this.bindingsY.filter((v) => v !== varName);
@@ -116,7 +143,9 @@ export const useFractalStore = defineStore("fractal", {
 
     randomizeParams() {
       const targetValues: Record<string, number> = {};
-      const keys = Object.keys(this.sliderParams) as Array<keyof FractalParams>;
+      const keys = Object.keys(this.sliderParams) as Array<
+        keyof BaseFractalParams
+      >;
 
       keys.forEach((key) => {
         if (key === "juliaMorph" || key === "maxIterations") return;
@@ -143,26 +172,26 @@ export const useFractalStore = defineStore("fractal", {
       });
     },
 
-    getCurrentState(): FractalState {
-      const selectedPalette = usePaletteStore().selectedPalette;
-      return {
-        type: this.currentFractal,
-        zoom: this.zoom,
-        offsetX: this.offsetShiftX,
-        offsetY: this.offsetShiftY,
-        params: { ...this.sliderParams },
-        palette: { ...selectedPalette },
-      };
-    },
+    // getCurrentState(): FractalState {
+    //   const selectedPalette = usePaletteStore().selectedPalette;
+    //   return {
+    //     type: this.currentFractalType,
+    //     zoom: this.zoom,
+    //     offsetX: this.offsetShiftX,
+    //     offsetY: this.offsetShiftY,
+    //     params: { ...this.sliderParams },
+    //     palette: { ...selectedPalette },
+    //   };
+    // },
 
-    loadState(state: FractalState) {
-      this.currentFractal = state.type;
-      this.zoom = state.zoom;
-      this.offsetShiftX = state.offsetX;
-      this.offsetShiftY = state.offsetY;
+    // loadState(state: FractalState) {
+    //   this.currentFractalType = state.type;
+    //   this.zoom = state.zoom;
+    //   this.offsetShiftX = state.offsetX;
+    //   this.offsetShiftY = state.offsetY;
 
-      Object.assign(this.sliderParams, state.params);
-      usePaletteStore().setPalette(state.palette);
-    },
+    //   Object.assign(this.sliderParams, state.params);
+    //   usePaletteStore().setPalette(state.palette);
+    // },
   },
 });

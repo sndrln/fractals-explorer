@@ -10,7 +10,7 @@ uniform float offsetShiftY;
 
 // Newton Core Params
 uniform float power;
-uniform float powerImaginary;
+uniform float powerI;
 uniform float dampingR;
 uniform float dampingI;
 
@@ -41,7 +41,7 @@ vec3 get_newton_color(vec2 uv) {
   vec2 currentZ = mix(seed, coord, juliaMorph);
   vec2 c = mix(coord, seed, juliaMorph);
 
-  vec2 p = vec2(power, powerImaginary);
+  vec2 p = vec2(power, powerI);
   vec2 d = vec2(dampingR, dampingI);
   vec2 mem = vec2(memoryR, memoryI);
 

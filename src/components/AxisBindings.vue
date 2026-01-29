@@ -9,7 +9,7 @@ const getVarColor = (varName: string): string => {
     powerMain: "#ffaa00",
     juliaMorph: "#ff00aa",
     subtrahend: "#ffffff",
-    powerDerivative: "#00ffaa",
+    powerSecondary: "#00ffaa",
   };
   return colors[varName] || "#646cff";
 };

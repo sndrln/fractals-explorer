@@ -28,11 +28,9 @@ export function useKeyboardShortcuts() {
     KeyD: () => fractalStore.toggleTargetAxis("y"),
     KeyG: () => fractalStore.unbindAllVariables(),
 
-    Digit1: () => fractalStore.switchFractal("mandelbrot"),
-    Digit2: () => fractalStore.switchFractal("nova"),
-    Digit3: () => fractalStore.switchFractal("burningShip"),
-    Digit4: () => fractalStore.switchFractal("newton"),
-    Digit5: () => fractalStore.switchFractal("magnet"),
+    Digit1: () => fractalStore.switchFractalType("escape"),
+    Digit2: () => fractalStore.switchFractalType("newton"),
+    Digit3: () => fractalStore.switchFractalType("nova"),
   };
 
   const handleKeyDown = (e: KeyboardEvent) => {

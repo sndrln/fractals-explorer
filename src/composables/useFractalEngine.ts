@@ -1,12 +1,20 @@
 import { onMounted, onUnmounted, watch, type Ref } from "vue";
 import { useFractalStore } from "../store/fractalStore";
 import vertSource from "../shaders/base.vert";
-import novaFrag from "../shaders/nova.frag";
-import mandelFrag from "../shaders/mandelbrot.frag";
-import burningShipFrag from "../shaders/burningShip.frag";
-import newtonFrag from "../shaders/newton.frag";
-import magnetFrag from "../shaders/magnet.frag";
 import { usePaletteStore } from "../store/paletteStore";
+import complexMath from "../shaders/shared/complex_math.glsl?raw";
+import commonHeader from "../shaders/shared/common_header.glsl?raw";
+import escapeEngine from "../shaders/shared/escape_engine.glsl?raw";
+
+import { processShader } from "../utils/shaderLoader";
+import { FORMULAS } from "../constants/formulas";
+import { BASE_FRACTAL_PARAMS } from "../constants/base-fractal-params";
+
+const shaderLibrary = {
+  complex_math: complexMath,
+  common_header: commonHeader,
+  escape_engine: escapeEngine,
+};
 
 export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
   const fractalStore = useFractalStore();
@@ -14,7 +22,7 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
   let gl: WebGLRenderingContext;
   let animationFrameId: number;
 
-  const programs: Record<string, WebGLProgram> = {};
+  const programs: Map<string, WebGLProgram> = new Map();
   let activeProgram: WebGLProgram;
   const uniformLocations: Record<string, WebGLUniformLocation | null> = {};
 
@@ -30,21 +38,7 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     "osc",
     "phase",
 
-    "relaxation",
-    "subtrahend",
-    "powerMain",
-    "powerMainImaginary",
-    "powerImaginary",
-    "powerDerivative",
-    "powerDerivativeImaginary",
-    "memoryR",
-    "memoryI",
-    "dampingR",
-    "dampingI",
-    "seedX",
-    "seedY",
-    "juliaMorph",
-    "power",
+    ...Object.keys(BASE_FRACTAL_PARAMS),
   ];
 
   const createProgram = (fragSource: string): WebGLProgram => {
@@ -65,28 +59,17 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     return prog;
   };
 
-  const switchProgram = (type: string) => {
-    switch (type) {
-      case "mandelbrot":
-        activeProgram = programs.mandelbrot;
-        break;
-      case "nova":
-        activeProgram = programs.nova;
-        break;
-      case "magnet":
-        activeProgram = programs.magnet;
-        break;
-      case "newton":
-        activeProgram = programs.newton;
-        break;
-      case "burningShip":
-      default:
-        activeProgram = programs.burningShip;
-        break;
+  const switchProgram = (id: string) => {
+    const prog = programs.get(id);
+    if (!prog) {
+      console.error(`Program not found for ID: ${id}`);
+      return;
     }
 
+    activeProgram = prog;
     gl.useProgram(activeProgram);
 
+    // Re-map uniform locations for the new program
     uniformNames.forEach((name) => {
       uniformLocations[name] = gl.getUniformLocation(activeProgram, name);
     });
@@ -96,11 +79,13 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     if (!canvasRef.value) return;
     gl = canvasRef.value.getContext("webgl")!;
 
-    programs.nova = createProgram(novaFrag);
-    programs.mandelbrot = createProgram(mandelFrag);
-    programs.burningShip = createProgram(burningShipFrag);
-    programs.newton = createProgram(newtonFrag);
-    programs.magnet = createProgram(magnetFrag);
+    FORMULAS.forEach((formula) => {
+      const processedSource = processShader(
+        formula.shaderSource,
+        shaderLibrary,
+      );
+      programs.set(formula.id, createProgram(processedSource));
+    });
 
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -110,15 +95,14 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
       gl.STATIC_DRAW,
     );
 
-    switchProgram(fractalStore.currentFractal);
-
+    switchProgram(fractalStore.currentFormulaId);
     render();
   };
 
   watch(
-    () => fractalStore.currentFractal,
-    (newType) => {
-      switchProgram(newType);
+    () => fractalStore.currentFormulaId,
+    (newId) => {
+      switchProgram(newId);
     },
   );
 

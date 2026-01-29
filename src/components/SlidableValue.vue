@@ -2,7 +2,7 @@
 import { computed, onUnmounted, ref, watch } from "vue";
 import gsap from "gsap";
 import { useFractalStore } from "../store/fractalStore";
-import type { FractalParams } from "../types/fractal-params";
+import type { BaseFractalParams } from "../types/base-fractal-params";
 
 const props = defineProps<{
   modelValue: number;
@@ -36,7 +36,7 @@ const currentValue = computed(() => {
 
 const handleClick = (e: MouseEvent) => {
   if (store.activeTargetAxis) {
-    store.bindVariable(props.varName as keyof FractalParams);
+    store.bindVariable(props.varName as keyof BaseFractalParams);
   } else {
     startDrag(e);
   }

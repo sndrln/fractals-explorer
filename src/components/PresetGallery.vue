@@ -1,4 +1,4 @@
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { usePresetStore } from "../store/presetStore";
 import { useFractalStore } from "../store/fractalStore";
 
@@ -87,4 +87,4 @@ const handleSave = () => {
   color: #ff5555;
   cursor: pointer;
 }
-</style>
+</style> -->
