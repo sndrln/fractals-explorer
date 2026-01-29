@@ -9,6 +9,11 @@ export const DEFAULT_PRESETS: Preset[] = [
     offsetX: -0.5,
     offsetY: 0.0,
     params: { maxIterations: 128, power: 2.0 },
-    paletteId: 0,
+    palette: {
+      brightness: [0.5, 0.5, 0.5],
+      contrast: [0.5, 0.5, 0.5],
+      osc: [1.0, 1.0, 1.0],
+      phase: [0.0, 0.1, 0.2],
+    },
   },
 ];
