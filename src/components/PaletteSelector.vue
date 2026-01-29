@@ -6,11 +6,6 @@ import { usePaletteStore } from "../store/paletteStore";
 
 const paletteStore = usePaletteStore();
 const isOpen = ref(false);
-
-const selectPalette = (id: number) => {
-  paletteStore.setPalette(id);
-  isOpen.value = false;
-};
 </script>
 
 <template>
@@ -30,15 +25,19 @@ const selectPalette = (id: number) => {
         <div v-if="isOpen" class="dropdown-menu">
           <div class="palette-grid">
             <div
-              v-for="p in palettes"
-              :key="p.id"
+              v-for="(p, index) in palettes"
               class="palette-brick"
-              :class="{ active: paletteStore.selectedPalette.id === p.id }"
+              :class="{
+                active:
+                  !paletteStore.isRandom && paletteStore.currentIndex === index,
+              }"
               :style="{ background: getPaletteCSS(p) }"
-              @click="selectPalette(p.id)"
+              @click="paletteStore.setPaletteByIndex(index)"
             >
               <div
-                v-if="paletteStore.selectedPalette.id === p.id"
+                v-if="
+                  !paletteStore.isRandom && paletteStore.currentIndex === index
+                "
                 class="check"
               >
                 ✓

@@ -144,13 +144,14 @@ export const useFractalStore = defineStore("fractal", {
     },
 
     getCurrentState(): FractalState {
+      const selectedPalette = usePaletteStore().selectedPalette;
       return {
         type: this.currentFractal,
         zoom: this.zoom,
         offsetX: this.offsetShiftX,
         offsetY: this.offsetShiftY,
         params: { ...this.sliderParams },
-        paletteId: usePaletteStore().selectedPalette.id,
+        palette: { ...selectedPalette },
       };
     },
 
@@ -161,7 +162,7 @@ export const useFractalStore = defineStore("fractal", {
       this.offsetShiftY = state.offsetY;
 
       Object.assign(this.sliderParams, state.params);
-      usePaletteStore().setPalette(state.paletteId);
+      usePaletteStore().setPalette(state.palette);
     },
   },
 });

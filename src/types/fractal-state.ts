@@ -1,4 +1,5 @@
 import type { FractalType } from "./fractal-type";
+import type { Palette } from "./palette";
 
 export interface FractalState {
   type: FractalType;
@@ -6,5 +7,5 @@ export interface FractalState {
   offsetX: number;
   offsetY: number;
   params: Record<string, number>;
-  paletteId: number;
+  palette: Palette;
 }

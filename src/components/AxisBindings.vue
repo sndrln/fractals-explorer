@@ -2,39 +2,55 @@
 import { useFractalStore } from "../store/fractalStore";
 
 const store = useFractalStore();
+
 const getVarColor = (varName: string): string => {
   const colors: Record<string, string> = {
     relaxation: "#ff6464",
-    powerMain: "#64ff64",
+    powerMain: "#ffaa00",
     juliaMorph: "#ff00aa",
+    subtrahend: "#ffffff",
+    powerDerivative: "#00ffaa",
   };
   return colors[varName] || "#646cff";
 };
+
+const getBindings = (axis: "x" | "y") =>
+  axis === "x" ? store.bindingsX : store.bindingsY;
 </script>
 
 <template>
   <div class="axis-container">
     <div
-      v-for="axis in (['x', 'y'] as const)"
+      v-for="axis in ['x', 'y'] as const"
       :key="axis"
       class="axis-well"
-      :class="{ active: store.activeTargetAxis === axis }"
+      :class="{
+        active: store.activeTargetAxis === axis,
+        empty: getBindings(axis).length === 0,
+      }"
+      @click="store.toggleTargetAxis(axis)"
     >
       <div class="well-header">
         <span>Mouse {{ axis.toUpperCase() }}</span>
-        <button @click.stop="store.toggleTargetAxis(axis)" class="plus-btn">
-          +
-        </button>
+        <div v-if="getBindings(axis).length > 0" class="plus-btn-small">+</div>
       </div>
-      <div class="pill-box">
+
+      <div v-if="getBindings(axis).length > 0" class="pill-box">
         <div
-          v-for="v in axis === 'x' ? store.bindingsX : store.bindingsY"
+          v-for="v in getBindings(axis)"
           :key="v"
           class="pill"
           :style="{ borderColor: getVarColor(v) }"
+          title="Click to remove"
+          @click.stop="store.unbindVariable(v, axis)"
         >
-          {{ v }} <span @click="store.unbindVariable(v, axis)">×</span>
+          {{ v }}
         </div>
+      </div>
+
+      <div v-else class="empty-state">
+        <div class="big-plus">+</div>
+        <span class="empty-text">Bind variable</span>
       </div>
     </div>
   </div>
@@ -43,57 +59,108 @@ const getVarColor = (varName: string): string => {
 <style scoped>
 .axis-container {
   display: flex;
-  gap: 10px;
-  margin-top: 15px;
+  gap: 12px;
+  margin-top: 20px;
 }
+
 .axis-well {
   flex: 1;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 255, 255, 0.03);
   border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 8px;
-  padding: 8px;
-  min-height: 60px;
-  transition: all 0.3s;
+  border-radius: 12px;
+  padding: 12px;
+  min-height: 80px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
 }
+
+.axis-well:hover {
+  background: rgba(255, 255, 255, 0.07);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
 .axis-well.active {
   border-color: #646cff;
-  background: rgba(100, 108, 255, 0.1);
+  background: rgba(100, 108, 255, 0.12);
+  box-shadow: 0 0 15px rgba(100, 108, 255, 0.1);
 }
+
 .well-header {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-size: 10px;
+  font-weight: 700;
   text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.axis-well.active .well-header {
+  color: #aaa;
+}
+
+.plus-btn-small {
+  font-size: 16px;
+  line-height: 1;
   color: #888;
-  margin-bottom: 5px;
 }
-.plus-btn {
-  background: none;
-  border: 1px solid #555;
-  color: white;
-  cursor: pointer;
-  border-radius: 4px;
-  padding: 0 5px;
-}
+
 .pill-box {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
+  gap: 6px;
 }
+
 .pill {
   font-size: 11px;
-  padding: 2px 6px;
-  background: rgba(0, 0, 0, 0.3);
+  padding: 4px 8px;
+  background: rgba(0, 0, 0, 0.4);
   border-left: 3px solid;
-  border-radius: 3px;
+  border-radius: 4px;
+  color: #eee;
+  transition:
+    transform 0.1s,
+    background 0.2s;
+}
+
+.pill:hover {
+  background: rgba(255, 0, 0, 0.2);
+  transform: translateY(-1px);
+}
+
+.empty-state {
+  flex: 1;
   display: flex;
-  gap: 5px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  opacity: 0.3;
+  transition: opacity 0.2s;
 }
-.pill span {
-  cursor: pointer;
-  opacity: 0.5;
+
+.axis-well:hover .empty-state {
+  opacity: 0.6;
 }
-.pill span:hover {
-  opacity: 1;
+
+.big-plus {
+  font-size: 24px;
+  font-weight: 200;
+  margin-bottom: 2px;
+}
+
+.empty-text {
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.axis-well.active .empty-state {
+  opacity: 0.8;
+  color: #646cff;
 }
 </style>

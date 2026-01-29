@@ -21,6 +21,7 @@ export function useKeyboardShortcuts() {
     },
     KeyQ: () => paletteStore.prevPalette(),
     KeyE: () => paletteStore.nextPalette(),
+    KeyT: () => paletteStore.generateRandomPalette(),
 
     KeyR: () => fractalStore.randomizeParams(),
     KeyA: () => fractalStore.toggleTargetAxis("x"),
