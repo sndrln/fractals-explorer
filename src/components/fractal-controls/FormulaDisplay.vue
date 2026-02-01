@@ -12,77 +12,73 @@ const currentFormulaId = computed(() => fractalStore.formulaId);
 <template>
   <div id="formula-display">
     <template v-if="currentFormulaId === 'mandelbrot'">
-      <span :style="mathStyles.zStyle">z<sub>n+1</sub></span> =
+      <span>z<sub>n+1</sub></span> =
       <span :style="mathStyles.zStyle">z<sub>n</sub></span
-      ><sup :style="{ color: colors.power }">P</sup> +
+      ><sup class="math-exponent" :style="{ color: colors.power }">P</sup> +
       <span :style="mathStyles.cStyle">c</span>
     </template>
 
     <template v-if="currentFormulaId === 'burning-ship'">
-      <span :style="mathStyles.zStyle">z<sub>n+1</sub></span> = (|Re(<span
-        :style="mathStyles.zStyle"
+      <span>z<sub>n+1</sub></span> = (|Re(<span :style="mathStyles.zStyle"
         >z<sub>n</sub></span
       >)| + i|Im(<span :style="mathStyles.zStyle">z<sub>n</sub></span
-      >)|) <sup :style="{ color: colors.power }">P</sup> +
+      >)|)<sup class="math-exponent" :style="{ color: colors.power }">P</sup> +
       <span :style="mathStyles.cStyle">c</span>
     </template>
 
     <template v-if="currentFormulaId === 'tricorn'">
-      <span :style="mathStyles.zStyle">z<sub>n+1</sub></span> =
+      <span>z<sub>n+1</sub></span> =
       <span :style="mathStyles.zStyle">z̅<sub>n</sub></span
-      ><sup :style="{ color: colors.power }">P</sup> +
+      ><sup class="math-exponent" :style="{ color: colors.power }">P</sup> +
       <span :style="mathStyles.cStyle">c</span>
     </template>
 
     <template v-if="currentFormulaId === 'buffalo'">
-      <span :style="mathStyles.zStyle">z<sub>n+1</sub></span> = |<span
-        :style="mathStyles.zStyle"
+      <span>z<sub>n+1</sub></span> = |<span :style="mathStyles.zStyle"
         >z<sub>n</sub></span
-      ><sup :style="{ color: colors.power }">P</sup>| +
+      >|<sup class="math-exponent" :style="{ color: colors.power }">P</sup> +
       <span :style="mathStyles.cStyle">c</span>
     </template>
 
     <template v-if="currentFormulaId === 'celtic'">
-      <span :style="mathStyles.zStyle">z<sub>n+1</sub></span> = |Re(<span
-        :style="mathStyles.zStyle"
+      <span>z<sub>n+1</sub></span> = |Re(<span :style="mathStyles.zStyle"
         >z<sub>n</sub></span
-      ><sup :style="{ color: colors.power }">P</sup>)| + iIm(<span
-        :style="mathStyles.zStyle"
-        >z<sub>n</sub></span
-      ><sup :style="{ color: colors.power }">P</sup>) +
+      ><sup class="math-exponent" :style="{ color: colors.power }">P</sup>)| +
+      iIm(<span :style="mathStyles.zStyle">z<sub>n</sub></span
+      ><sup class="math-exponent" :style="{ color: colors.power }">P</sup>) +
       <span :style="mathStyles.cStyle">c</span>
     </template>
 
     <template v-if="currentFormulaId === 'magnet'">
-      <span :style="mathStyles.zStyle">z<sub>n+1</sub></span> = ((<span
-        :style="mathStyles.zStyle"
+      <span>z<sub>n+1</sub></span> = ((<span :style="mathStyles.zStyle"
         >z<sub>n</sub></span
       >² + <span :style="mathStyles.cStyle">c</span> - 1) / (2<span
         :style="mathStyles.zStyle"
         >z<sub>n</sub></span
       >
-      + <span :style="mathStyles.cStyle">c</span> - 2))
-      <sup :style="{ color: colors.power }">P</sup>
+      + <span :style="mathStyles.cStyle">c</span> - 2))<sup
+        class="math-exponent"
+        :style="{ color: colors.power }"
+        >P</sup
+      >
     </template>
 
     <template v-if="currentFormulaId === 'inv-mandel'">
-      <span :style="mathStyles.zStyle">z<sub>n+1</sub></span> =
+      <span>z<sub>n+1</sub></span> =
       <span :style="mathStyles.zStyle">z<sub>n</sub></span
-      ><sup :style="{ color: colors.power }">P</sup> + 1/
-      <span :style="mathStyles.cStyle">c</span>
+      ><sup class="math-exponent" :style="{ color: colors.power }">P</sup> +
+      1/<span :style="mathStyles.cStyle">c</span>
     </template>
 
     <template v-if="currentFormulaId === 'inv-exp'">
-      <span :style="mathStyles.zStyle">z<sub>n+1</sub></span> = 1/<span
-        :style="mathStyles.zStyle"
+      <span>z<sub>n+1</sub></span> = 1/<span :style="mathStyles.zStyle"
         >z<sub>n</sub></span
-      ><sup :style="{ color: colors.power }">P</sup> +
+      ><sup class="math-exponent" :style="{ color: colors.power }">P</sup> +
       <span :style="mathStyles.cStyle">c</span>
     </template>
 
     <template v-if="currentFormulaId === 'lambda'">
-      <span :style="mathStyles.zStyle">z<sub>n+1</sub></span> =
-      <span :style="mathStyles.cStyle">c</span> ·
+      <span>z<sub>n+1</sub></span> = <span :style="mathStyles.cStyle">c</span> ·
       <span :style="mathStyles.zStyle">z<sub>n</sub></span
       >(1 - <span :style="mathStyles.zStyle">z<sub>n</sub></span
       >)
@@ -91,9 +87,9 @@ const currentFormulaId = computed(() => fractalStore.formulaId);
     <template v-if="currentFormulaId === 'spider'">
       <div class="spider-layout">
         <div>
-          <span :style="mathStyles.zStyle">z<sub>n+1</sub></span> =
+          <span>z<sub>n+1</sub></span> =
           <span :style="mathStyles.zStyle">z<sub>n</sub></span
-          ><sup :style="{ color: colors.power }">P</sup> +
+          ><sup class="math-exponent" :style="{ color: colors.power }">P</sup> +
           <span :style="mathStyles.cStyle">c</span>
         </div>
         <div class="sub-formula">
@@ -105,11 +101,10 @@ const currentFormulaId = computed(() => fractalStore.formulaId);
     </template>
 
     <template v-if="currentFormulaId === 'heart'">
-      <span :style="mathStyles.zStyle">z<sub>n+1</sub></span> = (|Re(<span
-        :style="mathStyles.zStyle"
+      <span>z<sub>n+1</sub></span> = (|Re(<span :style="mathStyles.zStyle"
         >z<sub>n</sub></span
       >)| + iIm(<span :style="mathStyles.zStyle">z<sub>n</sub></span
-      >)) <sup :style="{ color: colors.power }">P</sup> +
+      >))<sup class="math-exponent" :style="{ color: colors.power }">P</sup> +
       <span :style="mathStyles.cStyle">c</span>
     </template>
 
@@ -228,5 +223,14 @@ const currentFormulaId = computed(() => fractalStore.formulaId);
 .sub-formula {
   font-size: 0.6em;
   opacity: 0.6;
+}
+
+.math-exponent {
+  font-size: 0.65em; // Shrink P so it doesn't compete with Z
+  vertical-align: super; // Move it to the top right
+  margin-left: 1px; // Tiny gap so it doesn't touch the Z
+  font-weight: bold; // Keep it readable despite the size
+  position: relative;
+  bottom: 5px;
 }
 </style>

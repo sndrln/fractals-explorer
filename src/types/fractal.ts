@@ -1,5 +1,3 @@
-import type { Palette } from "./ui";
-
 export type FractalType = "escape" | "newton" | "nova";
 
 export interface FractalParams {
@@ -17,23 +15,6 @@ export interface FractalParams {
   relaxationI: number;
   powerSecondary: number;
   powerSecondaryI: number;
-  dampingR: number;
-  dampingI: number;
-}
-
-export interface FractalState {
-  type: FractalType;
-  zoom: number;
-  offsetX: number;
-  offsetY: number;
-  params: Record<string, number>;
-  palette: Palette;
-}
-
-export interface Preset extends FractalState {
-  id: string;
-  name: string;
-  description?: string;
 }
 
 export type MemoryMode =

@@ -35,12 +35,12 @@ export const FORMULAS: FormulaDefinition[] = [
     // ],
     defaults: {
       zoom: 2.5,
-      offsetShiftX: 0.5,
-      offsetShiftY: 0,
-      power: 3.0,
-      juliaMorph: 1.0,
-      seedR: 1.0,
-      memoryR: 1.0,
+      offsetShiftX: 0.0,
+      offsetShiftY: 0.0,
+      power: 2.0,
+      juliaMorph: 0.0,
+      seedR: 0.0,
+      memoryR: 0.0,
     },
   },
   {

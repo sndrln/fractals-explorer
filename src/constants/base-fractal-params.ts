@@ -15,6 +15,4 @@ export const DEFAULT_FRACTAL_PARAMS: FractalParams = {
   relaxationI: 0.0,
   powerSecondary: 2.0,
   powerSecondaryI: 0.0,
-  dampingR: 1.0,
-  dampingI: 0.0,
 };

@@ -10,8 +10,7 @@ export function useFractalTheme() {
   };
 
   const getVarColor = (varName: string): string => {
-    const key = VAR_COLOR_MAP[varName];
-    return getColor(key);
+    return VAR_COLOR_MAP[varName];
   };
 
   // Centralized Math Symbol Logic

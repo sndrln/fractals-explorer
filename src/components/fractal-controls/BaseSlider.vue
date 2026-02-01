@@ -48,13 +48,9 @@ const handleClick = (e: MouseEvent) => {
 
 const handleReset = (e: MouseEvent) => {
   e.stopPropagation();
-
   const defaultValue = fractalStore.params.initial[props.paramKey];
 
-  if (defaultValue === undefined) {
-    console.warn(`Could not find default value for ${props.paramKey}`);
-    return;
-  }
+  if (defaultValue === undefined) return;
 
   gsap.to(tweenTarget, {
     val: defaultValue,
@@ -75,31 +71,36 @@ const startDrag = (e: MouseEvent) => {
 
 const onDrag = (e: MouseEvent) => {
   const sensitivity = props.step || 0.01;
-  const magnetWidth = 0.1; // How much "extra" mouse movement to stay on the integer
-
   const delta = (e.clientX - startX) * sensitivity;
-  const rawVal = startValue + delta;
 
-  const nearest = Math.round(rawVal);
-  const diff = rawVal - nearest;
+  // 1. Calculate the "raw" target value based on mouse movement
+  let targetVal = startValue + delta;
 
-  let targetVal: number;
+  // 2. Sticky/Snap Logic
+  // This defines how "sticky" the round numbers are (e.g., 0.1 means
+  // it will stay at 1.00 while the raw value is between 0.90 and 1.10)
+  const snapThreshold = 0.1;
+  const nearestInt = Math.round(targetVal);
 
-  if (Math.abs(diff) < magnetWidth) {
-    // We are inside the magnet range: hold the round value
-    targetVal = nearest;
+  if (Math.abs(targetVal - nearestInt) < snapThreshold) {
+    targetVal = nearestInt;
   } else {
-    // We are outside: subtract the magnet offset so we don't "jump" values
-    // This ensures that 2.01 comes right after the magnet releases at 2.00
-    targetVal = rawVal - Math.sign(diff) * magnetWidth;
+    // Optional: Smooth the transition out of the snap zone
+    // If you want it to feel less "jumpy" when it breaks free,
+    // you could subtract the threshold, but usually, a clean break feels better.
+    targetVal =
+      targetVal > nearestInt
+        ? targetVal - snapThreshold + 0.01 // Adjusting to prevent jumping back immediately
+        : targetVal + snapThreshold - 0.01;
   }
 
+  // 3. Clamp to boundaries
   if (props.min !== undefined) targetVal = Math.max(props.min, targetVal);
   if (props.max !== undefined) targetVal = Math.min(props.max, targetVal);
 
   gsap.to(tweenTarget, {
     val: targetVal,
-    duration: 0.1,
+    duration: 0.05,
     overwrite: true,
     onUpdate: () => {
       emit("update:modelValue", tweenTarget.val);
@@ -158,11 +159,13 @@ onUnmounted(() => {
   background: rgba(100, 108, 255, 0.4);
   border-bottom-style: solid;
 }
+
 .is-pickable {
   cursor: cell !important;
   outline: 2px dashed rgba(255, 255, 255, 0.5);
   animation: pulse 1.5s infinite;
 }
+
 @keyframes pulse {
   0% {
     opacity: 1;

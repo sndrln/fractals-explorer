@@ -4,6 +4,7 @@ import vertSource from "../shaders/base.vert";
 import { usePaletteStore } from "../store/usePaletteStore";
 import complexMath from "../shaders/shared/complex_math.glsl?raw";
 import commonHeader from "../shaders/shared/common_header.glsl?raw";
+import memoryModes from "../shaders/shared/memory_modes.glsl?raw";
 import escapeEngine from "../shaders/engines/escape_engine.glsl?raw";
 import newtonEngine from "../shaders/engines/newton_engine.glsl?raw";
 import novaEngine from "../shaders/engines/nova_engine.glsl?raw";
@@ -17,6 +18,7 @@ import { useViewStore } from "../store/useViewStore";
 const shaderLibrary = {
   complex_math: complexMath,
   common_header: commonHeader,
+  memory_modes: memoryModes,
   escape_engine: escapeEngine,
   newton_engine: newtonEngine,
   nova_engine: novaEngine,

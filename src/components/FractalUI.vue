@@ -63,7 +63,6 @@ const availableFormulas = computed(() => {
           <button @click="viewStore.resetView" class="button-primary">⟲</button>
           <FractalRandomizer />
         </div>
-        <!-- <PresetGallery /> -->
       </div>
     </div>
   </Transition>

@@ -6,20 +6,20 @@ import type { MemoryMode } from "../../types/fractal";
 const fractalStore = useFractalStore();
 
 const modes: { label: string; value: MemoryMode }[] = [
-  { label: "Standard (None)", value: "NONE" },
+  { label: "None", value: "NONE" },
   { label: "Absolute (Z)", value: "ABS_BOTH" },
-  { label: "Absolute Real (X)", value: "ABS_X" },
-  { label: "Absolute Imaginary (Y)", value: "ABS_Y" },
+  { label: "Absolute Real", value: "ABS_X" },
+  { label: "Absolute Imaginary", value: "ABS_Y" },
   { label: "Conjugate", value: "CONJUGATE" },
-  { label: "Reverse (Origin)", value: "REVERSE" },
-  { label: "Invert (Circle)", value: "INVERT" },
-  { label: "Complex Sin", value: "SIN" },
-  { label: "Complex Cos", value: "COS" },
-  { label: "Complex Tan", value: "TAN" },
+  { label: "Reverse", value: "REVERSE" },
+  { label: "Invert", value: "INVERT" },
+  { label: "Sin", value: "SIN" },
+  { label: "Cos", value: "COS" },
+  { label: "Tan", value: "TAN" },
   { label: "Exponential", value: "EXP" },
-  { label: "Reciprocal (1/z)", value: "RECIPROCAL" },
+  { label: "Reciprocal", value: "RECIPROCAL" },
   { label: "Cubic Memory", value: "POW3" },
-  { label: "Fold (Kaleidoscope)", value: "FOLD" },
+  { label: "Fold", value: "FOLD" },
   { label: "Swizzle", value: "SWIZZLE" },
 ];
 const handleModeChange = (event: Event) => {

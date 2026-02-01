@@ -8,7 +8,7 @@ import FormulaDisplay from "./FormulaDisplay.vue";
 
 import { BASE_CONTROL_GROUPS } from "../../constants/ui/base-control-groups";
 import { FORMULAS } from "../../constants/formulas";
-import { DEFAULT_SLIDER_CONSTRAINTS } from "../../constants/ui/default-slider-params";
+import { BASE_SLIDER_CONSTRAINTS } from "../../constants/ui/base-slider-constraints";
 import type { ControlGroup, SliderSchema } from "../../types/ui";
 
 const fractalStore = useFractalStore();
@@ -32,7 +32,7 @@ const activeControls = computed<ControlGroup[]>(() => {
 });
 
 const getSliderProps = (slider: SliderSchema) => ({
-  ...DEFAULT_SLIDER_CONSTRAINTS[slider.paramKey],
+  ...BASE_SLIDER_CONSTRAINTS[slider.paramKey],
   ...slider,
 });
 

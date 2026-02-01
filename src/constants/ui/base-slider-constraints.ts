@@ -1,4 +1,4 @@
-export const DEFAULT_SLIDER_CONSTRAINTS: Record<
+export const BASE_SLIDER_CONSTRAINTS: Record<
   string,
   { min: number; max: number; step: number }
 > = {
