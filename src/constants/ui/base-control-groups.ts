@@ -11,8 +11,8 @@ export const BASE_CONTROL_GROUPS: Record<string, ControlGroup[]> = {
       label: "Seed Offset",
       colorKey: "seed",
       sliders: [
-        { paramKey: "seedX" },
-        { paramKey: "seedY", suffix: "i", showPlus: true },
+        { paramKey: "seedR" },
+        { paramKey: "seedI", suffix: "i", showPlus: true },
       ],
     },
     {
@@ -95,8 +95,16 @@ export const BASE_CONTROL_GROUPS: Record<string, ControlGroup[]> = {
       label: "Nova Constant (c)",
       colorKey: "seed",
       sliders: [
-        { paramKey: "seedX" },
-        { paramKey: "seedY", suffix: "i", showPlus: true },
+        { paramKey: "seedR" },
+        { paramKey: "seedI", suffix: "i", showPlus: true },
+      ],
+    },
+    {
+      label: "Memory (zₙ₋₁)",
+      colorKey: "memory",
+      sliders: [
+        { paramKey: "memoryR" },
+        { paramKey: "memoryI", suffix: "i", showPlus: true },
       ],
     },
     {

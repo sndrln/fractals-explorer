@@ -1,6 +1,6 @@
 vec3 get_fractal_color(vec2 uv) {
   vec2 coord = uv * zoom + vec2(offsetShiftX, offsetShiftY);
-  vec2 seed = vec2(seedX, seedY);
+  vec2 seed = vec2(seedR, seedI);
 
   // Nova Setup
   vec2 z = mix(seed, coord, juliaMorph);
@@ -32,7 +32,43 @@ vec3 get_fractal_color(vec2 uv) {
 
     float diff = length(z - tempZ);
     if (diff < minDiff) minDiff = diff;
+
+    // MEMORY MODES - RECOMPILATION BLOCK
+    #ifdef MEM_ABS_BOTH
+    zPrev = abs(tempZ);
+    #elif defined(MEM_ABS_X)
+    zPrev = vec2(abs(tempZ.x), tempZ.y);
+    #elif defined(MEM_ABS_Y)
+    zPrev = vec2(tempZ.x, abs(tempZ.y));
+    #elif defined(MEM_CONJUGATE)
+    zPrev = vec2(tempZ.x, -tempZ.y);
+    #elif defined(MEM_REVERSE)
+    zPrev = -tempZ;
+    #elif defined(MEM_INVERT)
+    zPrev = tempZ / (dot(tempZ, tempZ) + 1e-6);
+    #elif defined(MEM_SIN)
+    zPrev = complexSin(tempZ);
+    #elif defined(MEM_COS)
+    zPrev = complexCos(tempZ);
+    #elif defined(MEM_TAN)
+    zPrev = complexTan(tempZ);
+    #elif defined(MEM_EXP)
+    zPrev = complexExp(tempZ);
+    #elif defined(MEM_RECIPROCAL)
+    zPrev = complexDiv(vec2(1.0, 0.0), tempZ + 1e-6);
+    #elif defined(MEM_POW3)
+    zPrev = complexPower(tempZ, vec2(3.0, 0.0));
+    #elif defined(MEM_FOLD)
     zPrev = tempZ;
+    if (zPrev.x > 1.0) zPrev.x = 2.0 - zPrev.x;
+    if (zPrev.x < -1.0) zPrev.x = -2.0 - zPrev.x;
+    if (zPrev.y > 1.0) zPrev.y = 2.0 - zPrev.y;
+    if (zPrev.y < -1.0) zPrev.y = -2.0 - zPrev.y;
+    #elif defined(MEM_SWIZZLE)
+    zPrev = vec2(tempZ.y, tempZ.x);
+    #else
+    zPrev = tempZ;
+    #endif
 
     if (diff < 0.0001) {
       converged = true;

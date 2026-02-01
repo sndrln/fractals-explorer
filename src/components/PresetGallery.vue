@@ -51,7 +51,7 @@ const handleSave = () => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

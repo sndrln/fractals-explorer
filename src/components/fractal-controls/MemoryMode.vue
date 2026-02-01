@@ -76,7 +76,7 @@ onMounted(() => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .control-group {
   display: flex;
   flex-direction: column;

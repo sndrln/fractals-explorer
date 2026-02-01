@@ -27,7 +27,7 @@ useMouseInteraction(canvasRef);
   </div>
 </template>
 
-<style>
+<style lang="scss">
 .app-container {
   display: flex;
   width: 100vw;

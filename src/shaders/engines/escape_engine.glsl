@@ -1,5 +1,5 @@
 vec3 get_fractal_color(vec2 uv) {
-  vec2 seed = vec2(seedX, seedY);
+  vec2 seed = vec2(seedR, seedI);
   vec2 coord = uv * zoom + vec2(offsetShiftX, offsetShiftY);
 
   vec2 z = mix(seed, coord, juliaMorph);

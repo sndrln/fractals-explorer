@@ -200,7 +200,7 @@ const currentFormulaId = computed(() => fractalStore.formulaId);
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 #formula-display {
   background: rgba(0, 0, 0, 0.4);
   padding: 20px;

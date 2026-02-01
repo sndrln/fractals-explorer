@@ -13,8 +13,8 @@ export const useInputStore = defineStore("interaction", {
     },
     activeAxis: null as "x" | "y" | null,
     bindings: {
-      x: ["seedX"] as (keyof FractalParams)[],
-      y: ["seedY"] as (keyof FractalParams)[],
+      x: ["seedR"] as (keyof FractalParams)[],
+      y: ["seedI"] as (keyof FractalParams)[],
     },
     isPaused: false,
   }),

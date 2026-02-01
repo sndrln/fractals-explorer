@@ -6,8 +6,8 @@ export interface FractalParams {
   maxIterations: number;
   power: number;
   powerI: number;
-  seedX: number;
-  seedY: number;
+  seedR: number;
+  seedI: number;
   juliaMorph: number;
   memoryR: number;
   memoryI: number;

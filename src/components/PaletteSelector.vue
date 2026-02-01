@@ -64,7 +64,7 @@ const isDropdownExpanded = ref(false);
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .palette-dropdown {
   position: relative;
   flex-grow: 1;

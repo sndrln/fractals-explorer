@@ -69,7 +69,7 @@ const availableFormulas = computed(() => {
   </Transition>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .fade-enter-active,
 .fade-leave-active {
   transition:

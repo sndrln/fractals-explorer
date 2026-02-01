@@ -33,7 +33,15 @@ export const FORMULAS: FormulaDefinition[] = [
     //     sliders: [{ paramKey: "juliaMorph", min: 0, max: 5 }],
     //   },
     // ],
-    defaults: { zoom: 2.5, offsetShiftX: 0.5, offsetShiftY: 0, power: 2.0 },
+    defaults: {
+      zoom: 2.5,
+      offsetShiftX: 0.5,
+      offsetShiftY: 0,
+      power: 3.0,
+      juliaMorph: 1.0,
+      seedR: 1.0,
+      memoryR: 1.0,
+    },
   },
   {
     id: "burning-ship",
@@ -174,7 +182,7 @@ export const FORMULAS: FormulaDefinition[] = [
     defaults: {
       zoom: 4.0,
       power: 3.0,
-      seedX: 1.0,
+      seedR: 1.0,
       subtrahend: 1.0,
       relaxation: 1.0,
       juliaMorph: 0.0,
@@ -189,7 +197,7 @@ export const FORMULAS: FormulaDefinition[] = [
     defaults: {
       zoom: 4.0,
       power: 3.0,
-      seedX: 1.0,
+      seedR: 1.0,
       subtrahend: 1.0,
       relaxation: 1.0,
       juliaMorph: 0.0,

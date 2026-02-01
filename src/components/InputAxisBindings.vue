@@ -53,7 +53,7 @@ const handleWellClick = (axis: "x" | "y") => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .axis-container {
   display: flex;
   gap: 10px;

@@ -4,7 +4,7 @@ void main() {
   vec2 uv =
     (gl_FragCoord.xy - 0.5 * resolution.xy) / min(resolution.y, resolution.x);
 
-  vec2 seed = vec2(seedX, seedY);
+  vec2 seed = vec2(seedR, seedI);
   vec2 coord = uv * zoom + vec2(offsetShiftX, offsetShiftY);
 
   vec2 z = mix(seed, coord, juliaMorph);

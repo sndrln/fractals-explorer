@@ -108,7 +108,7 @@ const isGroupBound = (group: ControlGroup) => {
   </div>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .fractal-controls {
   display: flex;
   flex-direction: column;

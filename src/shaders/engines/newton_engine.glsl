@@ -1,6 +1,6 @@
 vec3 get_newton_color(vec2 uv) {
   vec2 coord = uv * zoom + vec2(offsetShiftX, offsetShiftY);
-  vec2 seed = vec2(seedX, seedY);
+  vec2 seed = vec2(seedR, seedI);
 
   vec2 z = mix(coord, seed, juliaMorph);
   vec2 p = vec2(power, powerI);
@@ -35,6 +35,44 @@ vec3 get_newton_color(vec2 uv) {
     minDiff = min(minDiff, diff);
 
     zPrev = oldZ;
+
+    // MEMORY MODES - RECOMPILATION BLOCK
+    #ifdef MEM_ABS_BOTH
+    zPrev = abs(z);
+    #elif defined(MEM_ABS_X)
+    zPrev = vec2(abs(z.x), z.y);
+    #elif defined(MEM_ABS_Y)
+    zPrev = vec2(z.x, abs(z.y));
+    #elif defined(MEM_CONJUGATE)
+    zPrev = vec2(z.x, -z.y);
+    #elif defined(MEM_REVERSE)
+    zPrev = -z;
+    #elif defined(MEM_INVERT)
+    zPrev = z / (dot(z, z) + 1e-6);
+    #elif defined(MEM_SIN)
+    zPrev = complexSin(z);
+    #elif defined(MEM_COS)
+    zPrev = complexCos(z);
+    #elif defined(MEM_TAN)
+    zPrev = complexTan(z);
+    #elif defined(MEM_EXP)
+    zPrev = complexExp(z);
+    #elif defined(MEM_RECIPROCAL)
+    zPrev = complexDiv(vec2(1.0, 0.0), z + 1e-6);
+    #elif defined(MEM_POW3)
+    zPrev = complexPower(z, vec2(3.0, 0.0));
+    #elif defined(MEM_FOLD)
+    zPrev = z;
+    if (zPrev.x > 1.0) zPrev.x = 2.0 - zPrev.x;
+    if (zPrev.x < -1.0) zPrev.x = -2.0 - zPrev.x;
+    if (zPrev.y > 1.0) zPrev.y = 2.0 - zPrev.y;
+    if (zPrev.y < -1.0) zPrev.y = -2.0 - zPrev.y;
+    #elif defined(MEM_SWIZZLE)
+    zPrev = vec2(z.y, z.x);
+    #else
+    zPrev = z;
+    #endif
+
     z = zNext;
 
     if (diff < tolerance) break;

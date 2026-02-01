@@ -30,7 +30,6 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
   let gl: WebGLRenderingContext;
   let animationFrameId: number;
 
-  const programs: Map<string, WebGLProgram> = new Map();
   let activeProgram: WebGLProgram;
   const uniformLocations: Record<string, WebGLUniformLocation | null> = {};
 

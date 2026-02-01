@@ -8,5 +8,3 @@ const fractalStore = useFractalStore();
     <span class="icon">🎲</span>
   </button>
 </template>
-
-<style scoped></style>

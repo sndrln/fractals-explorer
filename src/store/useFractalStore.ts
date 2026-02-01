@@ -45,10 +45,10 @@ export const useFractalStore = defineStore("fractal", {
       const { zoom, offsetShiftX, offsetShiftY, ...mathParams } =
         formula.defaults;
       const merged = { ...DEFAULT_FRACTAL_PARAMS, ...mathParams };
-      // TODO
-      // this.params.slider = { ...merged };
-      // this.params.initial = { ...merged };
-      // this.params.live = { ...merged };
+
+      this.params.slider = { ...merged };
+      this.params.initial = { ...merged };
+      this.params.live = { ...merged };
 
       if (zoom !== undefined) viewStore.zoom = zoom;
       if (offsetShiftX !== undefined) viewStore.offset.x = offsetShiftX;

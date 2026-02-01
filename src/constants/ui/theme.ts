@@ -12,8 +12,8 @@ export const UI_COLORS = {
 export type ColorKey = keyof typeof UI_COLORS;
 
 export const VAR_COLOR_MAP: Record<string, ColorKey> = {
-  seedX: "seed",
-  seedY: "seed",
+  seedR: "seed",
+  seedI: "seed",
   power: "power",
   powerI: "power",
   juliaMorph: "morph",

@@ -136,7 +136,7 @@ onUnmounted(() => {
   </span>
 </template>
 
-<style scoped>
+<style lang="scss" scoped>
 .slidable-number {
   cursor: ew-resize;
   font-weight: bold;
