@@ -16,7 +16,7 @@ const props = defineProps<{
 
 const fractalStore = useFractalStore();
 const inputStore = useInputStore();
-const emit = defineEmits(["update:modelValue"]);
+const emit = defineEmits(["update:modelValue", "change"]);
 const isDragging = ref(false);
 
 const tweenTarget = { val: props.modelValue };
@@ -34,13 +34,13 @@ let startX = 0;
 let startValue = 0;
 
 const currentValue = computed(() => {
-  const key = props.paramKey as keyof typeof fractalStore.params.live;
+  const key = props.paramKey;
   return fractalStore.params.live[key];
 });
 
 const handleClick = (e: MouseEvent) => {
   if (inputStore.activeAxis) {
-    inputStore.bindVariable(props.paramKey as keyof FractalParams);
+    inputStore.bindVariable(props.paramKey);
   } else {
     startDrag(e);
   }
@@ -113,6 +113,7 @@ const stopDrag = () => {
   document.removeEventListener("mousemove", onDrag);
   document.removeEventListener("mouseup", stopDrag);
   document.body.style.cursor = "default";
+  emit("change");
 };
 
 onUnmounted(() => {

@@ -1,7 +1,9 @@
+import type { FractalParams } from "../../types/fractal";
+
 export const UI_COLORS = {
   power: "#ffaa00",
   seed: "#55aaff",
-  morph: "#ff00aa",
+  juliaMorph: "#ff00aa",
   memory: "#00ffaa",
   iter: "#ffffff",
   default: "#646cff",
@@ -11,12 +13,14 @@ export const UI_COLORS = {
 
 export type ColorKey = keyof typeof UI_COLORS;
 
-export const VAR_COLOR_MAP: Record<string, string> = {
+export const VAR_COLOR_MAP: Record<keyof FractalParams, string> = {
   seedR: UI_COLORS.seed,
   seedI: UI_COLORS.seed,
   power: UI_COLORS.power,
   powerI: UI_COLORS.power,
-  juliaMorph: UI_COLORS.morph,
+  powerSecondary: UI_COLORS.power,
+  powerSecondaryI: UI_COLORS.power,
+  juliaMorph: UI_COLORS.juliaMorph,
   memoryR: UI_COLORS.memory,
   memoryI: UI_COLORS.memory,
   maxIterations: UI_COLORS.iter,

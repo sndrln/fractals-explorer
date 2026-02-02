@@ -25,7 +25,7 @@ const activeControls = computed<ControlGroup[]>(() => {
   const iterationGroup: ControlGroup = {
     label: "Iterations",
     colorKey: "iter",
-    sliders: [{ paramKey: "maxIterations" } as SliderSchema],
+    sliders: [{ paramKey: "maxIterations" }],
   };
 
   return [...groups, iterationGroup];
@@ -92,6 +92,7 @@ const isGroupBound = (group: ControlGroup) => {
               :color="getColor(group.colorKey)"
               :is-bound="!!inputStore.isParamBound(slider.paramKey)"
               v-bind="getSliderProps(slider)"
+              @change="fractalStore.updateAnchorParams()"
             />
 
             <span

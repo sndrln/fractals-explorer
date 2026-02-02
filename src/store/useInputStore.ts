@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import type { FractalParams } from "../types/fractal";
+import type { PointerBindings } from "../types/ui";
 
 export const useInputStore = defineStore("interaction", {
   state: () => ({
@@ -13,9 +14,9 @@ export const useInputStore = defineStore("interaction", {
     },
     activeAxis: null as "x" | "y" | null,
     bindings: {
-      x: ["seedR"] as (keyof FractalParams)[],
-      y: ["seedI"] as (keyof FractalParams)[],
-    },
+      x: ["seedR"],
+      y: ["seedI"],
+    } as PointerBindings,
     isPaused: false,
   }),
 

@@ -1,8 +1,9 @@
+import type { ColorKey } from "../constants/ui/theme";
 import type { FractalParams, FractalType } from "./fractal";
 
 export interface ControlGroup {
   label: string;
-  colorKey: string;
+  colorKey: ColorKey;
   sliders: SliderSchema[];
 }
 
@@ -13,6 +14,10 @@ export interface SliderSchema {
   max?: number;
   suffix?: string;
   showPlus?: boolean;
+}
+export interface PointerBindings {
+  x: Array<keyof FractalParams>;
+  y: Array<keyof FractalParams>;
 }
 
 export interface Palette {
@@ -29,15 +34,8 @@ export interface FormulaDefinition {
   shaderSource: string;
   displayString: string;
   customUI?: Array<ControlGroup>;
-  defaults: {
-    zoom?: number;
-    offsetShiftX?: number;
-    offsetShiftY?: number;
-    power?: number;
-    subtrahend?: number;
-    juliaMorph?: number;
-    memoryR?: number;
-    seedR?: number;
-    relaxation?: number;
-  };
+  zoom?: number;
+  offsetShiftX?: number;
+  offsetShiftY?: number;
+  defaults?: Partial<Record<keyof FractalParams, number>>;
 }

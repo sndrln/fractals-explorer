@@ -3,17 +3,22 @@ import gsap from "gsap";
 import { FORMULAS } from "../constants/formulas";
 import { DEFAULT_FRACTAL_PARAMS } from "../constants/base-fractal-params";
 import { useViewStore } from "./useViewStore";
-import type { FractalType, FractalParams } from "../types/fractal";
+import type { FractalType, FractalParams, MemoryMode } from "../types/fractal";
 
 export const useFractalStore = defineStore("fractal", {
   state: () => ({
     currentType: "escape" as FractalType,
     formulaId: "mandelbrot",
-    memoryMode: "NONE",
+    memoryMode: "NONE" as MemoryMode,
     params: {
-      slider: { ...DEFAULT_FRACTAL_PARAMS } as FractalParams, // What the UI shows
-      live: { ...DEFAULT_FRACTAL_PARAMS }, // What the Shader sees (smoothed)
-      initial: { ...DEFAULT_FRACTAL_PARAMS } as FractalParams, // Anchor for randomization
+      // For resetting sliders
+      initial: { ...DEFAULT_FRACTAL_PARAMS } as FractalParams,
+      // Changed parameters displayed in a slider
+      slider: { ...DEFAULT_FRACTAL_PARAMS } as FractalParams,
+      // Smoothed parameters for rendering
+      live: { ...DEFAULT_FRACTAL_PARAMS },
+      // Current state for randomization
+      anchor: { ...DEFAULT_FRACTAL_PARAMS } as FractalParams,
     },
   }),
 
@@ -23,7 +28,7 @@ export const useFractalStore = defineStore("fractal", {
   },
 
   actions: {
-    switchFractalType(fractalType?: FractalType) {
+    switchFractalType(fractalType?: FractalType): void {
       if (fractalType) {
         this.currentType = fractalType;
       }
@@ -34,7 +39,7 @@ export const useFractalStore = defineStore("fractal", {
         this.setFormula(firstFormula.id);
       }
     },
-    setFormula(id: string) {
+    setFormula(id: string): void {
       const formula = FORMULAS.find((f) => f.id === id);
       if (!formula) return;
 
@@ -42,31 +47,38 @@ export const useFractalStore = defineStore("fractal", {
       this.formulaId = id;
       this.currentType = formula.fractalType;
 
-      const { zoom, offsetShiftX, offsetShiftY, ...mathParams } =
-        formula.defaults;
-      const merged = { ...DEFAULT_FRACTAL_PARAMS, ...mathParams };
-
-      this.params.slider = { ...merged };
-      this.params.initial = { ...merged };
-      this.params.live = { ...merged };
-
-      if (zoom !== undefined) viewStore.zoom = zoom;
-      if (offsetShiftX !== undefined) viewStore.offset.x = offsetShiftX;
-      if (offsetShiftY !== undefined) viewStore.offset.y = offsetShiftY;
+      if (formula.zoom !== undefined) viewStore.zoom = formula.zoom;
+      if (formula.offsetShiftX !== undefined)
+        viewStore.offset.x = formula.offsetShiftX;
+      if (formula.offsetShiftY !== undefined)
+        viewStore.offset.y = formula.offsetShiftY;
     },
+    resetParams(): void {
+      const formula = FORMULAS.find((f) => f.id === this.formulaId);
+      const merged = { ...DEFAULT_FRACTAL_PARAMS, ...formula.defaults };
 
-    nextFormula() {
+      this.params.initial = { ...merged };
+      gsap.to(this.params.slider, {
+        ...merged,
+        duration: 1.5,
+        ease: "expo.out",
+        overwrite: true,
+      });
+    },
+    nextFormula(): void {
       const idx = FORMULAS.findIndex((f) => f.id === this.formulaId);
       this.setFormula(FORMULAS[(idx + 1) % FORMULAS.length].id);
     },
 
-    prevFormula() {
+    prevFormula(): void {
       const idx = FORMULAS.findIndex((f) => f.id === this.formulaId);
       this.setFormula(
         FORMULAS[(idx - 1 + FORMULAS.length) % FORMULAS.length].id,
       );
     },
-
+    updateAnchorParams(): void {
+      this.params.anchor = { ...this.params.slider };
+    },
     randomizeParams() {
       const targetValues: Partial<FractalParams> = {};
       const keys = Object.keys(this.params.slider) as (keyof FractalParams)[];
@@ -74,15 +86,16 @@ export const useFractalStore = defineStore("fractal", {
       keys.forEach((key) => {
         if (key === "juliaMorph" || key === "maxIterations") return;
 
-        const currentVal = this.params.initial[key] as number;
+        const baseVal = this.params.anchor[key] as number;
+
         const offset = Math.random() / 2 - 0.25;
-        targetValues[key] = currentVal + offset;
+        targetValues[key] = baseVal + offset;
       });
 
       gsap.to(this.params.slider, {
         ...targetValues,
-        duration: 1.5,
-        ease: "expo.out",
+        duration: 1.2,
+        ease: "power2.out",
         overwrite: true,
       });
     },

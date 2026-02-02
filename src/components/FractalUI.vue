@@ -8,6 +8,7 @@ import { FORMULAS } from "../constants/formulas";
 import FractalControls from "./fractal-controls/FractalControls.vue";
 import { useViewStore } from "../store/useViewStore";
 import MemoryMode from "./fractal-controls/MemoryMode.vue";
+import PresetGallery from "./fractal-controls/PresetGallery.vue";
 
 const fractalStore = useFractalStore();
 const viewStore = useViewStore();
@@ -57,11 +58,18 @@ const availableFormulas = computed(() => {
       <InputAxisBindings />
 
       <MemoryMode />
+
+      <PresetGallery />
       <div class="footer-actions">
         <PaletteSelector />
         <div class="button-row">
-          <button @click="viewStore.resetView" class="button-primary">⟲</button>
+          <button @click="viewStore.resetView" class="button-primary">
+            🔄
+          </button>
           <FractalRandomizer />
+          <button @click="fractalStore.resetParams" class="button-primary">
+            ⟲
+          </button>
         </div>
       </div>
     </div>

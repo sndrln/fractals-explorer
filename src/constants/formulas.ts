@@ -33,15 +33,9 @@ export const FORMULAS: FormulaDefinition[] = [
     //     sliders: [{ paramKey: "juliaMorph", min: 0, max: 5 }],
     //   },
     // ],
-    defaults: {
-      zoom: 2.5,
-      offsetShiftX: 0.0,
-      offsetShiftY: 0.0,
-      power: 2.0,
-      juliaMorph: 0.0,
-      seedR: 0.0,
-      memoryR: 0.0,
-    },
+    zoom: 2.5,
+    offsetShiftX: 0.0,
+    offsetShiftY: 0.0,
   },
   {
     id: "burning-ship",
@@ -49,12 +43,9 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "escape",
     displayString: "(|Re(z)| + i|Im(z)|)² + c",
     shaderSource: shipRaw,
-    defaults: {
-      zoom: 2.2,
-      offsetShiftX: 0.5,
-      offsetShiftY: 0.5,
-      power: 2.0,
-    },
+    zoom: 2.2,
+    offsetShiftX: 0.5,
+    offsetShiftY: 0.5,
   },
   {
     id: "tricorn",
@@ -62,7 +53,7 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "escape",
     displayString: "conj(z)² + c",
     shaderSource: tricornRaw,
-    defaults: { zoom: 3.0, offsetShiftX: 0.0, offsetShiftY: 0.0, power: 2.0 },
+    zoom: 3.0,
   },
   {
     id: "buffalo",
@@ -70,7 +61,8 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "escape",
     displayString: "|Re(z)² - Im(z)²| + c",
     shaderSource: buffaloRaw,
-    defaults: { zoom: 3.0, offsetShiftX: -0.3, offsetShiftY: 0.5, power: 2.0 },
+    zoom: 3.0,
+    offsetShiftX: -0.3,
   },
   {
     id: "celtic",
@@ -78,7 +70,8 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "escape",
     displayString: "|Re(z²)| + iIm(z²) + c",
     shaderSource: celticRaw,
-    defaults: { zoom: 3.2, offsetShiftX: -0.2, offsetShiftY: 0.0, power: 2.0 },
+    zoom: 3.2,
+    offsetShiftX: -0.2,
   },
   {
     id: "heart",
@@ -86,7 +79,7 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "escape",
     displayString: "(|Re(z)| + iIm(z))² + c",
     shaderSource: heartRaw,
-    defaults: { zoom: 2.5, offsetShiftX: 0.0, power: 2.0 },
+    zoom: 2.5,
   },
   {
     id: "magnet",
@@ -94,7 +87,7 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "escape",
     displayString: "((z²+c-1)/(2z+c-2))²",
     shaderSource: magnetRaw,
-    defaults: { zoom: 5.0, offsetShiftX: 0.0, offsetShiftY: 0.0, power: 2.0 },
+    zoom: 5.0,
   },
   {
     id: "lambda",
@@ -102,7 +95,9 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "escape",
     displayString: "c · z(1-z)",
     shaderSource: lambdaRaw,
-    defaults: { zoom: 4.0, offsetShiftX: 0.5, power: 1.0 },
+    zoom: 4.0,
+    offsetShiftX: 0.5,
+    defaults: { power: 1.0 },
   },
   {
     id: "spider",
@@ -110,7 +105,9 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "escape",
     displayString: "zₙ₊₁ = zₙ² + cₙ, cₙ₊₁ = cₙ/2 + zₙ",
     shaderSource: spiderRaw,
-    defaults: { zoom: 2.5, offsetShiftX: -1.0, power: 2.0, memoryR: 0.5 },
+    zoom: 2.5,
+    offsetShiftX: -1.0,
+    defaults: { memoryR: 0.5 },
   },
   {
     id: "inv-mandel",
@@ -118,7 +115,8 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "escape",
     displayString: "z² + 1/c",
     shaderSource: invMandelRaw,
-    defaults: { zoom: 4.5, offsetShiftX: 0.5, power: 2.0 },
+    zoom: 4.5,
+    offsetShiftX: 0.5,
   },
   {
     id: "inv-exp",
@@ -126,7 +124,8 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "escape",
     displayString: "1/z² + c",
     shaderSource: invExpRaw,
-    defaults: { zoom: 3.0, offsetShiftX: 0.5, power: 2.0 },
+    zoom: 3.0,
+    offsetShiftX: 0.5,
   },
 
   // Newton formulas
@@ -136,7 +135,8 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "newton",
     displayString: "zᴾ - 1 = 0",
     shaderSource: newtonStdRaw,
-    defaults: { zoom: 3.0, offsetShiftX: 0.0, power: 3.0 },
+    zoom: 3.0,
+    defaults: { power: 3.0 },
   },
   {
     id: "newton-sin",
@@ -144,7 +144,8 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "newton",
     displayString: "z - a·tan(z)",
     shaderSource: newtonSinRaw,
-    defaults: { zoom: 5.0, offsetShiftX: 0.0, power: 1.0, subtrahend: 0.0 },
+    zoom: 5.0,
+    defaults: { power: 1.0, subtrahend: 0.0 },
   },
   {
     id: "newton-exp",
@@ -152,12 +153,9 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "newton",
     displayString: "eᴾᶻ - c = 0",
     shaderSource: newtonExpRaw,
+    zoom: 4.0,
     defaults: {
-      zoom: 4.0,
-      offsetShiftX: 0.0,
-      power: 1.0,
-      subtrahend: 1.0,
-      relaxation: 1.0,
+      power: 1,
     },
   },
   {
@@ -166,12 +164,7 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "newton",
     displayString: "zᴾ · sin(z) - c = 0",
     shaderSource: newtonHybridRaw,
-    defaults: {
-      zoom: 5.0,
-      power: 2.0,
-      subtrahend: 1.0,
-      relaxation: 1.0,
-    },
+    zoom: 5.0,
   },
   {
     id: "nova-std",
@@ -179,13 +172,10 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "nova",
     displayString: "zₙ₊₁ = zₙ - a(zᴾ-s)/Pzᴾ⁻¹ + c",
     shaderSource: novaStdRaw,
+    zoom: 4.0,
     defaults: {
-      zoom: 4.0,
       power: 3.0,
       seedR: 1.0,
-      subtrahend: 1.0,
-      relaxation: 1.0,
-      juliaMorph: 0.0,
     },
   },
   {
@@ -194,13 +184,9 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "nova",
     displayString: "zₙ₊₁ = zₙ - α(sin(P·zₙ) - S) / (P·cos(P·zₙ)) + c",
     shaderSource: novaSinRaw,
+    zoom: 4.0,
     defaults: {
-      zoom: 4.0,
       power: 3.0,
-      seedR: 1.0,
-      subtrahend: 1.0,
-      relaxation: 1.0,
-      juliaMorph: 0.0,
     },
   },
   {
@@ -209,12 +195,9 @@ export const FORMULAS: FormulaDefinition[] = [
     fractalType: "nova",
     displayString: "zₙ₊₁ = zₙ - a(zᴾ sin z - s)/f' + c",
     shaderSource: novaHybridRaw,
+    zoom: 6.0,
     defaults: {
-      zoom: 6.0,
       power: 2.0,
-      subtrahend: 1.0,
-      relaxation: 1.0,
-      juliaMorph: 0.0,
     },
   },
 ];

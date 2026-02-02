@@ -14,6 +14,7 @@ import { FORMULAS } from "../constants/formulas";
 import { DEFAULT_FRACTAL_PARAMS } from "../constants/base-fractal-params";
 import { useInputStore } from "../store/useInputStore";
 import { useViewStore } from "../store/useViewStore";
+import type { FractalParams } from "../types/fractal";
 
 const shaderLibrary = {
   complex_math: complexMath,
@@ -139,34 +140,33 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     }
 
     gl.uniform2f(uniformLocations.resolution, w, h);
-    if (uniformLocations.zoom)
-      gl.uniform1f(uniformLocations.zoom, viewStore.zoom);
-    if (uniformLocations.offsetShiftX)
-      gl.uniform1f(uniformLocations.offsetShiftX, viewStore.offset.x);
-    if (uniformLocations.offsetShiftY)
-      gl.uniform1f(uniformLocations.offsetShiftY, viewStore.offset.y);
+    gl.uniform1f(uniformLocations.zoom, viewStore.zoom);
+    gl.uniform1f(uniformLocations.offsetShiftX, viewStore.offset.x);
+    gl.uniform1f(uniformLocations.offsetShiftY, viewStore.offset.y);
     gl.uniform1f(
       uniformLocations.maxIterations,
       fractalStore.params.slider.maxIterations,
     );
     gl.uniform1f(uniformLocations.time, performance.now() / 1000);
 
-    const keys = Object.keys(fractalStore.params.slider);
+    const keys = Object.keys(fractalStore.params.slider) as Array<
+      keyof FractalParams
+    >;
     keys.forEach((key) => {
       const loc = uniformLocations[key];
       if (!loc) return;
 
-      const baseVal = (fractalStore.params.slider as any)[key];
+      const baseVal = fractalStore.params.slider[key];
       const sens = key.toLowerCase().includes("power") ? 0.3 : 1.0;
 
       let liveVal = baseVal;
-      if (inputStore.bindings.x.includes(key as any))
+      if (inputStore.bindings.x.includes(key))
         liveVal += inputStore.mouse.smoothedX * sens;
-      if (inputStore.bindings.y.includes(key as any))
+      if (inputStore.bindings.y.includes(key))
         liveVal += inputStore.mouse.smoothedY * sens;
 
       gl.uniform1f(loc, liveVal);
-      (fractalStore.params.live as any)[key] = liveVal;
+      fractalStore.params.live[key] = liveVal;
     });
 
     const palette = paletteStore.selectedPalette;

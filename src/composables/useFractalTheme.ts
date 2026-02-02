@@ -1,15 +1,16 @@
 import { computed } from "vue";
 import { useFractalStore } from "../store/useFractalStore";
 import { type ColorKey, UI_COLORS, VAR_COLOR_MAP } from "../constants/ui/theme";
+import type { FractalParams } from "../types/fractal";
 
 export function useFractalTheme() {
   const fractalStore = useFractalStore();
 
-  const getColor = (key: ColorKey | string): string => {
-    return UI_COLORS[key as ColorKey] || UI_COLORS.default;
+  const getColor = (key: ColorKey): string => {
+    return UI_COLORS[key] || UI_COLORS.default;
   };
 
-  const getVarColor = (varName: string): string => {
+  const getVarColor = (varName: keyof FractalParams): string => {
     return VAR_COLOR_MAP[varName];
   };
 

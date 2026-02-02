@@ -4,7 +4,7 @@ export const BASE_CONTROL_GROUPS: Record<string, ControlGroup[]> = {
   escape: [
     {
       label: "Julia Morph",
-      colorKey: "morph",
+      colorKey: "juliaMorph",
       sliders: [{ paramKey: "juliaMorph" }],
     },
     {
