@@ -62,7 +62,6 @@ export const usePaletteStore = defineStore("palette", {
       };
 
       this.isRandom = true;
-      console.log(target);
       this.animateToPalette(target, 1.2);
     },
 

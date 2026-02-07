@@ -244,10 +244,11 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
         (key.toLowerCase().includes("power") ? 0.3 : 1.0) * input.intensity;
 
       let liveVal = baseVal;
-      if (input.bindings.x.includes(key))
+      if (input.bindings.x.includes(key)) {
         liveVal += input.mouse.smoothedX * sens;
-      if (input.bindings.y.includes(key))
+      } else if (input.bindings.y.includes(key)) {
         liveVal += input.mouse.smoothedY * sens;
+      }
 
       gl.uniform1f(loc, liveVal);
       fractal.params.live[key] = liveVal;

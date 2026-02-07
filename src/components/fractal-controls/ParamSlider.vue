@@ -73,28 +73,21 @@ const onDrag = (e: MouseEvent) => {
   const sensitivity = props.step || 0.01;
   const delta = (e.clientX - startX) * sensitivity * input.intensity;
 
-  // 1. Calculate the "raw" target value based on mouse movement
-  let targetVal = startValue + delta;
+  const rawVal = startValue + delta;
 
-  // 2. Sticky/Snap Logic
-  // This defines how "sticky" the round numbers are (e.g., 0.1 means
-  // it will stay at 1.00 while the raw value is between 0.90 and 1.10)
-  const snapThreshold = 0.1;
-  const nearestInt = Math.round(targetVal);
+  const nearestInt = Math.round(rawVal);
+  const distance = rawVal - nearestInt;
+  const gravityRadius = 0.15;
 
-  if (Math.abs(targetVal - nearestInt) < snapThreshold) {
-    targetVal = nearestInt;
+  let targetVal;
+
+  if (Math.abs(distance) < gravityRadius && !e.shiftKey) {
+    const strength = Math.pow(Math.abs(distance) / gravityRadius, 2);
+    targetVal = nearestInt + distance * strength;
   } else {
-    // Optional: Smooth the transition out of the snap zone
-    // If you want it to feel less "jumpy" when it breaks free,
-    // you could subtract the threshold, but usually, a clean break feels better.
-    targetVal =
-      targetVal > nearestInt
-        ? targetVal - snapThreshold + 0.01 // Adjusting to prevent jumping back immediately
-        : targetVal + snapThreshold - 0.01;
+    targetVal = rawVal;
   }
 
-  // 3. Clamp to boundaries
   if (props.min !== undefined) targetVal = Math.max(props.min, targetVal);
   if (props.max !== undefined) targetVal = Math.min(props.max, targetVal);
 

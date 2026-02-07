@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import type { FractalParams } from "../types/fractal";
 import type { PointerBindings } from "../types/ui";
+import { useFractalStore } from "./useFractalStore";
 
 export const useInputStore = defineStore("interaction", {
   state: () => ({
@@ -53,14 +54,28 @@ export const useInputStore = defineStore("interaction", {
 
       this.bindings[this.activeAxis].push(paramKey);
     },
+    commitLiveValues(keys: (keyof FractalParams)[]) {
+      const fractal = useFractalStore();
+      keys.forEach((key) => {
+        if (fractal.params.live[key] !== undefined) {
+          fractal.params.slider[key] = fractal.params.live[key];
+        }
+      });
+    },
 
     unbindVariable(paramKey: keyof FractalParams, axis: "x" | "y") {
+      if (this.isPaused) {
+        this.commitLiveValues([paramKey]);
+      }
       this.bindings[axis] = this.bindings[axis].filter(
         (v) => v !== paramKey,
       ) as (keyof FractalParams)[];
     },
 
     unbindAll() {
+      if (this.isPaused) {
+        this.commitLiveValues([...this.bindings.x, ...this.bindings.y]);
+      }
       this.bindings.x = [];
       this.bindings.y = [];
     },
