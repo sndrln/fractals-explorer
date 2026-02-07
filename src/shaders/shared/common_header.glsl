@@ -25,6 +25,8 @@ uniform float juliaMorph;
 // uniform float hybridMorph;
 uniform float memoryR;
 uniform float memoryI;
+uniform float kleinianBox;
+uniform float kleinianSphere;
 
 // Palette Uniforms
 uniform vec3 brightness;

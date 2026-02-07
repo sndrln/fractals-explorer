@@ -24,8 +24,9 @@ vec3 get_kleinian_color(vec2 uv) {
   for (float i = 0.0; i < 1000.0; i++) {
     if (i >= maxIterations) break;
 
+    vec2 currentSeed = mix(coord, seed, juliaMorph);
     vec2 zOld = z;
-    vec2 zNext = fractalStep(z, seed, powerVec, zPrev);
+    vec2 zNext = fractalStep(z, currentSeed, powerVec, zPrev);
 
     // Apply Memory
     if (i > 0.0) {

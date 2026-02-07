@@ -120,14 +120,15 @@ const availableFormulas = computed(() => {
 
 #ui {
   position: absolute;
-  top: 20px;
-  left: 20px;
+  top: 0;
+  left: 0;
   z-index: 10;
   background: rgba(10, 10, 10, 0.85);
-  padding: 20px;
-  border-radius: 12px;
+  padding: 12px;
   color: white;
   width: 370px;
+  height: 100%;
+  box-sizing: border-box;
   border: 1px solid rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(8px);
 }

@@ -122,56 +122,42 @@ export const BASE_CONTROL_GROUPS: Record<string, ControlGroup[]> = {
   ],
   kleinian: [
     {
-      label: "Group Generator A (q)",
+      label: "Seed A",
       colorKey: "seed",
-      sliders: [
-        { paramKey: "seedR" },
-        { paramKey: "seedI", suffix: "i", showPlus: true },
-      ],
+      sliders: [{ paramKey: "seedR" }, { paramKey: "seedI", suffix: "i" }],
     },
     {
-      label: "Group Generator B (p)",
+      label: "Seed B",
       colorKey: "subtrahend",
       sliders: [
         { paramKey: "subtrahend" },
-        { paramKey: "subtrahendI", suffix: "i", showPlus: true },
+        { paramKey: "subtrahendI", suffix: "i" },
       ],
     },
     {
-      label: "Inversion Radius (r)",
+      label: "Radius",
       colorKey: "relaxation",
-      sliders: [
-        { paramKey: "relaxation" },
-        { paramKey: "relaxationI", suffix: "i", showPlus: true },
-      ],
+      sliders: [{ paramKey: "relaxation" }, { paramKey: "kleinianSphere" }],
     },
     {
-      label: "Transformation Warp",
+      label: "Box Fold",
+      colorKey: "kleinian",
+      sliders: [{ paramKey: "kleinianBox", min: 0, max: 2 }],
+    },
+    {
+      label: "Warp",
       colorKey: "power",
-      sliders: [
-        { paramKey: "power" },
-        { paramKey: "powerI", suffix: "i", showPlus: true },
-      ],
+      sliders: [{ paramKey: "power" }, { paramKey: "powerI", suffix: "i" }],
     },
     {
-      label: "Iterative Drift",
+      label: "Memory",
       colorKey: "memory",
-      sliders: [
-        { paramKey: "memoryR" },
-        { paramKey: "memoryI", suffix: "i", showPlus: true },
-      ],
+      sliders: [{ paramKey: "memoryR" }, { paramKey: "memoryI", suffix: "i" }],
     },
     {
-      label: "Julia / Coord Mix",
+      label: "Seed Morph",
       colorKey: "juliaMorph",
-      sliders: [
-        {
-          paramKey: "juliaMorph",
-          min: 0.0,
-          max: 1.0,
-          step: 0.01,
-        },
-      ],
+      sliders: [{ paramKey: "juliaMorph", min: 0, max: 1 }],
     },
   ],
 };
