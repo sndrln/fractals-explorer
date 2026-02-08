@@ -16,6 +16,9 @@ export const useViewStore = defineStore("view", {
     toggleUi() {
       this.isUiVisible = !this.isUiVisible;
     },
+    openUi() {
+      this.isUiVisible = true;
+    },
 
     resetView() {
       gsap.to(this, {

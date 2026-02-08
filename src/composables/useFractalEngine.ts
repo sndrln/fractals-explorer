@@ -117,7 +117,7 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     if (!canvasRef.value) return;
     gl = canvasRef.value.getContext("webgl", { preserveDrawingBuffer: true })!;
     // setResolution(2560, 1600);
-    setResolution(1080, 1920);
+    // setResolution(1080, 1920);
 
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -148,18 +148,18 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
 
     const loopCount = 1;
     const angle = progress * Math.PI * 2.0 * loopCount;
-
-    fractal.params.slider.powerI = 0.5 + Math.sin(angle) * 0.5;
+    console.log(angle);
+    // fractal.params.slider.powerI = 0.5 + Math.sin(angle) * 0.5;
 
     // fractalStore.params.slider.memoryI = Math.cos(angle) * 0.25;
   };
 
-  const setResolution = (width: number, height: number) => {
-    const canvas = canvasRef.value!;
-    canvas.width = width;
-    canvas.height = height;
-    gl.viewport(0, 0, width, height);
-  };
+  // const setResolution = (width: number, height: number) => {
+  //   const canvas = canvasRef.value!;
+  //   canvas.width = width;
+  //   canvas.height = height;
+  //   gl.viewport(0, 0, width, height);
+  // };
 
   const startRecording = async (durationSeconds = 15) => {
     if (isRecording) return;
@@ -224,7 +224,7 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
 
     gl.uniform2f(uniformLocations.resolution, w, h);
     gl.uniform1f(uniformLocations.zoom, view.zoom);
-    gl.uniform1f(uniformLocations.offsetShiftX, view.offset.x);
+    gl.uniform1f(uniformLocations.offsetShiftX, view.offset.x + 0.4);
     gl.uniform1f(uniformLocations.offsetShiftY, view.offset.y);
     gl.uniform1f(
       uniformLocations.maxIterations,
@@ -275,7 +275,7 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
 
   onMounted(() => {
     init();
-    fractal.switchFractalType("escape");
+    fractal.setFormula("mandelbrot");
   });
   onUnmounted(() => {
     if (animationFrameId) cancelAnimationFrame(animationFrameId);

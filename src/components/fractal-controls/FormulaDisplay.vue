@@ -197,17 +197,12 @@ const currentFormulaId = computed(() => fractal.formulaId);
 
 <style lang="scss" scoped>
 #formula-display {
-  background: rgba(0, 0, 0, 0.4);
-  padding: 20px;
   text-align: center;
   font-family: "Times New Roman", serif;
   font-style: italic;
   font-size: 24px;
   border-radius: 8px;
-  margin-bottom: 10px;
-  border: 1px solid rgba(255, 255, 255, 0.1);
   user-select: none;
-  min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: center;

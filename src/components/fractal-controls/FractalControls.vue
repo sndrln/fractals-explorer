@@ -3,7 +3,6 @@ import { computed } from "vue";
 import { useFractalStore } from "../../store/useFractalStore";
 import { useInputStore } from "../../store/useInputStore";
 import { useFractalTheme } from "../../composables/useFractalTheme";
-import FormulaDisplay from "./FormulaDisplay.vue";
 
 import { BASE_CONTROL_GROUPS } from "../../constants/ui/base-control-groups";
 import { FORMULAS } from "../../constants/formulas";
@@ -59,8 +58,6 @@ const isGroupBound = (group: ControlGroup) => {
 
 <template>
   <div class="fractal-controls">
-    <FormulaDisplay />
-
     <div class="controls-wrapper">
       <div
         v-for="group in activeControls"

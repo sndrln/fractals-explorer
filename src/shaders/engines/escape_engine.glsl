@@ -29,7 +29,6 @@ vec3 get_fractal_color(vec2 uv) {
     vec2 zNext = fractalStep(z, c, powerVec, zPrev);
     // c = complexMul(c, getMemoryTransform(memFactor)) + zNext;
 
-    z = zNext;
     // Apply Memory
     if (i > 0.0) {
       zNext += complexMul(getMemoryTransform(zPrev), memFactor);

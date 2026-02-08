@@ -48,6 +48,7 @@ const cancelSave = () => {
 
 <template>
   <div class="preset-manager">
+    <label class="control-label">Preset</label>
     <div class="manager-row">
       <div class="main-area">
         <div class="dropdown-wrapper" :class="{ 'is-hidden': isSaving }">
@@ -74,7 +75,7 @@ const cancelSave = () => {
                   <span class="preset-meta">{{ preset.formulaId }}</span>
                 </div>
                 <button
-                  class="delete-btn"
+                  class="button-delete"
                   @click.stop="(e) => confirmDelete(e, index)"
                 >
                   ×
@@ -85,19 +86,31 @@ const cancelSave = () => {
         </div>
 
         <Transition name="fade">
-          <div v-if="isSaving" class="inline-save-overlay">
-            <input
-              ref="saveInputRef"
-              v-model="newPresetName"
-              @keyup.enter="confirmSave"
-              @keyup.esc="cancelSave"
-              type="text"
-              placeholder="Preset Name..."
-              autocomplete="off"
-            />
-            <div class="actions">
-              <button class="action-btn confirm" @click="confirmSave">✓</button>
-              <button class="action-btn cancel" @click="cancelSave">×</button>
+          <div>
+            <div v-if="isSaving" class="inline-save-overlay">
+              <input
+                ref="saveInputRef"
+                v-model="newPresetName"
+                @keyup.enter="confirmSave"
+                @keyup.esc="cancelSave"
+                type="text"
+                placeholder="Preset Name..."
+                autocomplete="off"
+              />
+              <div class="actions">
+                <button
+                  class="button-primary button-confirm"
+                  @click="confirmSave"
+                >
+                  ✓
+                </button>
+                <button
+                  class="button-primary button-cancel"
+                  @click="cancelSave"
+                >
+                  ×
+                </button>
+              </div>
             </div>
           </div>
         </Transition>
@@ -105,7 +118,7 @@ const cancelSave = () => {
 
       <button
         v-if="!isSaving"
-        class="save-trigger-btn"
+        class="button-primary button-save"
         @click="startSaving"
         title="Save Preset"
       >
@@ -118,14 +131,13 @@ const cancelSave = () => {
 <style lang="scss" scoped>
 .preset-manager {
   width: 100%;
-  margin-bottom: 10px;
   --accent-color: #4caf50;
 }
 
 .manager-row {
   display: flex;
   gap: 8px;
-  height: 40px;
+  margin-top: 8px;
   position: relative;
 }
 
@@ -135,10 +147,17 @@ const cancelSave = () => {
   height: 100%;
 }
 
+.control-label {
+  font-size: 0.75rem;
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  color: #888;
+}
+
 /* 1. DROP-DOWN STYLES */
 .dropdown-wrapper {
   width: 100%;
-  height: 100%;
+  height: 32px;
   transition: opacity 0.2s;
 
   &.is-hidden {
@@ -149,8 +168,7 @@ const cancelSave = () => {
 
 .select-header {
   height: 100%;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: #1a1a1a;
   border-radius: 6px;
   padding: 0 12px;
   display: flex;
@@ -158,9 +176,6 @@ const cancelSave = () => {
   justify-content: space-between;
   cursor: pointer;
 
-  &:hover {
-    background: rgba(255, 255, 255, 0.1);
-  }
   &.open {
     border-color: var(--accent-color);
   }
@@ -186,71 +201,42 @@ const cancelSave = () => {
   z-index: 10;
   display: flex;
   align-items: center;
-  padding-left: 12px;
-  padding-right: 4px;
   box-sizing: border-box;
-  background: #1a1a1a;
-  border: 1px solid var(--accent-color);
-  border-radius: 6px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
 
   input {
     flex: 1;
-    background: transparent;
+    background: #1a1a1a;
     border: none;
     color: white;
     outline: none;
     font-size: 0.9rem;
-    padding-right: 8px;
+    padding: 0 8px;
+    margin-right: 8px;
+    height: 32px;
+    width: 100%;
   }
 
   .actions {
     display: flex;
-    gap: 4px;
+    gap: 8px;
   }
 }
 
-/* 3. BUTTON STYLES */
-.save-trigger-btn {
-  width: 44px;
-  height: 40px;
+.button-save {
+  background: var(--accent-color);
+}
+
+.button-cancel {
+  background: rgba(255, 85, 85, 0.15);
+  color: #ff5555;
+  &:hover {
+    background: rgba(255, 85, 85, 0.3);
+  }
+}
+
+.button-confirm {
   background: var(--accent-color);
   color: white;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.1rem;
-  &:hover {
-    filter: brightness(1.1);
-  }
-}
-
-.action-btn {
-  width: 32px;
-  height: 32px;
-  border-radius: 4px;
-  border: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1rem;
-
-  &.confirm {
-    background: var(--accent-color);
-    color: white;
-  }
-  &.cancel {
-    background: rgba(255, 85, 85, 0.15);
-    color: #ff5555;
-    &:hover {
-      background: rgba(255, 85, 85, 0.3);
-    }
-  }
 }
 
 /* 4. DROPDOWN LIST STYLES */
@@ -299,7 +285,7 @@ const cancelSave = () => {
   }
 }
 
-.delete-btn {
+.button-delete {
   background: none;
   border: none;
   color: #ff5555;

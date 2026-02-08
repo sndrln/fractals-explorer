@@ -26,7 +26,7 @@ export const usePresetStore = defineStore("presets", () => {
     if (currentPresetIndex.value === -1 || savedPresets.value.length === 0) {
       return "Presets";
     }
-    return savedPresets.value[currentPresetIndex.value]?.label || "Presets";
+    return savedPresets.value[currentPresetIndex.value]?.label || "None";
   });
 
   watch(
@@ -41,8 +41,8 @@ export const usePresetStore = defineStore("presets", () => {
     if (index !== undefined) currentPresetIndex.value = index;
 
     fractal.formulaId = preset.formulaId;
-    memory.currentMode = preset.memoryMode;
-    coloring.currentMode = preset.coloringMode;
+    memory.currentMode = preset.memoryMode || "NONE";
+    coloring.currentMode = preset.coloringMode || "DEFAULT";
     fractal.params.slider = { ...preset.fractalParams };
     fractal.updateAnchorParams();
 
@@ -76,6 +76,8 @@ export const usePresetStore = defineStore("presets", () => {
   }
 
   function saveCurrentAsPreset(label: string) {
+    // TODO
+    delete (fractal.params.slider as any)._gsap;
     const newPreset: Preset = {
       label,
       fractalType: fractal.currentType,

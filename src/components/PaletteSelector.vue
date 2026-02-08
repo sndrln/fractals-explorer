@@ -73,13 +73,12 @@ const isDropdownExpanded = ref(false);
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 10px 0;
 }
 
 .dropdown-trigger {
   width: 100%;
   height: 32px;
-  background: rgba(255, 255, 255, 0.05);
+  background: #1a1a1a;
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   display: flex;

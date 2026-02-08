@@ -28,17 +28,6 @@ export const useFractalStore = defineStore("fractal", {
   },
 
   actions: {
-    switchFractalType(fractalType?: FractalType): void {
-      if (fractalType) {
-        this.currentType = fractalType;
-      }
-      const firstFormula = FORMULAS.find(
-        (f) => f.fractalType === this.currentType,
-      );
-      if (firstFormula) {
-        this.setFormula(firstFormula.id);
-      }
-    },
     setFormula(id: string): void {
       const formula = FORMULAS.find((f) => f.id === id);
       if (!formula) return;
@@ -52,6 +41,7 @@ export const useFractalStore = defineStore("fractal", {
         view.offset.x = formula.offsetShiftX;
       if (formula.offsetShiftY !== undefined)
         view.offset.y = formula.offsetShiftY;
+      this.resetParams();
     },
     resetParams(): void {
       const formula = FORMULAS.find((f) => f.id === this.formulaId);

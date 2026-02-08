@@ -34,7 +34,7 @@ const handleModeChange = (event: Event) => {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 10px 0;
+  margin-top: 10px;
 }
 .control-label {
   font-size: 0.75rem;

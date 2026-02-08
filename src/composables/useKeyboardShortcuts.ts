@@ -52,6 +52,9 @@ export function useKeyboardShortcuts() {
       case "KeyW":
         view.resetView();
         break;
+      case "KeyX":
+        fractal.resetParams();
+        break;
       case "Backquote":
         view.toggleUi();
         break;
@@ -78,22 +81,9 @@ export function useKeyboardShortcuts() {
         const canvas = document.querySelector("canvas");
         if (canvas) {
           captureThumbnail(canvas, 0.1).then((thumb) => {
-            downloadImage(thumb, `fractal_${fractal.formulaId}.webp`);
+            downloadImage(thumb, `${fractal.formulaId}.webp`);
           });
         }
-        break;
-
-      case "Digit1":
-        fractal.switchFractalType("escape");
-        break;
-      case "Digit2":
-        fractal.switchFractalType("newton");
-        break;
-      case "Digit3":
-        fractal.switchFractalType("nova");
-        break;
-      case "Digit4":
-        fractal.switchFractalType("kleinian");
         break;
     }
   };
