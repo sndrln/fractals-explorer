@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import FractalUI from "./components/FractalUI.vue";
 import { useFractalEngine } from "./composables/useFractalEngine";
@@ -15,9 +15,6 @@ const input = useInputStore();
 const engine = useFractalEngine(canvasRef);
 useKeyboardShortcuts();
 useMouseInteraction(canvasRef);
-const handleRecordRequest = () => {
-  engine.startRecording(15);
-};
 
 const route = useRoute();
 const router = useRouter();
@@ -53,6 +50,12 @@ watch(
     }
   },
 );
+
+onMounted(() => {
+  // 2. Now that the component is mounted, canvasRef.value is the real DOM element.
+  // We trigger the init manually.
+  useFractalEngine(canvasRef);
+});
 </script>
 
 <template>
@@ -63,7 +66,7 @@ watch(
       'selecting-y': input.activeAxis === 'y',
     }"
   >
-    <FractalUI @trigger-record="handleRecordRequest" />
+    <FractalUI />
     <canvas ref="canvasRef"></canvas>
   </div>
 </template>
@@ -100,11 +103,11 @@ watch(
 }
 
 canvas {
-  // flex-grow: 1;
-  // height: 100%;
-  margin: 0px auto;
-  // position: relative;
-  // left: 50px;
+  width: 100%; /* Fill the parent width */
+  height: 100%; /* Fill the parent height */
+  display: block;
+  margin: 0 auto;
+  object-fit: contain; /* Keeps the fractal's shape if you use fixed aspect ratios */
 }
 
 hr {

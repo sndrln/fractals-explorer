@@ -70,7 +70,7 @@ vec3 get_fractal_color(vec2 uv) {
   return get_palette(colorValue);
 }
 
-void run_escape_engine() {
+void run_escape_core() {
   vec2 uv =
     (gl_FragCoord.xy - 0.5 * resolution.xy) / min(resolution.y, resolution.x);
 

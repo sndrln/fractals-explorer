@@ -65,7 +65,7 @@ vec3 get_newton_color(vec2 uv) {
   return get_palette(colorValue);
 }
 
-void run_newton_engine() {
+void run_newton_core() {
   vec2 uv =
     (gl_FragCoord.xy - 0.5 * resolution.xy) / min(resolution.y, resolution.x);
   gl_FragColor = vec4(get_newton_color(uv), 1.0);

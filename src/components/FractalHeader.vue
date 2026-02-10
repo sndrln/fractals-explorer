@@ -43,12 +43,11 @@ const currentFormulaName = computed(() => {
       @click="ui.toggleNav"
       :class="{ 'is-active': ui.isNavOpen }"
     >
-      <span class="formula-display-name" :style="{ color: currentTypeColor }">
+      <div class="formula-display-name" :style="{ color: currentTypeColor }">
         {{ currentFormulaName }}
-      </span>
-
-      <div class="chevron-wrapper" :class="{ 'is-flipped': ui.isNavOpen }">
-        <IconMinimize class="chevron-icon" />
+        <div class="chevron-wrapper" :class="{ 'is-flipped': ui.isNavOpen }">
+          <IconMinimize class="chevron-icon" />
+        </div>
       </div>
     </div>
 
@@ -125,6 +124,10 @@ const currentFormulaName = computed(() => {
 }
 
 .formula-display-name {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding-left: 28px;
   font-size: 16px; /* Bigger, since we have space now */
   transition: color 0.3s ease;
   /* Prevent text jumping if names are long */

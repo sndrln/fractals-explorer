@@ -8,6 +8,8 @@ import { FORMULAS } from "../../constants/formulas";
 import { BASE_CONTROL_GROUPS } from "../../constants/ui/base-control-groups";
 import { BASE_SLIDER_CONSTRAINTS } from "../../constants/ui/base-slider-constraints";
 import type { ControlGroup, SliderSchema } from "../../types/ui";
+import IconRandom from "../icons/IconRandom.vue";
+import IconReset from "../icons/IconReset.vue";
 import ParamSlider from "./ParamSlider.vue";
 
 const fractal = useFractalStore();
@@ -48,7 +50,31 @@ const isGroupBound = (group: ControlGroup) => {
 </script>
 
 <template>
-  <div class="fractal-controls">
+  <div class="fractal-controls parameter-section">
+    <header class="section-toolbar">
+      <span class="section-title">Parameters</span>
+
+      <div class="toolbar-actions">
+        <div class="random-group">
+          <button
+            @click="fractal.randomizeParams"
+            class="button-primary icon-button"
+            title="Randomize (R)"
+          >
+            <IconRandom />
+          </button>
+        </div>
+
+        <button
+          @click="fractal.resetParams"
+          class="button-primary icon-button"
+          title="Reset to Defaults"
+        >
+          <IconReset />
+        </button>
+      </div>
+    </header>
+
     <div class="controls-wrapper">
       <div
         v-for="group in activeControls"
@@ -98,6 +124,49 @@ const isGroupBound = (group: ControlGroup) => {
 </template>
 
 <style lang="scss" scoped>
+.parameter-section {
+  background: var(--bg-surface);
+  border-radius: 12px;
+  border: 1px solid var(--border-subtle);
+  overflow: hidden;
+}
+
+.section-toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  background: rgba(255, 255, 255, 0.02);
+  border-bottom: 1px solid var(--border-subtle);
+
+  .section-title {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+  }
+}
+
+.toolbar-actions {
+  display: flex;
+  gap: 4px;
+}
+
+.icon-button {
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    color: var(--text-primary);
+    background: var(--border-subtle);
+  }
+}
 .fractal-controls {
   display: flex;
   flex-direction: column;

@@ -18,8 +18,8 @@ vec2 fractalStep(vec2 z, vec2 s, vec2 p, vec2 zPrev) {
   return -complexDiv(fz, dfz);
 }
 
-#include "nova_engine"
+#include "nova_core"
 
 void main() {
-  run_nova_engine();
+  run_nova_core();
 }

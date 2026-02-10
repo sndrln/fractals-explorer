@@ -25,8 +25,8 @@ vec2 fractalStep(vec2 z, vec2 c, vec2 p, vec2 zPrev) {
   return complexMul(z, p) + c + genB;
 }
 
-#include "kleinian_engine"
+#include "kleinian_core"
 
 void main() {
-  run_kleinian_engine();
+  run_kleinian_core();
 }

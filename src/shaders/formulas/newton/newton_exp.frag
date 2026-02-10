@@ -13,8 +13,8 @@ vec2 fractalStep(vec2 z, vec2 subtrahend, vec2 power, vec2 zPrev) {
   return -complexDiv(fz, dfz);
 }
 
-#include "newton_engine"
+#include "newton_core"
 
 void main() {
-  run_newton_engine();
+  run_newton_core();
 }

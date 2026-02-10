@@ -64,7 +64,7 @@ vec3 get_nova_color(vec2 uv) {
   return get_palette(colorValue);
 }
 
-void run_nova_engine() {
+void run_nova_core() {
   vec2 uv =
     (gl_FragCoord.xy - 0.5 * resolution.xy) / min(resolution.y, resolution.x);
   gl_FragColor = vec4(get_nova_color(uv), 1.0);

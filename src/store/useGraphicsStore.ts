@@ -7,17 +7,15 @@ export interface ResolutionConfig {
   label: string;
   width?: number;
   height?: number;
-  scale: number; // For downsampling/supersampling native res
+  scale: number;
 }
 
 export const useGraphicsStore = defineStore("graphics", () => {
-  // 1. STATE
   const qualityLevel = ref<QualityLevel>("medium");
   const fpsCap = ref(60);
   const useSSAA = ref(false);
   const resolutionPreset = ref("native");
 
-  // Presets mapping
   const QUALITY_PRESETS: Record<Exclude<QualityLevel, "custom">, any> = {
     low: { useSSAA: false, fpsCap: 30, iterLimit: 250, scale: 0.5 },
     medium: { useSSAA: false, fpsCap: 60, iterLimit: 800, scale: 1.0 },
@@ -43,11 +41,7 @@ export const useGraphicsStore = defineStore("graphics", () => {
     },
   };
 
-  // 2. GETTERS
-  const currentIterationLimit = computed(() => {
-    if (qualityLevel.value === "custom") return 10000; // Unlocked
-    return QUALITY_PRESETS[qualityLevel.value].iterLimit;
-  });
+  const isManual = computed(() => resolutionPreset.value !== "native");
 
   const activeResolution = computed(
     () => RESOLUTION_MODES[resolutionPreset.value],
@@ -58,7 +52,11 @@ export const useGraphicsStore = defineStore("graphics", () => {
     return QUALITY_PRESETS[qualityLevel.value].scale;
   });
 
-  // 3. ACTIONS
+  const currentIterationLimit = computed(() => {
+    if (qualityLevel.value === "custom") return 10000;
+    return QUALITY_PRESETS[qualityLevel.value].iterLimit;
+  });
+
   function setQuality(level: QualityLevel) {
     qualityLevel.value = level;
     if (level !== "custom") {
@@ -70,7 +68,7 @@ export const useGraphicsStore = defineStore("graphics", () => {
 
   function toggleSSAA() {
     useSSAA.value = !useSSAA.value;
-    qualityLevel.value = "custom"; // Manual tweak puts us in custom
+    qualityLevel.value = "custom";
   }
 
   return {
@@ -79,6 +77,7 @@ export const useGraphicsStore = defineStore("graphics", () => {
     useSSAA,
     resolutionPreset,
     RESOLUTION_MODES,
+    isManual,
     currentIterationLimit,
     activeResolution,
     internalScale,

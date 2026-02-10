@@ -59,7 +59,7 @@ vec3 get_kleinian_color(vec2 uv) {
   return get_palette(fract(colorValue));
 }
 
-void run_kleinian_engine() {
+void run_kleinian_core() {
   vec2 uv =
     (gl_FragCoord.xy - 0.5 * resolution.xy) / min(resolution.y, resolution.x);
   gl_FragColor = vec4(get_kleinian_color(uv), 1.0);

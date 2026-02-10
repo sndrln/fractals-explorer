@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { useFractalEngine } from "../composables/useFractalEngine";
 import { useGraphicsStore, type QualityLevel } from "../store/useGraphicsStore";
 
 const graphics = useGraphicsStore();
+const fractalEngine = useFractalEngine();
 const qualityLevels: QualityLevel[] = ["low", "medium", "high", "ultra"];
 </script>
 
@@ -66,6 +68,14 @@ const qualityLevels: QualityLevel[] = ["low", "medium", "high", "ultra"];
         </select>
       </div>
     </div>
+
+    <button
+      @click="fractalEngine.startRecording(15)"
+      class="button-primary button-record"
+      title="Record"
+    >
+      ◯
+    </button>
   </div>
 </template>
 
@@ -210,6 +220,14 @@ const qualityLevels: QualityLevel[] = ["low", "medium", "high", "ultra"];
 
   option {
     background: var(--bg-surface);
+  }
+}
+
+.button-record {
+  color: var(--color-danger);
+
+  &:hover {
+    border-color: var(--color-danger);
   }
 }
 </style>

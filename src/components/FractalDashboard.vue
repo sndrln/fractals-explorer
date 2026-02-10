@@ -9,7 +9,6 @@ import FormulaDisplay from "./fractal-controls/FormulaDisplay.vue";
 import FractalControls from "./fractal-controls/FractalControls.vue";
 import MemoryMode from "./fractal-controls/MemoryMode.vue";
 import PresetGallery from "./fractal-controls/PresetGallery.vue";
-import FractalRandomizer from "./FractalRandomizer.vue";
 import InputAxisBindings from "./InputAxisBindings.vue";
 import PaletteSelector from "./PaletteSelector.vue";
 
@@ -17,8 +16,6 @@ const fractal = useFractalStore();
 const view = useViewStore();
 const input = useInputStore();
 const graphics = useGraphicsStore();
-
-const emit = defineEmits(["trigger-record"]);
 </script>
 
 <template>
@@ -32,7 +29,12 @@ const emit = defineEmits(["trigger-record"]);
     <div class="slider-row">
       <div class="slider-container">
         <span class="slider-label">Sensitivity</span>
-        <BaseSlider v-model="input.sensitivity" :min="0" :max="2" />
+        <BaseSlider
+          v-model="input.sensitivity"
+          :min="0"
+          :max="2"
+          default-value="1"
+        />
       </div>
       <div class="slider-container">
         <span class="slider-label">Zoom</span>
@@ -44,6 +46,7 @@ const emit = defineEmits(["trigger-record"]);
           v-model="fractal.params.slider.maxIterations"
           :min="10"
           :step="1"
+          default-value="100"
           :max="graphics.currentIterationLimit"
         />
       </div>
@@ -60,25 +63,7 @@ const emit = defineEmits(["trigger-record"]);
 
       <PaletteSelector />
 
-      <div class="action-row">
-        <FractalRandomizer class="randomizer-wrapper" />
-
-        <button
-          @click="fractal.resetParams"
-          class="button-primary"
-          title="Reset"
-        >
-          ⟲
-        </button>
-
-        <button
-          @click="$emit('trigger-record')"
-          class="button-primary button-record-variant"
-          title="Record"
-        >
-          ◯
-        </button>
-      </div>
+      <div class="action-row"></div>
     </section>
   </div>
 </template>
@@ -99,8 +84,8 @@ const emit = defineEmits(["trigger-record"]);
 
 .slider-row {
   display: flex;
-  flex-direction: row; /* Side by side */
-  gap: 16px; /* Increased gap for visual breathing room */
+  flex-direction: row;
+  gap: 16px;
   width: 100%;
 }
 
@@ -127,17 +112,5 @@ const emit = defineEmits(["trigger-record"]);
   align-items: center;
   gap: 8px;
   height: 32px;
-}
-.randomizer-wrapper {
-  flex: 1;
-  display: flex;
-}
-
-.button-record-variant {
-  color: var(--color-danger);
-
-  &:hover {
-    border-color: var(--color-danger);
-  }
 }
 </style>
