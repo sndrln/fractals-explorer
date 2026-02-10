@@ -15,7 +15,7 @@ export interface Preset {
   coloringMode: ColoringMode;
   fractalParams: FractalParams;
   bindings: PointerBindings;
-  intensity: number;
+  sensitivity: number;
   zoom: number;
   offset: { x: number; y: number };
   palette: Palette;

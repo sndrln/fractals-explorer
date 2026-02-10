@@ -1,11 +1,11 @@
-import { defineStore } from "pinia";
 import gsap from "gsap";
-import { FORMULAS } from "../constants/formulas";
+import { defineStore } from "pinia";
 import { DEFAULT_FRACTAL_PARAMS } from "../constants/base-fractal-params";
-import { useViewStore } from "./useViewStore";
-import type { FractalType, FractalParams } from "../types/fractal";
+import { FORMULAS } from "../constants/formulas";
+import type { FractalParams, FractalType } from "../types/fractal";
 import { useInputStore } from "./useInputStore";
 import { usePresetStore } from "./usePresetStore";
+import { useViewStore } from "./useViewStore";
 
 export const useFractalStore = defineStore("fractal", {
   state: () => ({
@@ -86,7 +86,7 @@ export const useFractalStore = defineStore("fractal", {
 
         const baseVal = this.params.anchor[key] as number;
 
-        const offset = (Math.random() - 0.5) * input.intensity;
+        const offset = (Math.random() - 0.5) * input.sensitivity;
         targetValues[key] = baseVal + offset;
       });
 

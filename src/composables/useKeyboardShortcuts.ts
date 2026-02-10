@@ -7,12 +7,14 @@ import { useColoringStore } from "../store/useColoringStore";
 import { useMemoryStore } from "../store/useMemoryStore";
 import { captureThumbnail, downloadImage } from "../utils/screenshot";
 import { usePresetStore } from "../store/usePresetStore";
+import { useUIStore } from "../store/useUIstore";
 
 export function useKeyboardShortcuts() {
   const fractal = useFractalStore();
   const palette = usePaletteStore();
   const input = useInputStore();
   const view = useViewStore();
+  const ui = useUIStore();
   const coloring = useColoringStore();
   const memory = useMemoryStore();
   const preset = usePresetStore();
@@ -56,7 +58,10 @@ export function useKeyboardShortcuts() {
         fractal.resetParams();
         break;
       case "Backquote":
-        view.toggleUi();
+        ui.toggleUi();
+        break;
+      case "KeyH":
+        ui.toggleSettings();
         break;
       case "KeyR":
         fractal.randomizeParams();

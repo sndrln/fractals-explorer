@@ -10,7 +10,6 @@ export const BASE_SLIDER_CONSTRAINTS: Record<
   seedI: { min: -2, max: 2, step: 0.01 },
   memoryR: { min: -2, max: 2, step: 0.01 },
   memoryI: { min: -2, max: 2, step: 0.01 },
-  maxIterations: { min: 1, max: 1000, step: 1 },
   relaxation: { min: -2, max: 2, step: 0.01 },
   relaxationI: { min: -2, max: 2, step: 0.01 },
   subtrahend: { min: -2, max: 2, step: 0.01 },

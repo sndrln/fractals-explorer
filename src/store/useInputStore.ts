@@ -13,7 +13,7 @@ export const useInputStore = defineStore("interaction", {
       smoothedX: 0,
       smoothedY: 0,
     },
-    intensity: 1.0,
+    sensitivity: 1.0,
     activeAxis: null as "x" | "y" | null,
     bindings: {
       x: ["seedR"],
@@ -33,8 +33,8 @@ export const useInputStore = defineStore("interaction", {
       }
     },
 
-    setIntensity(val: number) {
-      this.intensity = val;
+    setSensitivity(val: number) {
+      this.sensitivity = val;
     },
 
     tickSmoothing() {

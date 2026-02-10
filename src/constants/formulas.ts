@@ -1,22 +1,22 @@
-import mandelRaw from "../shaders/formulas/escape/mandelbrot.frag?raw";
-import magnetRaw from "../shaders/formulas/escape/magnet.frag?raw";
-import shipRaw from "../shaders/formulas/escape/burning_ship.frag?raw";
-import tricornRaw from "../shaders/formulas/escape/tricorn.frag?raw";
 import buffaloRaw from "../shaders/formulas/escape/buffalo.frag?raw";
+import shipRaw from "../shaders/formulas/escape/burning_ship.frag?raw";
 import celticRaw from "../shaders/formulas/escape/celtic.frag?raw";
+import heartRaw from "../shaders/formulas/escape/heart.frag?raw";
 import invExpRaw from "../shaders/formulas/escape/inv_exp.frag?raw";
 import invMandelRaw from "../shaders/formulas/escape/inv_mandel.frag?raw";
-import spiderRaw from "../shaders/formulas/escape/spider.frag?raw";
-import heartRaw from "../shaders/formulas/escape/heart.frag?raw";
 import lambdaRaw from "../shaders/formulas/escape/lambda.frag?raw";
-import newtonStdRaw from "../shaders/formulas/newton/newton_std.frag?raw";
-import newtonSinRaw from "../shaders/formulas/newton/newton_sin.frag?raw";
+import magnetRaw from "../shaders/formulas/escape/magnet.frag?raw";
+import mandelRaw from "../shaders/formulas/escape/mandelbrot.frag?raw";
+import spiderRaw from "../shaders/formulas/escape/spider.frag?raw";
+import tricornRaw from "../shaders/formulas/escape/tricorn.frag?raw";
+import kleinianRaw from "../shaders/formulas/kleinian/kleinian_basic.frag?raw";
 import newtonExpRaw from "../shaders/formulas/newton/newton_exp.frag?raw";
 import newtonHybridRaw from "../shaders/formulas/newton/newton_hybrid.frag?raw";
-import novaStdRaw from "../shaders/formulas/nova/nova_std.frag?raw";
-import novaSinRaw from "../shaders/formulas/nova/nova_sin.frag?raw";
+import newtonSinRaw from "../shaders/formulas/newton/newton_sin.frag?raw";
+import newtonStdRaw from "../shaders/formulas/newton/newton_std.frag?raw";
 import novaHybridRaw from "../shaders/formulas/nova/nova_hybrid.frag?raw";
-import kleinianRaw from "../shaders/formulas/kleinian/kleinian_basic.frag?raw";
+import novaSinRaw from "../shaders/formulas/nova/nova_sin.frag?raw";
+import novaStdRaw from "../shaders/formulas/nova/nova_std.frag?raw";
 import type { FormulaDefinition } from "../types/ui";
 
 export const FORMULAS: FormulaDefinition[] = [
@@ -115,7 +115,7 @@ export const FORMULAS: FormulaDefinition[] = [
     id: "spider",
     name: "Spider",
     fractalType: "escape",
-    displayString: "zₙ₊₁ = zₙ² + cₙ, cₙ₊₁ = cₙ/2 + zₙ",
+    displayString: "zₙ² + cₙ, cₙ₊₁ = cₙ/2 + zₙ",
     shaderSource: spiderRaw,
     zoom: 2.5,
     offsetShiftX: -1.0,
@@ -186,7 +186,7 @@ export const FORMULAS: FormulaDefinition[] = [
     id: "nova-std",
     name: "Nova Standard",
     fractalType: "nova",
-    displayString: "zₙ₊₁ = zₙ - a(zᴾ-s)/Pzᴾ⁻¹ + c",
+    displayString: "zₙ - a(zᴾ-s)/Pzᴾ⁻¹ + c",
     shaderSource: novaStdRaw,
     zoom: 2.0,
     offsetShiftX: -0.5,
@@ -199,7 +199,7 @@ export const FORMULAS: FormulaDefinition[] = [
     id: "nova-sin",
     name: "Nova Sine",
     fractalType: "nova",
-    displayString: "zₙ₊₁ = zₙ - α(sin(P·zₙ) - S) / (P·cos(P·zₙ)) + c",
+    displayString: "zₙ - α(sin(P·zₙ) - S) / (P·cos(P·zₙ)) + c",
     shaderSource: novaSinRaw,
     zoom: 1,
     offsetShiftX: -0.1,
@@ -212,7 +212,7 @@ export const FORMULAS: FormulaDefinition[] = [
     id: "nova-hybrid",
     name: "Nova Hybrid",
     fractalType: "nova",
-    displayString: "zₙ₊₁ = zₙ - a(zᴾ sin z - s)/f' + c",
+    displayString: "zₙ - a(zᴾ sin z - s)/f' + c",
     shaderSource: novaHybridRaw,
     offsetShiftX: -0.2,
     zoom: 2.0,

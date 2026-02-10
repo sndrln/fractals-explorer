@@ -1,24 +1,25 @@
 import { onMounted, onUnmounted, watch, type Ref } from "vue";
-import { useFractalStore } from "../store/useFractalStore";
 import vertSource from "../shaders/base.vert";
-import { usePaletteStore } from "../store/usePaletteStore";
-import complexMath from "../shaders/shared/complex_math.glsl?raw";
-import commonHeader from "../shaders/shared/common_header.glsl?raw";
-import memoryModes from "../shaders/shared/memory_modes.glsl?raw";
-import coloringModes from "../shaders/shared/coloring_modes.glsl?raw";
 import escapeEngine from "../shaders/engines/escape_engine.glsl?raw";
+import kleinianEngine from "../shaders/engines/kleinian_engine.glsl?raw";
 import newtonEngine from "../shaders/engines/newton_engine.glsl?raw";
 import novaEngine from "../shaders/engines/nova_engine.glsl?raw";
-import kleinianEngine from "../shaders/engines/kleinian_engine.glsl?raw";
+import coloringModes from "../shaders/shared/coloring_modes.glsl?raw";
+import commonHeader from "../shaders/shared/common_header.glsl?raw";
+import complexMath from "../shaders/shared/complex_math.glsl?raw";
+import memoryModes from "../shaders/shared/memory_modes.glsl?raw";
+import { useFractalStore } from "../store/useFractalStore";
+import { usePaletteStore } from "../store/usePaletteStore";
 
-import { processShader } from "../utils/shaderLoader";
-import { FORMULAS } from "../constants/formulas";
 import { DEFAULT_FRACTAL_PARAMS } from "../constants/base-fractal-params";
+import { FORMULAS } from "../constants/formulas";
+import { useColoringStore } from "../store/useColoringStore";
+import { useGraphicsStore } from "../store/useGraphicsStore";
 import { useInputStore } from "../store/useInputStore";
+import { useMemoryStore } from "../store/useMemoryStore";
 import { useViewStore } from "../store/useViewStore";
 import type { FractalParams } from "../types/fractal";
-import { useMemoryStore } from "../store/useMemoryStore";
-import { useColoringStore } from "../store/useColoringStore";
+import { processShader } from "../utils/shaderLoader";
 
 const shaderLibrary = {
   complex_math: complexMath,
@@ -39,6 +40,7 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
   const palette = usePaletteStore();
   const memory = useMemoryStore();
   const coloring = useColoringStore();
+  const graphics = useGraphicsStore();
 
   let gl: WebGLRenderingContext;
   let animationFrameId: number;
@@ -83,10 +85,11 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     return prog;
   };
 
-  const updateActiveShader = (forceHighQual = false) => {
+  const updateActiveShader = () => {
     const { formulaId } = fractal;
-    // Add highQual to the cache key so we don't destroy our normal program
-    const cacheKey = `${formulaId}_${memory.currentMode}_COL_${coloring.currentMode}_${forceHighQual ? "HQ" : "LQ"}`;
+    const { useSSAA } = graphics;
+
+    const cacheKey = `${formulaId}_${memory.currentMode}_COL_${coloring.currentMode}_SSAA_${useSSAA}`;
 
     if (programCache.has(cacheKey)) {
       activeProgram = programCache.get(cacheKey)!;
@@ -95,12 +98,13 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
       if (!formula) return;
 
       const originalSource = processShader(formula.shaderSource, shaderLibrary);
+
       const injectedSource = `
-    ${forceHighQual ? "#define USE_SSAA\n" : ""}
-    #define MEM_${memory.currentMode}\n
-    #define COL_${coloring.currentMode}\n
-    ${originalSource}
-`;
+        ${useSSAA ? "#define USE_SSAA\n" : ""}
+        #define MEM_${memory.currentMode}\n
+        #define COL_${coloring.currentMode}\n
+        ${originalSource}
+      `;
 
       const newProg = createProgram(injectedSource);
       programCache.set(cacheKey, newProg);
@@ -108,6 +112,7 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     }
 
     gl.useProgram(activeProgram);
+
     uniformNames.forEach((name) => {
       uniformLocations[name] = gl.getUniformLocation(activeProgram!, name);
     });
@@ -116,8 +121,6 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
   const init = () => {
     if (!canvasRef.value) return;
     gl = canvasRef.value.getContext("webgl", { preserveDrawingBuffer: true })!;
-    // setResolution(2560, 1600);
-    // setResolution(1080, 1920);
 
     const buffer = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
@@ -131,34 +134,58 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     render();
   };
 
+  const setResolution = (width: number, height: number) => {
+    const canvas = canvasRef.value!;
+    if (!canvas) return;
+    canvas.width = width;
+    canvas.height = height;
+    gl.viewport(0, 0, width, height);
+  };
+
   watch(
     [
       () => fractal.formulaId,
       () => memory.currentMode,
       () => coloring.currentMode,
+      () => graphics.useSSAA,
     ],
     () => {
       updateActiveShader();
     },
   );
 
-  const updateLFOs = (time: number, totalDuration = 15) => {
-    // progress goes from 0.0 at the start to 1.0 at the very end
-    const progress = time / totalDuration;
+  watch(
+    () => [graphics.activeResolution, graphics.internalScale],
+    ([res, scale]) => {
+      let targetWidth: number;
+      let targetHeight: number;
 
-    const loopCount = 1;
-    const angle = progress * Math.PI * 2.0 * loopCount;
-    console.log(angle);
-    // fractal.params.slider.powerI = 0.5 + Math.sin(angle) * 0.5;
+      if (res.width && res.height) {
+        // Fixed Preset (4K, 1080p, etc.)
+        targetWidth = res.width * (scale as number);
+        targetHeight = res.height * (scale as number);
+      } else {
+        // Native Window Scale
+        targetWidth = window.innerWidth * devicePixelRatio * (scale as number);
+        targetHeight =
+          window.innerHeight * devicePixelRatio * (scale as number);
+      }
 
-    // fractalStore.params.slider.memoryI = Math.cos(angle) * 0.25;
-  };
+      setResolution(targetWidth, targetHeight);
+    },
+    { immediate: true },
+  );
 
-  // const setResolution = (width: number, height: number) => {
-  //   const canvas = canvasRef.value!;
-  //   canvas.width = width;
-  //   canvas.height = height;
-  //   gl.viewport(0, 0, width, height);
+  // const updateLFOs = (time: number, totalDuration = 15) => {
+  // progress goes from 0.0 at the start to 1.0 at the very end
+  // const progress = time / totalDuration;
+
+  // const loopCount = 1;
+  // const angle = progress * Math.PI * 2.0 * loopCount;
+  // console.log(angle);
+  // fractal.params.slider.powerI = 0.5 + Math.sin(angle) * 0.5;
+
+  // fractalStore.params.slider.memoryI = Math.cos(angle) * 0.25;
   // };
 
   const startRecording = async (durationSeconds = 15) => {
@@ -241,7 +268,7 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
 
       const baseVal = fractal.params.slider[key];
       const sens =
-        (key.toLowerCase().includes("power") ? 0.3 : 1.0) * input.intensity;
+        (key.toLowerCase().includes("power") ? 0.3 : 1.0) * input.sensitivity;
 
       let liveVal = baseVal;
       if (input.bindings.x.includes(key)) {
@@ -270,7 +297,7 @@ export function useFractalEngine(canvasRef: Ref<HTMLCanvasElement | null>) {
     if (manualTime === undefined && !isRecording) {
       animationFrameId = requestAnimationFrame(() => render());
     }
-    updateLFOs(time);
+    // updateLFOs(time);
   };
 
   onMounted(() => {

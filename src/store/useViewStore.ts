@@ -10,17 +10,9 @@ export const useViewStore = defineStore("view", {
       x: FORMULAS[0].offsetShiftX,
       y: FORMULAS[0].offsetShiftY,
     },
-    isUiVisible: true,
   }),
 
   actions: {
-    toggleUi() {
-      this.isUiVisible = !this.isUiVisible;
-    },
-    openUi() {
-      this.isUiVisible = true;
-    },
-
     resetView() {
       gsap.to(this, {
         zoom: 2.0,

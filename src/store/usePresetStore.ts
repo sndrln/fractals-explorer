@@ -1,5 +1,5 @@
-import { computed, ref } from "vue";
 import { defineStore } from "pinia";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Preset } from "../types/preset";
 import { generateId } from "../utils/generateId";
@@ -90,7 +90,7 @@ export const usePresetStore = defineStore("presets", () => {
       coloringMode: coloring.currentMode,
       fractalParams: { ...fractal.params.slider },
       bindings: JSON.parse(JSON.stringify(input.bindings)),
-      intensity: input.intensity,
+      sensitivity: input.sensitivity,
       zoom: view.zoom,
       offset: { x: view.offset.x, y: view.offset.y },
       palette: JSON.parse(JSON.stringify(palette.selectedPalette)),
