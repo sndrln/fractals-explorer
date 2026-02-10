@@ -1,131 +1,85 @@
 <script setup lang="ts">
-import { useFractalStore } from "../store/useFractalStore";
-import PaletteSelector from "./PaletteSelector.vue";
-import FractalRandomizer from "./FractalRandomizer.vue";
-import InputAxisBindings from "./InputAxisBindings.vue";
-import FractalControls from "./fractal-controls/FractalControls.vue";
-import { useViewStore } from "../store/useViewStore";
-import MemoryMode from "./fractal-controls/MemoryMode.vue";
-import PresetGallery from "./fractal-controls/PresetGallery.vue";
-import BaseSlider from "./fractal-controls/BaseSlider.vue";
-import { useInputStore } from "../store/useInputStore";
-import ColoringMode from "./fractal-controls/ColoringMode.vue";
-import FractalNavigation from "./fractal-controls/FractalNavigation.vue";
+import { computed } from "vue";
+import { useUIStore } from "../store/useUIstore";
+import FractalDashboard from "./FractalDashboard.vue";
+import FractalHeader from "./FractalHeader.vue";
+import FractalNavigation from "./FractalNavigation.vue";
+import GraphicsSettings from "./GraphicsSettings.vue";
 
-const emit = defineEmits<{
-  (e: "trigger-record"): void;
-}>();
+const ui = useUIStore();
 
-const handleRecordClick = () => {
-  emit("trigger-record");
-};
-
-const fractal = useFractalStore();
-const input = useInputStore();
-const view = useViewStore();
+const activePanel = computed(() => {
+  return ui.activeTab === "settings" ? GraphicsSettings : FractalDashboard;
+});
 </script>
 
 <template>
-  <Transition name="fade">
-    <div id="ui" v-show="view.isUiVisible">
-      <FractalNavigation />
-      <main class="main">
-        <FractalControls></FractalControls>
+  <Transition name="ui-fade">
+    <div id="ui-shell" v-show="ui.isUiVisible">
+      <FractalHeader />
 
-        <InputAxisBindings />
+      <div class="main-container">
+        <FractalNavigation />
 
-        <div class="slider-row">
-          <div class="slider-label">Intensity</div>
-          <BaseSlider v-model="input.intensity" default-value="1.0" />
+        <div class="scroll-area">
+          <Transition name="fade-slide" mode="out-in">
+            <component :is="activePanel" />
+          </Transition>
         </div>
-        <div class="slider-row">
-          <div class="slider-label">Zoom</div>
-          <BaseSlider v-model="view.zoom" is-zoom :base-reference="2.5" />
-        </div>
-        <!-- 
-        <div class="slider-row">
-          <div class="slider-label">Hybrid Morph</div>
-          <BaseSlider
-            v-model="fractalStore.params.slider.hybridMorph"
-            default-value="1.0"
-          />
-        </div> -->
-
-        <MemoryMode />
-        <ColoringMode />
-
-        <PresetGallery />
-        <div class="footer-actions">
-          <PaletteSelector />
-          <div class="button-row">
-            <FractalRandomizer />
-            <button @click="fractal.resetParams" class="button-primary">
-              ⟲
-            </button>
-            <button @click="handleRecordClick" class="button-primary">◯</button>
-          </div>
-        </div>
-      </main>
+      </div>
     </div>
   </Transition>
 </template>
 
 <style lang="scss" scoped>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.4s ease;
-}
-
-.fade-enter-from,
-.fade-leave-to {
-  opacity: 0;
-}
-
-#ui {
+#ui-shell {
   position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 10;
+  width: 360px;
+  height: 100vh;
+  z-index: 100;
   background: rgba(10, 10, 10, 0.85);
-  color: white;
-  width: 370px;
+  backdrop-filter: blur(5px);
+}
+
+.main-container {
+  flex: 1;
+  position: relative; /* Allows Navigation to overlay the scroll-area */
+  overflow: hidden;
+}
+
+.scroll-area {
   height: 100%;
-  box-sizing: border-box;
-  backdrop-filter: blur(8px);
+  overflow-y: auto;
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
 }
 
-.main {
-  padding: 12px;
+/* Animations */
+.ui-fade-enter-active,
+.ui-fade-leave-active {
+  transition: all 0.4s ease;
+}
+.ui-fade-enter-from,
+.ui-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-20px);
 }
 
-.ui-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
+.fade-slide-enter-active,
+.fade-slide-leave-active {
+  transition: all 0.3s ease;
 }
-
-.slider-row {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 32px;
-  padding: 0 4px;
-  transition: background-color 0.2s ease;
-  border-radius: 4px;
+.fade-slide-enter-from {
+  opacity: 0;
+  transform: translateX(10px);
 }
-
-.slider-label {
-  width: 110px;
-  font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  opacity: 0.8;
-  user-select: none;
-}
-
-.button-row {
-  display: flex;
-  gap: 8px;
+.fade-slide-leave-to {
+  opacity: 0;
+  transform: translateX(-10px);
 }
 </style>

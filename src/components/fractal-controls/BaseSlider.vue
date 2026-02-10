@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { onUnmounted, ref, watch, computed } from "vue";
 import gsap from "gsap";
+import { computed, onUnmounted, ref, watch } from "vue";
 
 const props = defineProps<{
   modelValue: number;
@@ -125,7 +125,6 @@ onUnmounted(() => {
   <span
     class="slidable-number"
     :class="{ 'is-dragging': isDragging }"
-    :style="{ color: color || '#646cff' }"
     @mousedown="startDrag"
     @dblclick="handleReset"
   >
@@ -139,8 +138,6 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .slidable-number {
   cursor: ew-resize;
-  font-weight: bold;
-  font-family: "Courier New", Courier, monospace;
   padding: 0 4px;
   border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
   user-select: none;

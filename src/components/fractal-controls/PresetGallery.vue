@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { ref, nextTick } from "vue";
-import { usePresetStore } from "../../store/usePresetStore";
+import { nextTick, ref } from "vue";
 import { useFractalStore } from "../../store/useFractalStore";
+import { usePresetStore } from "../../store/usePresetStore";
 import type { Preset } from "../../types/preset";
+import IconSave from "../icons/IconSave.vue";
 
 const presets = usePresetStore();
 const fractal = useFractalStore();
@@ -122,7 +123,7 @@ const cancelSave = () => {
         @click="startSaving"
         title="Save Preset"
       >
-        💾
+        <IconSave />
       </button>
     </div>
   </div>
@@ -131,7 +132,7 @@ const cancelSave = () => {
 <style lang="scss" scoped>
 .preset-manager {
   width: 100%;
-  --accent-color: #4caf50;
+  color: white;
 }
 
 .manager-row {
@@ -150,8 +151,7 @@ const cancelSave = () => {
 .control-label {
   font-size: 0.75rem;
   margin-bottom: 8px;
-  text-transform: uppercase;
-  color: #888;
+  color: var(--text-secondary);
 }
 
 /* 1. DROP-DOWN STYLES */
@@ -168,7 +168,7 @@ const cancelSave = () => {
 
 .select-header {
   height: 100%;
-  background: #1a1a1a;
+  background: var(--bg-surface);
   border-radius: 6px;
   padding: 0 12px;
   display: flex;
@@ -205,7 +205,7 @@ const cancelSave = () => {
 
   input {
     flex: 1;
-    background: #1a1a1a;
+    background: var(--bg-surface);
     border: none;
     color: white;
     outline: none;
@@ -222,21 +222,19 @@ const cancelSave = () => {
   }
 }
 
-.button-save {
-  background: var(--accent-color);
-}
-
-.button-cancel {
-  background: rgba(255, 85, 85, 0.15);
-  color: #ff5555;
+.button-save,
+.button-confirm {
+  color: var(--color-success);
   &:hover {
-    background: rgba(255, 85, 85, 0.3);
+    border-color: var(--color-success);
   }
 }
 
-.button-confirm {
-  background: var(--accent-color);
-  color: white;
+.button-cancel {
+  color: var(--color-danger);
+  &:hover {
+    border-color: var(--color-danger);
+  }
 }
 
 /* 4. DROPDOWN LIST STYLES */
@@ -245,7 +243,7 @@ const cancelSave = () => {
   bottom: 115%;
   left: 0;
   right: 0;
-  background: #1a1a1a;
+  background: var(--bg-surface);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 8px;
   max-height: 250px;
@@ -260,7 +258,7 @@ const cancelSave = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid var(--border-subtle);
   cursor: pointer;
   &:hover {
     background: rgba(255, 255, 255, 0.08);
@@ -275,7 +273,6 @@ const cancelSave = () => {
     flex-direction: column;
     .preset-name {
       font-size: 0.85rem;
-      font-weight: bold;
     }
     .preset-meta {
       font-size: 0.7rem;
@@ -288,7 +285,7 @@ const cancelSave = () => {
 .button-delete {
   background: none;
   border: none;
-  color: #ff5555;
+  color: var(--color-danger);
   font-size: 1.2rem;
   padding: 4px 8px;
   cursor: pointer;

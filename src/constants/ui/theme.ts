@@ -1,16 +1,16 @@
 import type { FractalParams } from "../../types/fractal";
 
 export const UI_COLORS = {
-  power: "#ffaa00",
-  seed: "#55aaff",
-  juliaMorph: "#ff00aa",
-  memory: "#00ffaa",
-  iter: "#ffffff",
-  default: "#646cff",
-  relaxation: "#ff00aa",
-  subtrahend: "#646cff",
-  // hybridMorph: "#c02a2a",
-  kleinian: "#0067cd",
+  // hybridMorph: "var(--color-danger)",
+  power: "var(--color-warning)",
+  seed: "var(--color-info)",
+  juliaMorph: "var(--color-accent)", // Assuming you added this
+  memory: "var(--color-success)",
+  iter: "var(--text-primary)",
+  default: "var(--color-primary)",
+  relaxation: "var(--color-accent)",
+  subtrahend: "var(--color-primary)",
+  kleinian: "var(--color-info)",
 } as const;
 
 export type ColorKey = keyof typeof UI_COLORS;

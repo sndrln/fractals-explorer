@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useFractalStore } from "../../store/useFractalStore";
 import { useFractalTheme } from "../../composables/useFractalTheme";
+import { useFractalStore } from "../../store/useFractalStore";
 
 const fractal = useFractalStore();
 const { colors, mathStyles } = useFractalTheme();
@@ -198,7 +198,6 @@ const currentFormulaId = computed(() => fractal.formulaId);
 <style lang="scss" scoped>
 #formula-display {
   text-align: center;
-  font-family: "Times New Roman", serif;
   font-style: italic;
   font-size: 24px;
   border-radius: 8px;
@@ -206,6 +205,7 @@ const currentFormulaId = computed(() => fractal.formulaId);
   display: flex;
   align-items: center;
   justify-content: center;
+  min-height: 70px;
 }
 
 .spider-layout {
@@ -224,7 +224,6 @@ const currentFormulaId = computed(() => fractal.formulaId);
   font-size: 0.65em; // Shrink P so it doesn't compete with Z
   vertical-align: super; // Move it to the top right
   margin-left: 1px; // Tiny gap so it doesn't touch the Z
-  font-weight: bold; // Keep it readable despite the size
   position: relative;
   bottom: 5px;
 }

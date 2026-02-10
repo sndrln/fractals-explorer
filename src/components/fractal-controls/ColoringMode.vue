@@ -33,22 +33,20 @@ const handleModeChange = (event: Event) => {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding: 10px 0;
 }
 .control-label {
   font-size: 0.75rem;
-  text-transform: uppercase;
-  color: #888;
+  color: var(--text-secondary);
 }
 .mode-dropdown {
-  background: #1a1a1a;
-  color: #eee;
+  background: var(--bg-surface);
+  color: var(--text-primary);
   padding: 6px;
   border-radius: 4px;
   cursor: pointer;
   transition: border-color 0.2s;
   &:hover {
-    border-color: #646cff;
+    border-color: var(--color-primary);
   }
 }
 </style>

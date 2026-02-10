@@ -1,0 +1,65 @@
+:root {
+  font-family: "Geist Sans", sans-serif;
+  font-variant-numeric: tabular-nums; /* Makes all numbers the same width */
+  color: var(--text-primary);
+  /* --- System Surfaces --- */
+  --bg-app: #050505; /* Deepest black (Background) */
+  --bg-surface: #121212; /* Panel backgrounds */
+  --bg-elevated: #1e1e1e; /* Hovered / Active items */
+
+  /* --- Borders --- */
+  --border-subtle: rgba(255, 255, 255, 0.05); /* Hairline separators */
+  --border-medium: rgba(255, 255, 255, 0.12); /* Default button/input borders */
+  --border-bright: rgba(255, 255, 255, 0.25); /* Focused/Hovered borders */
+
+  /* --- Typography --- */
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.6); /* Replaces #888, #eee */
+  --text-muted: rgba(255, 255, 255, 0.3); /* Labels / Hints */
+
+  /* --- Semantic Accents --- */
+  --color-primary: #646cff; /* Brand / Active / Selection */
+  --color-info: #3b82f6; /* Newton / Technical info */
+  --color-danger: #ff4757; /* Escape / Record / Delete / Errors */
+  --color-success: #00ffaa; /* Kleinian / Memory / Save / Valid */
+  --color-warning: #ff9800; /* Power / Warnings */
+  --color-accent: #ff00aa;
+  /* --- Effects --- */
+  --shadow-glow: 0 0 15px rgba(100, 108, 255, 0.3);
+  --shadow-pop: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+}
+
+.button-primary {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border-medium);
+  color: white;
+  cursor: pointer;
+  border-radius: 4px;
+
+  padding: 0;
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+
+.button-primary:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: var(--color-primary);
+  box-shadow: 0 0 8px rgba(100, 108, 255, 0.4);
+}
+
+.button-primary.active {
+  color: var(--color-primary);
+  background: rgba(59, 130, 246, 0.15);
+}

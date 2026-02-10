@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useFractalTheme } from "../../composables/useFractalTheme";
 import { useFractalStore } from "../../store/useFractalStore";
 import { useInputStore } from "../../store/useInputStore";
-import { useFractalTheme } from "../../composables/useFractalTheme";
 
-import { BASE_CONTROL_GROUPS } from "../../constants/ui/base-control-groups";
 import { FORMULAS } from "../../constants/formulas";
+import { BASE_CONTROL_GROUPS } from "../../constants/ui/base-control-groups";
 import { BASE_SLIDER_CONSTRAINTS } from "../../constants/ui/base-slider-constraints";
 import type { ControlGroup, SliderSchema } from "../../types/ui";
 import ParamSlider from "./ParamSlider.vue";
@@ -18,16 +18,7 @@ const activeControls = computed<ControlGroup[]>(() => {
   const formula = FORMULAS.find((f) => f.id === fractal.formulaId);
   if (!formula) return [];
 
-  const groups =
-    formula.customUI || BASE_CONTROL_GROUPS[formula.fractalType] || [];
-
-  const iterationGroup: ControlGroup = {
-    label: "Iterations",
-    colorKey: "iter",
-    sliders: [{ paramKey: "maxIterations" }],
-  };
-
-  return [...groups, iterationGroup];
+  return formula.customUI || BASE_CONTROL_GROUPS[formula.fractalType] || [];
 });
 
 const getSliderProps = (slider: SliderSchema) => ({
@@ -130,7 +121,7 @@ const isGroupBound = (group: ControlGroup) => {
 }
 
 .control-group.group-active {
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--border-subtle);
 }
 
 .slider-stack {
@@ -143,8 +134,6 @@ const isGroupBound = (group: ControlGroup) => {
 .label {
   width: 110px;
   font-size: 11px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
   opacity: 0.8;
   user-select: none;
 }
@@ -185,15 +174,14 @@ const isGroupBound = (group: ControlGroup) => {
 }
 
 .math-operator {
-  font-family: monospace;
-  font-weight: bold;
+  margin-bottom: 4px;
 }
 
 .slider-suffix {
-  font-size: 14px;
+  font-size: 16px;
   font-family: serif;
   font-style: italic;
   opacity: 0.9;
-  min-width: 10px;
+  margin-left: -5px;
 }
 </style>

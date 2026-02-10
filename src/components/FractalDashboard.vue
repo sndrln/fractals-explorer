@@ -1,0 +1,143 @@
+<script setup lang="ts">
+import { useFractalStore } from "../store/useFractalStore";
+import { useGraphicsStore } from "../store/useGraphicsStore";
+import { useInputStore } from "../store/useInputStore";
+import { useViewStore } from "../store/useViewStore";
+import BaseSlider from "./fractal-controls/BaseSlider.vue";
+import ColoringMode from "./fractal-controls/ColoringMode.vue";
+import FormulaDisplay from "./fractal-controls/FormulaDisplay.vue";
+import FractalControls from "./fractal-controls/FractalControls.vue";
+import MemoryMode from "./fractal-controls/MemoryMode.vue";
+import PresetGallery from "./fractal-controls/PresetGallery.vue";
+import FractalRandomizer from "./FractalRandomizer.vue";
+import InputAxisBindings from "./InputAxisBindings.vue";
+import PaletteSelector from "./PaletteSelector.vue";
+
+const fractal = useFractalStore();
+const view = useViewStore();
+const input = useInputStore();
+const graphics = useGraphicsStore();
+
+const emit = defineEmits(["trigger-record"]);
+</script>
+
+<template>
+  <div class="dashboard-container">
+    <FormulaDisplay />
+    <section class="dashboard-section">
+      <FractalControls />
+      <InputAxisBindings />
+    </section>
+
+    <div class="slider-row">
+      <div class="slider-container">
+        <span class="slider-label">Sensitivity</span>
+        <BaseSlider v-model="input.sensitivity" :min="0" :max="2" />
+      </div>
+      <div class="slider-container">
+        <span class="slider-label">Zoom</span>
+        <BaseSlider v-model="view.zoom" is-zoom :base-reference="2.5" />
+      </div>
+      <div class="slider-container">
+        <span class="slider-label">Iterations</span>
+        <BaseSlider
+          v-model="fractal.params.slider.maxIterations"
+          :min="10"
+          :step="1"
+          :max="graphics.currentIterationLimit"
+        />
+      </div>
+      <div class="slider-container"></div>
+    </div>
+
+    <section class="modes-grid">
+      <MemoryMode />
+      <ColoringMode />
+    </section>
+
+    <section class="dashboard-section">
+      <PresetGallery />
+
+      <PaletteSelector />
+
+      <div class="action-row">
+        <FractalRandomizer class="randomizer-wrapper" />
+
+        <button
+          @click="fractal.resetParams"
+          class="button-primary"
+          title="Reset"
+        >
+          ⟲
+        </button>
+
+        <button
+          @click="$emit('trigger-record')"
+          class="button-primary button-record-variant"
+          title="Record"
+        >
+          ◯
+        </button>
+      </div>
+    </section>
+  </div>
+</template>
+
+<style lang="scss" scoped>
+.dashboard-container {
+  padding: 0 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.dashboard-section {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.slider-row {
+  display: flex;
+  flex-direction: row; /* Side by side */
+  gap: 16px; /* Increased gap for visual breathing room */
+  width: 100%;
+}
+
+.slider-container {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  flex: 1;
+  gap: 4px;
+
+  .slider-label {
+    font-size: 12px;
+    opacity: 0.6;
+  }
+}
+.modes-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.action-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+}
+.randomizer-wrapper {
+  flex: 1;
+  display: flex;
+}
+
+.button-record-variant {
+  color: var(--color-danger);
+
+  &:hover {
+    border-color: var(--color-danger);
+  }
+}
+</style>

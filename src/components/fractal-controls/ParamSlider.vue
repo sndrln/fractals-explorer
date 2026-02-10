@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, onUnmounted, ref, watch } from "vue";
 import gsap from "gsap";
+import { computed, onUnmounted, ref, watch } from "vue";
 import { useFractalStore } from "../../store/useFractalStore";
 import { useInputStore } from "../../store/useInputStore";
 import type { FractalParams } from "../../types/fractal";
@@ -71,7 +71,7 @@ const startDrag = (e: MouseEvent) => {
 
 const onDrag = (e: MouseEvent) => {
   const sensitivity = props.step || 0.01;
-  const delta = (e.clientX - startX) * sensitivity * input.intensity;
+  const delta = (e.clientX - startX) * sensitivity * input.sensitivity;
 
   const rawVal = startValue + delta;
 
@@ -134,8 +134,6 @@ onUnmounted(() => {
 <style lang="scss" scoped>
 .slidable-number {
   cursor: ew-resize;
-  font-weight: bold;
-  font-family: "Courier New", Courier, monospace;
   padding: 0 4px;
   border-bottom: 1px dashed rgba(255, 255, 255, 0.3);
   user-select: none;

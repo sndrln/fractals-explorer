@@ -56,14 +56,13 @@ const handleWellClick = (axis: "x" | "y") => {
 <style lang="scss" scoped>
 .axis-container {
   display: flex;
-  gap: 10px;
-  margin-top: 10px;
+  gap: 8px;
 }
 
 .axis-well {
   flex: 1;
   min-height: 80px;
-  background: rgba(255, 255, 255, 0.05);
+  background: var(--border-subtle);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 8px;
   padding: 12px;
@@ -71,6 +70,7 @@ const handleWellClick = (axis: "x" | "y") => {
   position: relative;
   overflow: hidden;
   transition: all 0.2s ease;
+  color: white;
 }
 
 .axis-well:hover {
@@ -79,9 +79,8 @@ const handleWellClick = (axis: "x" | "y") => {
 }
 
 .axis-well.is-active {
-  background: rgba(255, 255, 255, 0.12);
-  border-color: #646cff;
-  box-shadow: 0 0 15px rgba(100, 108, 255, 0.3);
+  background: var(--border-medium);
+  border-color: var(--color-primary);
 }
 
 .active-glow {
@@ -114,9 +113,7 @@ const handleWellClick = (axis: "x" | "y") => {
   align-items: center;
   margin-bottom: 8px;
   font-size: 10px;
-  font-weight: bold;
   text-transform: uppercase;
-  letter-spacing: 1px;
   opacity: 0.6;
 }
 
@@ -146,9 +143,8 @@ const handleWellClick = (axis: "x" | "y") => {
 }
 
 .pill:hover {
-  background: rgba(255, 0, 0, 0.2);
-  border-color: #ff4444 !important;
-  color: white !important;
+  border-color: var(--color-danger) !important;
+  color: var(--color-danger) !important;
 }
 
 .remove-x {

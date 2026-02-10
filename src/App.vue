@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { ref, watch } from "vue";
-import { useFractalEngine } from "./composables/useFractalEngine";
-import { useMouseInteraction } from "./composables/useMouseInteraction";
-import FractalUI from "./components/FractalUI.vue";
-import { useKeyboardShortcuts } from "./composables/useKeyboardShortcuts";
-import { useInputStore } from "./store/useInputStore";
 import { useRoute, useRouter } from "vue-router";
+import FractalUI from "./components/FractalUI.vue";
+import { useFractalEngine } from "./composables/useFractalEngine";
+import { useKeyboardShortcuts } from "./composables/useKeyboardShortcuts";
+import { useMouseInteraction } from "./composables/useMouseInteraction";
 import { useFractalStore } from "./store/useFractalStore";
+import { useInputStore } from "./store/useInputStore";
 import { usePresetStore } from "./store/usePresetStore";
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
@@ -73,7 +73,7 @@ watch(
   display: flex;
   width: 100vw;
   height: 100vh;
-  background: #050505;
+  background: var(--bg-app);
   overflow: hidden;
 }
 
@@ -97,12 +97,11 @@ watch(
   border-right: 1px solid rgba(255, 255, 255, 0.1);
   padding: 20px;
   z-index: 10;
-  color: white;
 }
 
 canvas {
   // flex-grow: 1;
-  height: 100%;
+  // height: 100%;
   margin: 0px auto;
   // position: relative;
   // left: 50px;

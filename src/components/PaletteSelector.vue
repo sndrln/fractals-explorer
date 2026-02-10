@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { getPaletteCSS } from "../utils/getPaletteCss";
 import { palettes } from "../constants/palettes";
 import { usePaletteStore } from "../store/usePaletteStore";
+import { getPaletteCSS } from "../utils/getPaletteCss";
+import IconRandom from "./icons/IconRandom.vue";
 
 const palette = usePaletteStore();
 const isDropdownExpanded = ref(false);
@@ -56,7 +57,7 @@ const isDropdownExpanded = ref(false);
       title="Randomize Colors"
       @click="palette.generateRandomPalette"
     >
-      🎲
+      <IconRandom />
     </button>
   </div>
 </template>
@@ -66,7 +67,6 @@ const isDropdownExpanded = ref(false);
   position: relative;
   flex-grow: 1;
   width: 100%;
-  margin: 10px 0;
 }
 
 .palette-controls {
@@ -78,7 +78,7 @@ const isDropdownExpanded = ref(false);
 .dropdown-trigger {
   width: 100%;
   height: 32px;
-  background: #1a1a1a;
+  background: var(--bg-surface);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 4px;
   display: flex;
@@ -97,7 +97,7 @@ const isDropdownExpanded = ref(false);
 
 .arrow {
   font-size: 10px;
-  color: #888;
+  color: var(--text-secondary);
 }
 
 .dropdown-menu {
@@ -105,7 +105,7 @@ const isDropdownExpanded = ref(false);
   top: 110%;
   left: 0;
   width: 100%;
-  background: #1a1a1a;
+  background: var(--bg-surface);
   border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 4px;
   padding: 8px;
