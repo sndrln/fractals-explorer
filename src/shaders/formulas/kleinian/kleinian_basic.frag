@@ -1,5 +1,3 @@
-#include "common_header"
-
 vec2 fractalStep(vec2 z, vec2 c, vec2 p, vec2 zPrev) {
   // Box Fold
   if (kleinianBox > 0.0) {
@@ -23,10 +21,4 @@ vec2 fractalStep(vec2 z, vec2 c, vec2 p, vec2 zPrev) {
   // Transformation & Translation
   vec2 genB = vec2(subtrahend, subtrahendI);
   return complexMul(z, p) + c + genB;
-}
-
-#include "kleinian_core"
-
-void main() {
-  run_kleinian_core();
 }

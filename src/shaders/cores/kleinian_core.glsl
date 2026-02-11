@@ -1,8 +1,7 @@
-#include "memory_modes"
-
-vec3 get_kleinian_color(vec2 uv) {
+vec3 core_logic(vec2 uv) {
   // 1. SETUP
-  vec2 coord = uv * zoom + vec2(offsetShiftX, offsetShiftY);
+  vec2 coord = uv;
+
   vec2 seed = vec2(seedR, seedI);
   vec2 powerVec = vec2(power, powerI);
   vec2 memFactor = vec2(memoryR, memoryI);
@@ -38,7 +37,7 @@ vec3 get_kleinian_color(vec2 uv) {
     z = zNext;
 
     // Coloring Injection
-    #include "coloring_modes.glsl"
+    apply_coloring(z, zPrev, osc, colorAcc);
 
     // Kleinian Specific Orbit Tracking
     min_dist = min(min_dist, length(z));
@@ -57,10 +56,4 @@ vec3 get_kleinian_color(vec2 uv) {
   #endif
 
   return get_palette(fract(colorValue));
-}
-
-void run_kleinian_core() {
-  vec2 uv =
-    (gl_FragCoord.xy - 0.5 * resolution.xy) / min(resolution.y, resolution.x);
-  gl_FragColor = vec4(get_kleinian_color(uv), 1.0);
 }

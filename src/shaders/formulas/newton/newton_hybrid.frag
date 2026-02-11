@@ -1,5 +1,3 @@
-#include "common_header"
-
 vec2 fractalStep(vec2 z, vec2 subtrahend, vec2 power, vec2 zPrev) {
   // f(z) = (z^p * sin(z)) - c
   vec2 zPow = complexPower(z, power);
@@ -14,10 +12,4 @@ vec2 fractalStep(vec2 z, vec2 subtrahend, vec2 power, vec2 zPrev) {
 
   // Newton step: -f(z)/f'(z)
   return -complexDiv(fz, dfz);
-}
-
-#include "newton_core"
-
-void main() {
-  run_newton_core();
 }

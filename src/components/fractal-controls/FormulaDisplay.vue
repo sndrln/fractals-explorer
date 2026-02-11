@@ -84,7 +84,7 @@ const currentFormulaId = computed(() => fractal.formulaId);
       >)
     </template>
 
-    <template v-if="currentFormulaId === 'spider'">
+    <!-- <template v-if="currentFormulaId === 'spider'">
       <div class="spider-layout">
         <div>
           <span>z<sub>n+1</sub></span> =
@@ -98,7 +98,7 @@ const currentFormulaId = computed(() => fractal.formulaId);
           <span :style="mathStyles.zStyle">z<sub>n</sub></span>
         </div>
       </div>
-    </template>
+    </template> -->
 
     <template v-if="currentFormulaId === 'heart'">
       <span>z<sub>n+1</sub></span> = (|Re(<span :style="mathStyles.zStyle"

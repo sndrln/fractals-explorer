@@ -7,7 +7,6 @@ import invMandelRaw from "../shaders/formulas/escape/inv_mandel.frag?raw";
 import lambdaRaw from "../shaders/formulas/escape/lambda.frag?raw";
 import magnetRaw from "../shaders/formulas/escape/magnet.frag?raw";
 import mandelRaw from "../shaders/formulas/escape/mandelbrot.frag?raw";
-import spiderRaw from "../shaders/formulas/escape/spider.frag?raw";
 import tricornRaw from "../shaders/formulas/escape/tricorn.frag?raw";
 import kleinianRaw from "../shaders/formulas/kleinian/kleinian_basic.frag?raw";
 import newtonExpRaw from "../shaders/formulas/newton/newton_exp.frag?raw";
@@ -111,16 +110,16 @@ export const FORMULAS: FormulaDefinition[] = [
       seedI: 0.0,
     },
   },
-  {
-    id: "spider",
-    name: "Spider",
-    fractalType: "escape",
-    displayString: "zₙ² + cₙ, cₙ₊₁ = cₙ/2 + zₙ",
-    shaderSource: spiderRaw,
-    zoom: 2.5,
-    offsetShiftX: -1.0,
-    defaults: { memoryR: 0.5 },
-  },
+  //   {
+  //   id: "spider",
+  //   name: "Spider",
+  //   fractalType: "escape",
+  //   displayString: "zₙ² + cₙ, cₙ₊₁ = cₙ/2 + zₙ",
+  //   shaderSource: spiderRaw,
+  //   zoom: 2.5,
+  //   offsetShiftX: -1.0,
+  //   defaults: { memoryR: 0.5 },
+  // },
   {
     id: "inv-mandel",
     name: "Inverted Mandelbrot",

@@ -1,5 +1,3 @@
-#include "common_header"
-
 vec2 fractalStep(vec2 z, vec2 s, vec2 p, vec2 zPrev) {
   // f(z) = (z^p * sin(z)) - s
   vec2 zPow = complexPower(z, p);
@@ -16,10 +14,4 @@ vec2 fractalStep(vec2 z, vec2 s, vec2 p, vec2 zPrev) {
 
   // Return displacement: -f(z)/f'(z)
   return -complexDiv(fz, dfz);
-}
-
-#include "nova_core"
-
-void main() {
-  run_nova_core();
 }

@@ -1,15 +1,16 @@
+import { DEFAULT_FRACTAL_PARAMS } from "../constants/base-fractal-params";
+import { FORMULAS } from "../constants/formulas";
 import vertSource from "../shaders/base.vert";
 import escapeCore from "../shaders/cores/escape_core.glsl?raw";
 import kleinianCore from "../shaders/cores/kleinian_core.glsl?raw";
 import newtonCore from "../shaders/cores/newton_core.glsl?raw";
 import novaCore from "../shaders/cores/nova_core.glsl?raw";
+import mainTemplate from "../shaders/main_template.frag?raw";
 import coloringModes from "../shaders/shared/coloring_modes.glsl?raw";
 import commonHeader from "../shaders/shared/common_header.glsl?raw";
 import complexMath from "../shaders/shared/complex_math.glsl?raw";
 import memoryModes from "../shaders/shared/memory_modes.glsl?raw";
 
-import { DEFAULT_FRACTAL_PARAMS } from "../constants/base-fractal-params";
-import { FORMULAS } from "../constants/formulas";
 import type { FractalParams } from "../types/fractal";
 import { processShader } from "../utils/shaderLoader";
 
@@ -76,15 +77,36 @@ export class FractalEngine {
       this.activeProgram = this.programCache.get(cacheKey)!;
     } else {
       const formula = FORMULAS.find((f) => f.id === config.formulaId);
-      if (!formula) return;
+      const coreSource = shaderLibrary[`${formula.fractalType}_core`];
 
-      const originalSource = processShader(formula.shaderSource, shaderLibrary);
+      const processedTemplate = processShader(
+        mainTemplate,
+        shaderLibrary,
+      ).replace(/#include ".*"/g, "");
+
       const injectedSource = `
-        ${config.useSSAA ? "#define USE_SSAA\n" : ""}
-        #define MEM_${config.memoryMode}\n
-        #define COL_${config.coloringMode}\n
-        ${originalSource}
-      `;
+        precision highp float;
+
+        // 1. DEFINES
+        ${config.useSSAA ? "#define USE_SSAA" : ""}
+        #define MEM_${config.memoryMode}
+        #define COL_${config.coloringMode}
+
+        // 2. HEADERS & MATH (The Foundation)
+        ${shaderLibrary.common_header}
+        ${shaderLibrary.complex_math}
+        ${shaderLibrary.memory_modes}
+        ${shaderLibrary.coloring_modes} // This now contains apply_coloring()
+
+        // 3. FORMULA (The specific math step)
+        ${formula.shaderSource}        // This contains fractalStep()
+
+        // 4. CORE (The specific iteration loop)
+        ${coreSource}                  // This contains core_logic()
+
+        // 5. TEMPLATE (The entry point)
+        ${processedTemplate}           // This contains main()
+      `.replace(/#include ".*"/g, "");
 
       const newProg = this.compileProgram(injectedSource);
       this.programCache.set(cacheKey, newProg);

@@ -1,8 +1,6 @@
-#include "memory_modes"
-
-vec3 get_fractal_color(vec2 uv) {
+vec3 core_logic(vec2 uv) {
   // 1. SETUP
-  vec2 coord = uv * zoom + vec2(offsetShiftX, offsetShiftY);
+  vec2 coord = uv;
   vec2 seed = vec2(seedR, seedI);
 
   vec2 z = mix(seed, coord, juliaMorph);
@@ -39,7 +37,7 @@ vec3 get_fractal_color(vec2 uv) {
     z = zNext;
 
     // Coloring Injection
-    #include "coloring_modes.glsl"
+    apply_coloring(z, zPrev, osc, colorAcc);
 
     // Break Condition
     if (length(z) > escapeRadius) break;
@@ -68,33 +66,4 @@ vec3 get_fractal_color(vec2 uv) {
   #endif
 
   return get_palette(colorValue);
-}
-
-void run_escape_core() {
-  vec2 uv =
-    (gl_FragCoord.xy - 0.5 * resolution.xy) / min(resolution.y, resolution.x);
-
-  #ifdef USE_SSAA
-  // --- 4x Supersampling Mode ---
-  // Take 4 samples in a grid pattern and average them
-  vec3 color = vec3(0.0);
-
-  // Calculate the size of half a pixel in UV space
-  vec2 dUV = vec2(zoom) / min(resolution.y, resolution.x) * 0.25;
-
-  // Sample 1: Top-Left
-  color += get_fractal_color(uv + vec2(-dUV.x, -dUV.y));
-  // Sample 2: Top-Right
-  color += get_fractal_color(uv + vec2(dUV.x, -dUV.y));
-  // Sample 3: Bottom-Left
-  color += get_fractal_color(uv + vec2(-dUV.x, dUV.y));
-  // Sample 4: Bottom-Right
-  color += get_fractal_color(uv + vec2(dUV.x, dUV.y));
-
-  gl_FragColor = vec4(color / 4.0, 1.0);
-  #else
-  // --- Standard Performance Mode ---
-  // Just one sample per pixel
-  gl_FragColor = vec4(get_fractal_color(uv), 1.0);
-  #endif
 }
