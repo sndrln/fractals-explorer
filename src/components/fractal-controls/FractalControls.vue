@@ -5,47 +5,51 @@ import { useFractalStore } from "../../store/useFractalStore";
 import { useInputStore } from "../../store/useInputStore";
 
 import { FORMULAS } from "../../constants/formulas";
-import { BASE_CONTROL_GROUPS } from "../../constants/ui/base-control-groups";
-import { BASE_SLIDER_CONSTRAINTS } from "../../constants/ui/base-slider-constraints";
-import type { ControlGroup, SliderSchema } from "../../types/ui";
+import { DEFAULT_SLIDER_CONSTRAINTS } from "../../constants/ui/default-slider-constraints";
+import { DEFAULT_SLIDER_GROUPS } from "../../constants/ui/default-slider-groups";
+import type { SliderGroup, SliderSchema } from "../../types/ui";
 import IconRandom from "../icons/IconRandom.vue";
 import IconReset from "../icons/IconReset.vue";
-import ParamSlider from "./ParamSlider.vue";
+import ParameterSlider from "./ParameterSlider.vue";
 
 const fractal = useFractalStore();
 const input = useInputStore();
 const { getColor } = useFractalTheme();
 
-const activeControls = computed<ControlGroup[]>(() => {
+const activeControls = computed<SliderGroup[]>(() => {
   const formula = FORMULAS.find((f) => f.id === fractal.formulaId);
   if (!formula) return [];
 
-  return formula.customUI || BASE_CONTROL_GROUPS[formula.fractalType] || [];
+  return (
+    formula.customSliders || DEFAULT_SLIDER_GROUPS[formula.fractalType] || []
+  );
 });
 
 const getSliderProps = (slider: SliderSchema) => ({
-  ...BASE_SLIDER_CONSTRAINTS[slider.paramKey],
+  ...DEFAULT_SLIDER_CONSTRAINTS[slider.parameterUnitId],
   ...slider,
 });
 
-const handleGroupLabelClick = (group: ControlGroup) => {
+const handleGroupLabelClick = (group: SliderGroup) => {
   const sliders = group.sliders;
   if (!sliders.length) return;
 
   if (sliders.length >= 2) {
     input.toggleGroupBinding({
-      x: sliders[0].paramKey,
-      y: sliders[1].paramKey,
+      x: sliders[0].parameterUnitId,
+      y: sliders[1].parameterUnitId,
     });
   } else {
     input.toggleGroupBinding({
-      x: sliders[0].paramKey,
+      x: sliders[0].parameterUnitId,
     });
   }
 };
 
-const isGroupBound = (group: ControlGroup) => {
-  return group.sliders.some((s) => input.isParamBound(s.paramKey));
+const isGroupBound = (group: SliderGroup) => {
+  return group.sliders.some((slider) =>
+    input.isParamBound(slider.parameterUnitId),
+  );
 };
 </script>
 
@@ -57,7 +61,7 @@ const isGroupBound = (group: ControlGroup) => {
       <div class="toolbar-actions">
         <div class="random-group">
           <button
-            @click="fractal.randomizeParams"
+            @click="fractal.randomizeParameters"
             class="button-primary icon-button"
             title="Randomize (R)"
           >
@@ -66,7 +70,7 @@ const isGroupBound = (group: ControlGroup) => {
         </div>
 
         <button
-          @click="fractal.resetParams"
+          @click="fractal.resetParameters"
           class="button-primary icon-button"
           title="Reset to Defaults"
         >
@@ -92,7 +96,10 @@ const isGroupBound = (group: ControlGroup) => {
         </div>
 
         <div class="slider-stack">
-          <template v-for="slider in group.sliders" :key="slider.paramKey">
+          <template
+            v-for="slider in group.sliders"
+            :key="slider.parameterUnitId"
+          >
             <span
               v-if="slider.showPlus"
               :style="{ color: getColor(group.colorKey) }"
@@ -100,21 +107,21 @@ const isGroupBound = (group: ControlGroup) => {
               >+</span
             >
 
-            <ParamSlider
-              v-model="fractal.params.slider[slider.paramKey]"
-              :paramKey="slider.paramKey"
+            <ParameterSlider
+              v-model="fractal.parameters.slider[slider.parameterUnitId]"
+              :parameterUnitId="slider.parameterUnitId"
               :color="getColor(group.colorKey)"
-              :is-bound="!!input.isParamBound(slider.paramKey)"
+              :is-bound="!!input.isParamBound(slider.parameterUnitId)"
               v-bind="getSliderProps(slider)"
-              @change="fractal.updateAnchorParams()"
+              @change="fractal.updateAnchorParameters()"
             />
 
             <span
-              v-if="slider.suffix"
+              v-if="slider.unitSuffix"
               :style="{ color: getColor(group.colorKey) }"
               class="slider-suffix"
             >
-              {{ slider.suffix }}
+              {{ slider.unitSuffix }}
             </span>
           </template>
         </div>

@@ -1,21 +1,21 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useUIStore } from "../store/useUIstore";
+import { useUiPanelStore } from "../store/useUIstore";
 import FractalDashboard from "./FractalDashboard.vue";
 import FractalHeader from "./FractalHeader.vue";
 import FractalNavigation from "./FractalNavigation.vue";
 import GraphicsSettings from "./GraphicsSettings.vue";
 
-const ui = useUIStore();
+const uiPanel = useUiPanelStore();
 
 const activePanel = computed(() => {
-  return ui.activeTab === "settings" ? GraphicsSettings : FractalDashboard;
+  return uiPanel.activeTab === "settings" ? GraphicsSettings : FractalDashboard;
 });
 </script>
 
 <template>
   <Transition name="ui-fade">
-    <div id="ui-shell" v-show="ui.isUiVisible">
+    <div id="ui-shell" v-show="uiPanel.isUiPanelVisible">
       <FractalHeader />
 
       <div class="main-container">

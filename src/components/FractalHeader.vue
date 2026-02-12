@@ -2,12 +2,12 @@
 import { computed } from "vue";
 import { FORMULAS } from "../constants/formulas";
 import { useFractalStore } from "../store/useFractalStore";
-import { useUIStore } from "../store/useUIstore";
 
+import { useUiPanelStore } from "../store/useUIstore";
 import IconMinimize from "./icons/IconMinimize.vue";
 import IconSettings from "./icons/IconSettings.vue";
 
-const ui = useUIStore();
+const uiPanel = useUiPanelStore();
 const fractal = useFractalStore();
 
 const categories = [
@@ -32,7 +32,11 @@ const currentFormulaName = computed(() => {
 
 <template>
   <header class="utility-header">
-    <button @click="ui.toggleUi" class="hitbox-button" title="Toggle UI (H)">
+    <button
+      @click="uiPanel.toggleUiPanel"
+      class="hitbox-button"
+      title="Toggle UI (H)"
+    >
       <div class="button-primary">
         <IconMinimize />
       </div>
@@ -40,27 +44,30 @@ const currentFormulaName = computed(() => {
 
     <div
       class="fractal-title-widget"
-      @click="ui.toggleNav"
-      :class="{ 'is-active': ui.isNavOpen }"
+      @click="uiPanel.toggleFractalSelection"
+      :class="{ 'is-active': uiPanel.isFractalSelectionOpen }"
     >
       <div class="formula-display-name" :style="{ color: currentTypeColor }">
         {{ currentFormulaName }}
-        <div class="chevron-wrapper" :class="{ 'is-flipped': ui.isNavOpen }">
+        <div
+          class="chevron-wrapper"
+          :class="{ 'is-flipped': uiPanel.isFractalSelectionOpen }"
+        >
           <IconMinimize class="chevron-icon" />
         </div>
       </div>
     </div>
 
     <button
-      @click="ui.toggleSettings"
+      @click="uiPanel.toggleSettings"
       class="hitbox-button"
-      :class="{ 'is-active': ui.activeTab === 'settings' }"
+      :class="{ 'is-active': uiPanel.activeTab === 'settings' }"
       title="Graphics Settings"
     >
       <div class="button-primary">
         <IconSettings
           class="settings-gear"
-          :class="{ spinning: ui.activeTab === 'settings' }"
+          :class="{ spinning: uiPanel.activeTab === 'settings' }"
         />
       </div>
     </button>

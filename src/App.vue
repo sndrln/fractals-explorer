@@ -8,6 +8,7 @@ import { useMouseInteraction } from "./composables/useMouseInteraction";
 import { useFractalStore } from "./store/useFractalStore";
 import { useInputStore } from "./store/useInputStore";
 import { usePresetStore } from "./store/usePresetStore";
+import type { FormulaId } from "./types/fractal";
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);
 const input = useInputStore();
@@ -25,7 +26,7 @@ watch(
   () => [route.params.formulaId, route.params.presetId],
   ([formulaId, presetId]) => {
     if (formulaId && formulaId !== fractal.formulaId) {
-      fractal.setFormula(formulaId as string);
+      fractal.setFormula(formulaId as FormulaId);
     }
 
     if (presetId) {

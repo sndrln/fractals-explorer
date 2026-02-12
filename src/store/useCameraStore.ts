@@ -1,19 +1,16 @@
-import { defineStore } from "pinia";
 import gsap from "gsap";
-import { useInputStore } from "./useInputStore";
+import { defineStore } from "pinia";
 import { FORMULAS } from "../constants/formulas";
+import { useInputStore } from "./useInputStore";
 
-export const useViewStore = defineStore("view", {
+export const useCameraStore = defineStore("camera", {
   state: () => ({
-    zoom: FORMULAS[0].zoom,
-    offset: {
-      x: FORMULAS[0].offsetShiftX,
-      y: FORMULAS[0].offsetShiftY,
-    },
+    zoom: FORMULAS[0].cameraZoom,
+    offset: FORMULAS[0].cameraOffset,
   }),
 
   actions: {
-    resetView() {
+    resetCamera(): void {
       gsap.to(this, {
         zoom: 2.0,
         duration: 1.5,
@@ -28,7 +25,7 @@ export const useViewStore = defineStore("view", {
       });
     },
 
-    smoothZoom(delta: number) {
+    smoothZoom(delta: number): void {
       const interaction = useInputStore();
       const zoomSpeed = 0.2;
       const factor = delta > 0 ? 1 + zoomSpeed : 1 - zoomSpeed;

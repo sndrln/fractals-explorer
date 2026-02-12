@@ -1,25 +1,33 @@
 import { onMounted, onUnmounted, shallowRef, watch, type Ref } from "vue";
 import { FractalEngine } from "../engine/FractalEngine";
+import { useCameraStore } from "../store/useCameraStore";
 import { useColoringStore } from "../store/useColoringStore";
 import { useFractalStore } from "../store/useFractalStore";
 import { useGraphicsStore } from "../store/useGraphicsStore";
 import { useInputStore } from "../store/useInputStore";
 import { useModifierStore } from "../store/useModifierStore";
 import { usePaletteStore } from "../store/usePaletteStore";
-import { useViewStore } from "../store/useViewStore";
 
 const engineInstance = shallowRef<FractalEngine | null>(null);
 
 export function useFractalEngine(canvasRef?: Ref<HTMLCanvasElement | null>) {
   const fractal = useFractalStore();
   const input = useInputStore();
-  const view = useViewStore();
+  const camera = useCameraStore();
   const palette = usePaletteStore();
   const modifier = useModifierStore();
   const coloring = useColoringStore();
   const graphics = useGraphicsStore();
 
-  const state = { fractal, input, view, palette, modifier, coloring, graphics };
+  const state = {
+    fractal,
+    input,
+    camera,
+    palette,
+    modifier,
+    coloring,
+    graphics,
+  };
 
   const init = () => {
     if (canvasRef?.value && !engineInstance.value) {
@@ -34,9 +42,8 @@ export function useFractalEngine(canvasRef?: Ref<HTMLCanvasElement | null>) {
   const syncShader = () => {
     engineInstance.value?.updateActiveShader({
       formulaId: fractal.formulaId,
-      memoryMode: modifier.slots.memory,
-      zMode: modifier.slots.zMod,
-      cMode: modifier.slots.cMod,
+      // Updated to match new ModifiedParameter keys and ModifierConfig structure
+      modifiers: modifier.modifiers,
       coloringMode: coloring.currentMode,
       useSSAA: graphics.useSSAA,
     });
@@ -51,11 +58,9 @@ export function useFractalEngine(canvasRef?: Ref<HTMLCanvasElement | null>) {
     let h: number;
 
     if (graphics.isManual && res.width && res.height) {
-      // 1. Manual Mode: Use the preset dimensions
       w = res.width * scale;
       h = res.height * scale;
     } else {
-      // 2. Native Mode: Use the current window size
       w = window.innerWidth * dpr * scale;
       h = window.innerHeight * dpr * scale;
     }
@@ -66,9 +71,10 @@ export function useFractalEngine(canvasRef?: Ref<HTMLCanvasElement | null>) {
   watch(
     [
       () => fractal.formulaId,
-      () => modifier.slots.memory,
-      () => modifier.slots.zMod,
-      () => modifier.slots.cMod,
+      // Watching the specific modifierId inside the config objects
+      () => modifier.modifiers.zPrev.modifierId,
+      () => modifier.modifiers.z.modifierId,
+      () => modifier.modifiers.c.modifierId,
       () => coloring.currentMode,
       () => graphics.useSSAA,
     ],

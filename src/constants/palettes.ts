@@ -1,4 +1,4 @@
-import type { Palette } from "../types/ui";
+import type { Palette } from "../types/coloring";
 
 export const palettes: Palette[] = [
   {

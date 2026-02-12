@@ -1,9 +1,9 @@
 import { defineStore } from "pinia";
-import type { FractalParams } from "../types/fractal";
-import type { PointerBindings } from "../types/ui";
+import type { ParameterUnitId } from "../types/parameter";
+import type { PointerAxis } from "../types/ui";
 import { useFractalStore } from "./useFractalStore";
 
-export const useInputStore = defineStore("interaction", {
+export const useInputStore = defineStore("input", {
   state: () => ({
     mouse: {
       x: 0,
@@ -14,12 +14,16 @@ export const useInputStore = defineStore("interaction", {
       smoothedY: 0,
     },
     sensitivity: 1.0,
-    activeAxis: null as "x" | "y" | null,
-    lockedAxis: null as "x" | "y" | null,
+    activeAxis: null as PointerAxis,
+    lockedAxis: null as PointerAxis,
+
+    // Maps an axis (x/y) to a list of specific parameters (e.g., "seedR")
     bindings: {
       x: ["memoryR"],
       y: ["memoryI"],
-    } as PointerBindings,
+    } as Record<PointerAxis, ParameterUnitId[]>,
+
+    isVelocityMode: false,
     isPaused: false,
   }),
 
@@ -30,19 +34,16 @@ export const useInputStore = defineStore("interaction", {
 
       if (!this.isPaused) {
         if (isShiftPressed) {
-          // If we haven't locked an axis yet, decide now based on current position
           if (!this.lockedAxis) {
             this.lockedAxis = Math.abs(x) > Math.abs(y) ? "x" : "y";
           }
 
-          // Only update the axis that was locked in
           if (this.lockedAxis === "x") {
             this.mouse.inputX = x;
           } else {
             this.mouse.inputY = y;
           }
         } else {
-          // Shift is not pressed: Reset the lock and update normally
           this.lockedAxis = null;
           this.mouse.inputX = x;
           this.mouse.inputY = y;
@@ -59,34 +60,33 @@ export const useInputStore = defineStore("interaction", {
       this.mouse.smoothedY += (this.mouse.inputY - this.mouse.smoothedY) * 0.08;
     },
 
-    toggleTargetAxis(axis: "x" | "y") {
+    toggleTargetAxis(axis: PointerAxis) {
       this.activeAxis = this.activeAxis === axis ? null : axis;
     },
 
-    bindVariable(paramKey: keyof FractalParams) {
+    // Binds a specific unit (e.g., "seedR") to the active axis
+    bindVariable(paramKey: ParameterUnitId) {
       if (!this.activeAxis) return;
 
       this.unbindVariable(paramKey, "x");
       this.unbindVariable(paramKey, "y");
-
       this.bindings[this.activeAxis].push(paramKey);
     },
-    commitLiveValues(keys: (keyof FractalParams)[]) {
+
+    commitLiveValues(keys: ParameterUnitId[]) {
       const fractal = useFractalStore();
       keys.forEach((key) => {
-        if (fractal.params.live[key] !== undefined) {
-          fractal.params.slider[key] = fractal.params.live[key];
+        if (fractal.parameters.live[key] !== undefined) {
+          fractal.parameters.slider[key] = fractal.parameters.live[key];
         }
       });
     },
 
-    unbindVariable(paramKey: keyof FractalParams, axis: "x" | "y") {
+    unbindVariable(paramKey: ParameterUnitId, axis: PointerAxis) {
       if (this.isPaused) {
         this.commitLiveValues([paramKey]);
       }
-      this.bindings[axis] = this.bindings[axis].filter(
-        (v) => v !== paramKey,
-      ) as (keyof FractalParams)[];
+      this.bindings[axis] = this.bindings[axis].filter((v) => v !== paramKey);
     },
 
     unbindAll() {
@@ -97,11 +97,11 @@ export const useInputStore = defineStore("interaction", {
       this.bindings.y = [];
     },
 
-    toggleGroupBinding(params: {
-      x?: keyof FractalParams;
-      y?: keyof FractalParams;
+    toggleGroupBinding(parameterBindings: {
+      x?: ParameterUnitId;
+      y?: ParameterUnitId;
     }) {
-      const { x, y } = params;
+      const { x, y } = parameterBindings;
 
       const xBound = x ? this.bindings.x.includes(x) : true;
       const yBound = y ? this.bindings.y.includes(y) : true;
@@ -121,7 +121,7 @@ export const useInputStore = defineStore("interaction", {
       }
     },
 
-    isParamBound(paramKey: keyof FractalParams): "x" | "y" | null {
+    isParamBound(paramKey: ParameterUnitId): PointerAxis | null {
       if (this.bindings.x.includes(paramKey)) return "x";
       if (this.bindings.y.includes(paramKey)) return "y";
       return null;

@@ -1,41 +1,24 @@
 import type { ColorKey } from "../constants/ui/theme";
-import type { FractalParams, FractalType } from "./fractal";
+import type { ParameterUnitId } from "./parameter";
 
-export interface ControlGroup {
+export interface SliderGroup {
   label: string;
   colorKey: ColorKey;
   sliders: SliderSchema[];
 }
 
-export interface SliderSchema {
-  paramKey: keyof FractalParams;
-  step?: number;
-  min?: number;
-  max?: number;
-  suffix?: string;
+export interface SliderSchema extends SliderConstraints {
+  parameterUnitId: ParameterUnitId;
+  unitSuffix?: string; // e.g. "i"
   showPlus?: boolean;
 }
-export interface PointerBindings {
-  x: Array<keyof FractalParams>;
-  y: Array<keyof FractalParams>;
-}
 
-export interface Palette {
-  brightness: number[];
-  contrast: number[];
-  osc: number[];
-  phase: number[];
+export interface SliderConstraints {
+  min?: number;
+  max?: number;
+  step?: number; // How much value changes with drag
 }
+// Axis of mouse / finger movement
+export type PointerAxis = "x" | "y" | null;
 
-export interface FormulaDefinition {
-  id: string;
-  name: string;
-  fractalType: FractalType;
-  shaderSource: string;
-  displayString: string;
-  customUI?: Array<ControlGroup>;
-  zoom?: number;
-  offsetShiftX?: number;
-  offsetShiftY?: number;
-  defaults?: Partial<Record<keyof FractalParams, number>>;
-}
+export type ActivePanelTab = "controls" | "settings";

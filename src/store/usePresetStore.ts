@@ -3,16 +3,16 @@ import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import type { Preset } from "../types/preset";
 import { generateId } from "../utils/generateId";
+import { useCameraStore } from "./useCameraStore";
 import { useColoringStore } from "./useColoringStore";
 import { useFractalStore } from "./useFractalStore";
 import { useInputStore } from "./useInputStore";
 import { useModifierStore } from "./useModifierStore";
 import { usePaletteStore } from "./usePaletteStore";
-import { useViewStore } from "./useViewStore";
 
 export const usePresetStore = defineStore("presets", () => {
   const fractal = useFractalStore();
-  const view = useViewStore();
+  const camera = useCameraStore();
   const palette = usePaletteStore();
   const input = useInputStore();
   const modifier = useModifierStore();
@@ -48,20 +48,19 @@ export const usePresetStore = defineStore("presets", () => {
   function applyPreset(preset: Preset) {
     currentPresetId.value = preset.id;
 
+    // Distribute data to the specific stores
     fractal.formulaId = preset.formulaId;
-    modifier.slots.memory = preset.memoryMode || "NONE";
-    modifier.slots.cMod = preset.cMode || "NONE";
-    modifier.slots.zMod = preset.zMode || "NONE";
+    // modifier.modifiers = { ...preset.modifiers };
     coloring.currentMode = preset.coloringMode || "DEFAULT";
-    fractal.params.slider = { ...preset.fractalParams };
-    fractal.updateAnchorParams();
+    fractal.parameters.slider = { ...preset.parameterValues };
 
-    view.zoom = preset.zoom;
-    view.offset.x = preset.offset.x;
-    view.offset.y = preset.offset.y;
+    // We do NOT load configMap anymore, as it is deprecated
+    fractal.updateAnchorParameters();
+
+    camera.zoom = preset.cameraZoom;
+    camera.offset = { ...preset.cameraOffset };
 
     palette.setPalette(preset.palette);
-    input.bindings = JSON.parse(JSON.stringify(preset.bindings));
   }
 
   function nextPreset() {
@@ -81,32 +80,39 @@ export const usePresetStore = defineStore("presets", () => {
   }
 
   function saveCurrentAsPreset(label: string) {
-    // TODO
-    delete (fractal.params.slider as any)._gsap;
+    // Clean up GSAP internal properties if they exist
+    const cleanValues = { ...fractal.parameters.slider };
+    delete (cleanValues as any)._gsap;
+
     const newPreset: Preset = {
       id: generateId(),
       label,
       fractalType: fractal.currentType,
       formulaId: fractal.formulaId,
-      memoryMode: modifier.slots.memory,
-      zMode: modifier.slots.zMod,
-      cMode: modifier.slots.cMod,
+      maxIterations: fractal.maxIterations,
+      // Removed parameterConfigMap
+      parameterValues: cleanValues,
+      // modifiers: JSON.parse(JSON.stringify(modifier.modifiers)),
       coloringMode: coloring.currentMode,
-      fractalParams: { ...fractal.params.slider },
-      bindings: JSON.parse(JSON.stringify(input.bindings)),
       sensitivity: input.sensitivity,
-      zoom: view.zoom,
-      offset: { x: view.offset.x, y: view.offset.y },
+      cameraZoom: camera.zoom,
+      cameraOffset: { ...camera.offset },
       palette: JSON.parse(JSON.stringify(palette.selectedPalette)),
     };
 
     savedPresets.value.push(newPreset);
+    localStorage.setItem("fractal_presets", JSON.stringify(savedPresets.value));
   }
 
   function deletePreset(id: string) {
     const index = savedPresets.value.findIndex((p) => p.id === id);
     if (index !== -1) {
       savedPresets.value.splice(index, 1);
+      localStorage.setItem(
+        "fractal_presets",
+        JSON.stringify(savedPresets.value),
+      );
+
       if (currentPresetId.value === id) {
         currentPresetId.value = null;
         router.push(`/${fractal.formulaId}`);

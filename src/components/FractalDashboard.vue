@@ -1,40 +1,36 @@
 <script setup lang="ts">
-import { computed } from "vue";
+import { useCameraStore } from "../store/useCameraStore";
 import { useFractalStore } from "../store/useFractalStore";
 import { useGraphicsStore } from "../store/useGraphicsStore";
 import { useInputStore } from "../store/useInputStore";
-import { useModifierStore } from "../store/useModifierStore";
-import { useViewStore } from "../store/useViewStore";
 import BaseSlider from "./fractal-controls/BaseSlider.vue";
 import ColoringMode from "./fractal-controls/ColoringMode.vue";
 import FormulaDisplay from "./fractal-controls/FormulaDisplay.vue";
 import FractalControls from "./fractal-controls/FractalControls.vue";
-import MemoryMode from "./fractal-controls/MemoryMode.vue";
 import PresetGallery from "./fractal-controls/PresetGallery.vue";
 import InputAxisBindings from "./InputAxisBindings.vue";
 import PaletteSelector from "./PaletteSelector.vue";
-import BaseDropdown from "./ui/BaseDropdown.vue";
 
 const fractal = useFractalStore();
-const view = useViewStore();
+const view = useCameraStore();
 const input = useInputStore();
 const graphics = useGraphicsStore();
-const modifier = useModifierStore();
+// const modifier = useModifierStore();
 
-const zModLabel = computed(() => {
-  const option = modifier.allOptions.find(
-    (opt) => opt.value === modifier.slots.zMod,
-  );
-  return option ? option.label : "None";
-});
+// const zModLabel = computed(() => {
+//   const option = modifier.allOptions.find(
+//     (opt) => opt.value === modifier.slots.zMod,
+//   );
+//   return option ? option.label : "None";
+// });
 
-// Finds the label for the C-Mod slot
-const cModLabel = computed(() => {
-  const option = modifier.allOptions.find(
-    (opt) => opt.value === modifier.slots.cMod,
-  );
-  return option ? option.label : "None";
-});
+// // Finds the label for the C-Mod slot
+// const cModLabel = computed(() => {
+//   const option = modifier.allOptions.find(
+//     (opt) => opt.value === modifier.slots.cMod,
+//   );
+//   return option ? option.label : "None";
+// });
 </script>
 
 <template>
@@ -62,7 +58,7 @@ const cModLabel = computed(() => {
       <div class="slider-container">
         <span class="slider-label">Iterations</span>
         <BaseSlider
-          v-model="fractal.params.slider.maxIterations"
+          v-model="fractal.maxIterations"
           :min="10"
           :step="1"
           default-value="100"
@@ -70,9 +66,10 @@ const cModLabel = computed(() => {
         />
       </div>
       <div class="slider-container"></div>
+      <!-- intentional for 1/4 width division  -->
     </div>
 
-    <MemoryMode />
+    <!-- <MemoryMode />
     <div class="settings-section">
       <label class="control-label">Structure (Z-Mod)</label>
       <BaseDropdown
@@ -91,7 +88,7 @@ const cModLabel = computed(() => {
         :options="modifier.allOptions"
         :displayValue="cModLabel"
       />
-    </div>
+    </div> -->
     <section class="modes-grid">
       <PaletteSelector />
       <ColoringMode />

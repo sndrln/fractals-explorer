@@ -2,11 +2,11 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { FORMULAS } from "../constants/formulas";
 import { useFractalStore } from "../store/useFractalStore";
-import { useUIStore } from "../store/useUIstore";
+import { useUiPanelStore } from "../store/useUIstore";
 import FormulaDisplay from "./fractal-controls/FormulaDisplay.vue";
 
 const fractal = useFractalStore();
-const ui = useUIStore();
+const uiPanel = useUiPanelStore();
 const activeTab = ref(0);
 
 const categories = [
@@ -30,20 +30,20 @@ onMounted(() => {
 
 const handleKeyDown = (e: KeyboardEvent) => {
   const key = parseInt(e.key);
-  if (key >= 1 && key <= 4 && !ui.isNavOpen) {
+  if (key >= 1 && key <= 4 && !uiPanel.isFractalSelectionOpen) {
     activeTab.value = key - 1;
-    ui.isNavOpen = true;
+    uiPanel.isFractalSelectionOpen = true;
     return;
   }
-  if (ui.isNavOpen && !isNaN(key)) {
+  if (uiPanel.isFractalSelectionOpen && !isNaN(key)) {
     const index = key === 0 ? 9 : key - 1;
     const target = hoveredFormulas.value[index];
     if (target) {
       fractal.setFormula(target.id);
-      ui.isNavOpen = false;
+      uiPanel.isFractalSelectionOpen = false;
     }
   }
-  if (e.key === "Escape") ui.isNavOpen = false;
+  if (e.key === "Escape") uiPanel.isFractalSelectionOpen = false;
 };
 
 onMounted(() => window.addEventListener("keydown", handleKeyDown));
@@ -55,7 +55,7 @@ const getThumb = (id: string) =>
 
 <template>
   <Transition name="panel-zoom">
-    <div v-if="ui.isNavOpen" class="navigation-overlay">
+    <div v-if="uiPanel.isFractalSelectionOpen" class="navigation-overlay">
       <div class="tabs">
         <button
           v-for="(cat, i) in categories"
@@ -79,7 +79,7 @@ const getThumb = (id: string) =>
           :class="{ 'is-current': f.id === fractal.formulaId }"
           @click="
             fractal.setFormula(f.id);
-            ui.isNavOpen = false;
+            uiPanel.isFractalSelectionOpen = false;
           "
         >
           <div class="thumb">

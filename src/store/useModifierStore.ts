@@ -1,50 +1,68 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-import { ALL_MODIFIERS, type ModifierID } from "../constants/modifiers";
-
-// Define our "Sockets"
-export type ModifierSlot = "zMod" | "cMod" | "memory";
+import { MODIFIER_METADATA } from "../constants/modifiers";
+import type {
+  ModifiedParameter,
+  ModifierConfig,
+  ModifierId,
+} from "../types/parameter";
 
 export const useModifierStore = defineStore("modifiers", () => {
-  // 1. State: One entry per slot
-  const slots = ref<Record<ModifierSlot, ModifierID>>({
-    zMod: "NONE",
-    cMod: "NONE",
-    memory: "NONE",
+  // The state now just holds the config for the 3 key slots
+  const modifiers = ref<Record<ModifiedParameter, ModifierConfig>>({
+    z: { modifierId: "NONE", intensity: 0, conditionId: "ALWAYS" },
+    c: { modifierId: "NONE", intensity: 0, conditionId: "ALWAYS" },
+    zPrev: { modifierId: "NONE", intensity: 0, conditionId: "ALWAYS" },
   });
 
-  // 2. Actions: Flexible targeting
-  const setModifier = (slot: ModifierSlot, id: ModifierID) => {
-    slots.value[slot] = id;
+  const modifierIds = Object.keys(MODIFIER_METADATA) as ModifierId[];
+
+  const setModifier = (
+    target: ModifiedParameter,
+    config: Partial<ModifierConfig>,
+  ) => {
+    modifiers.value[target] = { ...modifiers.value[target], ...config };
   };
 
-  const stepOperator = (slot: ModifierSlot, direction: 1 | -1) => {
-    const currentId = slots.value[slot];
-    const index = ALL_MODIFIERS.findIndex((m) => m.value === currentId);
+  /**
+   * Cycles through available modifiers
+   */
+  const stepModifier = (
+    modifiedParameter: ModifiedParameter,
+    direction: 1 | -1,
+  ) => {
+    const currentModifierId = modifiers.value[modifiedParameter].modifierId;
+    const currentIndex = modifierIds.indexOf(currentModifierId);
+
     const nextIndex =
-      (index + direction + ALL_MODIFIERS.length) % ALL_MODIFIERS.length;
-    slots.value[slot] = ALL_MODIFIERS[nextIndex].value;
+      (currentIndex + direction + modifierIds.length) % modifierIds.length;
+
+    modifiers.value[modifiedParameter].modifierId = modifierIds[nextIndex];
   };
 
-  // 3. Shader Integration Helper
-  // Generates defines like: { Z_PRE_ABS: true, C_FEEDBACK_SIN: true }
-  const getShaderDefines = computed(() => {
+  /**
+   * Generates a flat object of defines for the shader re-compile.
+   * e.g., { Z_POLAR: true, ZPREV_ABS_BOTH: true }
+   */
+  const shaderDefines = computed(() => {
     const defines: Record<string, boolean> = {};
 
-    Object.entries(slots.value).forEach(([slot, mode]) => {
-      if (mode !== "NONE") {
-        const key = `${slot.toUpperCase()}_${mode}`;
+    for (const [slot, config] of Object.entries(modifiers.value)) {
+      if (config.modifierId !== "NONE") {
+        // Example: "Z" + "_" + "SIN" -> "Z_SIN"
+        const key = `${slot.toUpperCase()}_${config.modifierId}`;
         defines[key] = true;
       }
-    });
+    }
 
     return defines;
   });
+
   return {
-    slots,
+    modifiers,
     setModifier,
-    stepOperator,
-    getShaderDefines,
-    allOptions: ALL_MODIFIERS,
+    stepModifier,
+    shaderDefines,
+    availableModifiers: MODIFIER_METADATA,
   };
 });

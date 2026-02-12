@@ -1,4 +1,4 @@
-import { DEFAULT_FRACTAL_PARAMS } from "../constants/base-fractal-params";
+import { DEFAULT_PARAMETER_VALUES } from "../constants/default-parameter-values";
 import { FORMULAS } from "../constants/formulas";
 import vertSource from "../shaders/base.vert";
 import escapeCore from "../shaders/cores/escape_core.glsl?raw";
@@ -13,8 +13,12 @@ import complexMath from "../shaders/shared/complex_math.glsl?raw";
 import memoryModes from "../shaders/shared/memory_modes.glsl?raw";
 import modifiers from "../shaders/shared/modifiers.glsl?raw";
 import zModes from "../shaders/shared/z_modes.glsl?raw";
+import type {
+  ModifiedParameter,
+  ModifierConfig,
+  ParameterUnitId,
+} from "../types/parameter";
 
-import type { FractalParams } from "../types/fractal";
 import { processShader } from "../utils/shaderLoader";
 
 const shaderLibrary = {
@@ -42,7 +46,7 @@ const UNIFORM_NAMES = [
   "contrast",
   "osc",
   "phase",
-  ...Object.keys(DEFAULT_FRACTAL_PARAMS),
+  ...Object.keys(DEFAULT_PARAMETER_VALUES),
 ];
 
 export class FractalEngine {
@@ -73,13 +77,11 @@ export class FractalEngine {
 
   public updateActiveShader(config: {
     formulaId: string;
-    memoryMode: string;
-    zMode: string;
-    cMode: string;
+    modifiers: Record<ModifiedParameter, ModifierConfig>;
     coloringMode: string;
     useSSAA: boolean;
   }) {
-    const cacheKey = `${config.formulaId}_${config.memoryMode}_${config.zMode}_${config.cMode}_COL_${config.coloringMode}_SSAA_${config.useSSAA}`;
+    const cacheKey = `${config.formulaId}_${config.modifiers.zPrev.modifierId}_${config.modifiers.z.modifierId}_${config.modifiers.c.modifierId}_COL_${config.coloringMode}_SSAA_${config.useSSAA}`;
 
     if (this.programCache.has(cacheKey)) {
       this.activeProgram = this.programCache.get(cacheKey)!;
@@ -97,9 +99,9 @@ export class FractalEngine {
 
         // 1. DEFINES
         ${config.useSSAA ? "#define USE_SSAA" : ""}
-        #define MEM_${config.memoryMode}
-        #define ZMOD_${config.zMode}
-        #define CMOD_${config.cMode}
+        #define MEM_${config.modifiers.zPrev.modifierId}
+        #define ZMOD_${config.modifiers.z.modifierId}
+        #define CMOD_${config.modifiers.c.modifierId}
         #define COL_${config.coloringMode}
 
         // 2. HEADERS & MATH (The Foundation)
@@ -173,8 +175,8 @@ export class FractalEngine {
     const loopCount = 1;
     const angle = progress * Math.PI * 2.0 * loopCount;
 
-    // state.fractal.params.slider.powerI = 0.5 + Math.sin(angle) * 0.5;
-    state.fractal.params.slider.memoryI = Math.cos(angle) * 0.25;
+    // state.fractal.parameters.slider.powerI = 0.5 + Math.sin(angle) * 0.5;
+    state.fractal.parameters.slider.memoryI = Math.cos(angle) * 0.25;
   };
 
   public render(state: any, manualTime?: number) {
@@ -207,24 +209,30 @@ export class FractalEngine {
       this.canvas.width,
       this.canvas.height,
     );
-    this.gl.uniform1f(this.uniformLocations.zoom, state.view.zoom);
-    this.gl.uniform1f(this.uniformLocations.offsetShiftX, state.view.offset.x);
-    this.gl.uniform1f(this.uniformLocations.offsetShiftY, state.view.offset.y);
+    this.gl.uniform1f(this.uniformLocations.zoom, state.camera.zoom);
+    this.gl.uniform1f(
+      this.uniformLocations.offsetShiftX,
+      state.camera.offset.x,
+    );
+    this.gl.uniform1f(
+      this.uniformLocations.offsetShiftY,
+      state.camera.offset.y,
+    );
     this.gl.uniform1f(
       this.uniformLocations.maxIterations,
-      state.fractal.params.slider.maxIterations,
+      state.fractal.maxIterations,
     );
     this.gl.uniform1f(this.uniformLocations.time, time);
 
     // Dynamic Parameter Logic
-    const keys = Object.keys(state.fractal.params.slider) as Array<
-      keyof FractalParams
-    >;
+    const keys = Object.keys(
+      state.fractal.parameters.slider,
+    ) as Array<ParameterUnitId>;
     keys.forEach((key) => {
       const loc = this.uniformLocations[key];
       if (!loc) return;
 
-      const baseVal = state.fractal.params.slider[key];
+      const baseVal = state.fractal.parameters.slider[key];
       const sens =
         (key.toLowerCase().includes("power") ? 0.3 : 1.0) *
         state.input.sensitivity;
@@ -237,7 +245,7 @@ export class FractalEngine {
       }
 
       this.gl.uniform1f(loc, liveVal);
-      state.fractal.params.live[key] = liveVal;
+      state.fractal.parameters.live[key] = liveVal;
     });
 
     // Palette

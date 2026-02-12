@@ -1,14 +1,6 @@
 import { defineStore } from "pinia";
 import { computed, ref } from "vue";
-
-export type QualityLevel = "low" | "medium" | "high" | "ultra" | "custom";
-
-export interface ResolutionConfig {
-  label: string;
-  width?: number;
-  height?: number;
-  scale: number;
-}
+import type { QualityLevel, ResolutionConfig } from "../types/engine";
 
 export const useGraphicsStore = defineStore("graphics", () => {
   const qualityLevel = ref<QualityLevel>("medium");

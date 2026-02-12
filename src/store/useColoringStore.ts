@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
-import type { ColoringMode } from "../types/fractal";
+import type { ColoringMode } from "../types/coloring";
 
 export const useColoringStore = defineStore("coloring", () => {
   const modes: { label: string; value: ColoringMode }[] = [

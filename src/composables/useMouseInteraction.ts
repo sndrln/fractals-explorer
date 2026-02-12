@@ -1,12 +1,12 @@
 import { onMounted, onUnmounted } from "vue";
+import { useCameraStore } from "../store/useCameraStore";
 import { useInputStore } from "../store/useInputStore";
-import { useViewStore } from "../store/useViewStore";
 
 export function useMouseInteraction(canvasRef: {
   value: HTMLCanvasElement | null;
 }) {
   const input = useInputStore();
-  const view = useViewStore();
+  const view = useCameraStore();
   let isCanvasDragging = false;
 
   const updateMousePos = (e: MouseEvent) => {

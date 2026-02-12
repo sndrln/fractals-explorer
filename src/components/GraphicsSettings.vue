@@ -3,7 +3,8 @@ import { computed } from "vue";
 import BaseDropdown from "./ui/BaseDropdown.vue";
 
 import { useFractalEngine } from "../composables/useFractalEngine";
-import { useGraphicsStore, type QualityLevel } from "../store/useGraphicsStore";
+import { useGraphicsStore } from "../store/useGraphicsStore";
+import type { QualityLevel } from "../types/engine";
 
 const graphics = useGraphicsStore();
 const fractalEngine = useFractalEngine();

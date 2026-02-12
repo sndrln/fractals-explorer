@@ -1,7 +1,11 @@
 import { computed } from "vue";
+import {
+  type ColorKey,
+  PARAMETER_COLOR_MAP,
+  UI_COLORS,
+} from "../constants/ui/theme";
 import { useFractalStore } from "../store/useFractalStore";
-import { type ColorKey, UI_COLORS, VAR_COLOR_MAP } from "../constants/ui/theme";
-import type { FractalParams } from "../types/fractal";
+import type { ParameterUnitId } from "../types/parameter";
 
 export function useFractalTheme() {
   const fractal = useFractalStore();
@@ -10,13 +14,13 @@ export function useFractalTheme() {
     return UI_COLORS[key] || UI_COLORS.default;
   };
 
-  const getVarColor = (varName: keyof FractalParams): string => {
-    return VAR_COLOR_MAP[varName];
+  const getVarColor = (parameterUnitId: ParameterUnitId): string => {
+    return PARAMETER_COLOR_MAP[parameterUnitId];
   };
 
   // Centralized Math Symbol Logic
   const mathStyles = computed(() => {
-    const ratio = fractal.params.slider.juliaMorph;
+    const ratio = fractal.parameters.slider.juliaMorph;
     const isJuliaMode = ratio > 0.5;
 
     const baseStyle = {

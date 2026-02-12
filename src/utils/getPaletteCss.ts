@@ -1,6 +1,6 @@
-import type { Palette } from "../types/ui";
+import type { Palette } from "../types/coloring";
 
-const clamp = (val: number) => Math.max(0, Math.min(255, val));
+const clamp = (val: number): number => Math.max(0, Math.min(255, val));
 
 export function getPaletteCSS(palette: Palette) {
   const samples = [];

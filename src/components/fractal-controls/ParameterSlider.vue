@@ -3,15 +3,15 @@ import gsap from "gsap";
 import { computed, onUnmounted, ref, watch } from "vue";
 import { useFractalStore } from "../../store/useFractalStore";
 import { useInputStore } from "../../store/useInputStore";
-import type { FractalParams } from "../../types/fractal";
+import type { ParameterUnitId } from "../../types/parameter";
 
 const props = defineProps<{
   modelValue: number;
-  step: number;
+  step?: number;
   min?: number;
   max?: number;
   color: string;
-  paramKey: keyof FractalParams;
+  parameterUnitId: ParameterUnitId;
 }>();
 
 const fractal = useFractalStore();
@@ -63,13 +63,13 @@ let startX = 0;
 let startValue = 0;
 
 const currentValue = computed(() => {
-  const key = props.paramKey;
-  return fractal.params.live[key];
+  const key = props.parameterUnitId;
+  return fractal.parameters.live[key];
 });
 
 const handleClick = (e: MouseEvent) => {
   if (input.activeAxis) {
-    input.bindVariable(props.paramKey);
+    input.bindVariable(props.parameterUnitId);
   } else {
     startDrag(e);
   }
@@ -77,7 +77,7 @@ const handleClick = (e: MouseEvent) => {
 
 const handleReset = (e: MouseEvent) => {
   e.stopPropagation();
-  const defaultValue = fractal.params.initial[props.paramKey];
+  const defaultValue = fractal.parameters.initial[props.parameterUnitId];
 
   if (defaultValue === undefined) return;
 

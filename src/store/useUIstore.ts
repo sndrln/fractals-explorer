@@ -1,26 +1,29 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import type { ActivePanelTab } from "../types/ui";
 
-export const useUIStore = defineStore("ui", () => {
-  const isUiVisible = ref(true);
-  const isNavOpen = ref(false); // New state for formula overlay
-  const activeTab = ref<"controls" | "settings">("controls");
+export const useUiPanelStore = defineStore("uiPanel", () => {
+  const isUiPanelVisible = ref(true);
+  const isFractalSelectionOpen = ref(false);
+  const activeTab = ref<ActivePanelTab>("controls");
 
-  const toggleUi = () => (isUiVisible.value = !isUiVisible.value);
-  const openUi = () => (isUiVisible.value = true);
-  const toggleNav = () => (isNavOpen.value = !isNavOpen.value);
-  const toggleSettings = () => {
+  // const selectedParameterKey = ref<ParameterKey | null>(null); // to be added
+
+  const toggleUiPanel = () =>
+    (isUiPanelVisible.value = !isUiPanelVisible.value);
+  const toggleFractalSelection = () =>
+    (isFractalSelectionOpen.value = !isFractalSelectionOpen.value);
+  const toggleSettings = (): void => {
     activeTab.value = activeTab.value === "settings" ? "controls" : "settings";
-    if (activeTab.value === "settings") isNavOpen.value = false; // Close nav if settings open
+    isFractalSelectionOpen.value = false;
   };
 
   return {
-    isUiVisible,
-    isNavOpen,
+    isUiPanelVisible,
+    isFractalSelectionOpen,
     activeTab,
-    toggleUi,
-    openUi,
-    toggleNav,
+    toggleUiPanel,
+    toggleFractalSelection,
     toggleSettings,
   };
 });

@@ -1,26 +1,25 @@
 import { onMounted, onUnmounted } from "vue";
+import { useCameraStore } from "../store/useCameraStore";
 import { useColoringStore } from "../store/useColoringStore";
 import { useFractalStore } from "../store/useFractalStore";
 import { useInputStore } from "../store/useInputStore";
 import { useModifierStore } from "../store/useModifierStore";
 import { usePaletteStore } from "../store/usePaletteStore";
 import { usePresetStore } from "../store/usePresetStore";
-import { useUIStore } from "../store/useUIstore";
-import { useViewStore } from "../store/useViewStore";
+import { useUiPanelStore } from "../store/useUIstore";
 import { captureThumbnail, downloadImage } from "../utils/screenshot";
 
 export function useKeyboardShortcuts() {
   const fractal = useFractalStore();
   const palette = usePaletteStore();
   const input = useInputStore();
-  const view = useViewStore();
-  const ui = useUIStore();
+  const view = useCameraStore();
+  const uiPanel = useUiPanelStore();
   const coloring = useColoringStore();
   const preset = usePresetStore();
   const modifier = useModifierStore();
 
   const handleKeyDown = (e: KeyboardEvent) => {
-    // Prevent triggering while typing in text boxes
     const target = e.target as HTMLElement;
     if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
 
@@ -28,12 +27,13 @@ export function useKeyboardShortcuts() {
       e.preventDefault();
       const direction = e.code === "KeyQ" ? -1 : 1;
 
+      // Updated to use new stepModifier action and ModifiedParameter strings
       if (e.shiftKey) {
-        modifier.stepOperator("memory", direction);
+        modifier.stepModifier("zPrev", direction);
       } else if (e.ctrlKey || e.metaKey) {
-        modifier.stepOperator("cMod", direction);
+        modifier.stepModifier("c", direction);
       } else {
-        modifier.stepOperator("zMod", direction);
+        modifier.stepModifier("z", direction);
       }
       return;
     }
@@ -62,19 +62,19 @@ export function useKeyboardShortcuts() {
         input.togglePause();
         break;
       case "KeyW":
-        view.resetView();
+        view.resetCamera();
         break;
       case "KeyX":
-        fractal.resetParams();
+        fractal.resetParameters();
         break;
       case "Backquote":
-        ui.toggleUi();
+        uiPanel.toggleUiPanel();
         break;
       case "KeyH":
-        ui.toggleSettings();
+        uiPanel.toggleSettings();
         break;
       case "KeyR":
-        fractal.randomizeParams();
+        fractal.randomizeParameters();
         break;
       case "KeyT":
         palette.generateRandomPalette();

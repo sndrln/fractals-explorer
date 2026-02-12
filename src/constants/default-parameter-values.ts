@@ -1,13 +1,11 @@
-import type { FractalParams } from "../types/fractal";
+import type { ParameterValues } from "../types/parameter";
 
-export const DEFAULT_FRACTAL_PARAMS: FractalParams = {
-  maxIterations: 100,
+export const DEFAULT_PARAMETER_VALUES: ParameterValues = {
   power: 2.0,
   powerI: 0.0,
   seedR: 0.0,
   seedI: 0.0,
   juliaMorph: 0.0,
-  // hybridMorph: 0.5,
   memoryR: 0.0,
   memoryI: 0.0,
   subtrahend: 1.0,
