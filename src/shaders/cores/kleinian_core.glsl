@@ -29,7 +29,7 @@ vec3 core_logic(vec2 uv) {
 
     // Apply Memory
     if (i > 0.0) {
-      zNext += complexMul(getMemoryTransform(zPrev), memFactor);
+      zNext += complexMul(applyMemoryModifier(zPrev), memFactor);
     }
 
     // State Update

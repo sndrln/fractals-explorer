@@ -47,7 +47,7 @@ const handleSelect = (option: { id: string }) => {
 
     <div class="settings-section">
       <BaseDropdown
-        label="Target Resolution"
+        label="Resolution"
         :model-value="graphics.resolutionPreset"
         :options="resolutionOptions"
         identity-key="id"

@@ -1,7 +1,9 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { useFractalStore } from "../store/useFractalStore";
 import { useGraphicsStore } from "../store/useGraphicsStore";
 import { useInputStore } from "../store/useInputStore";
+import { useModifierStore } from "../store/useModifierStore";
 import { useViewStore } from "../store/useViewStore";
 import BaseSlider from "./fractal-controls/BaseSlider.vue";
 import ColoringMode from "./fractal-controls/ColoringMode.vue";
@@ -11,11 +13,28 @@ import MemoryMode from "./fractal-controls/MemoryMode.vue";
 import PresetGallery from "./fractal-controls/PresetGallery.vue";
 import InputAxisBindings from "./InputAxisBindings.vue";
 import PaletteSelector from "./PaletteSelector.vue";
+import BaseDropdown from "./ui/BaseDropdown.vue";
 
 const fractal = useFractalStore();
 const view = useViewStore();
 const input = useInputStore();
 const graphics = useGraphicsStore();
+const modifier = useModifierStore();
+
+const zModLabel = computed(() => {
+  const option = modifier.allOptions.find(
+    (opt) => opt.value === modifier.slots.zMod,
+  );
+  return option ? option.label : "None";
+});
+
+// Finds the label for the C-Mod slot
+const cModLabel = computed(() => {
+  const option = modifier.allOptions.find(
+    (opt) => opt.value === modifier.slots.cMod,
+  );
+  return option ? option.label : "None";
+});
 </script>
 
 <template>
@@ -53,15 +72,33 @@ const graphics = useGraphicsStore();
       <div class="slider-container"></div>
     </div>
 
+    <MemoryMode />
+    <div class="settings-section">
+      <label class="control-label">Structure (Z-Mod)</label>
+      <BaseDropdown
+        v-model="modifier.slots.zMod"
+        identityKey="value"
+        :options="modifier.allOptions"
+        :displayValue="zModLabel"
+      />
+    </div>
+
+    <div class="settings-section">
+      <label class="control-label">Evolution (C-Mod)</label>
+      <BaseDropdown
+        v-model="modifier.slots.cMod"
+        identityKey="value"
+        :options="modifier.allOptions"
+        :displayValue="cModLabel"
+      />
+    </div>
     <section class="modes-grid">
-      <MemoryMode />
+      <PaletteSelector />
       <ColoringMode />
     </section>
 
     <section class="dashboard-section">
       <PresetGallery />
-
-      <PaletteSelector />
 
       <div class="action-row"></div>
     </section>

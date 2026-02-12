@@ -4,7 +4,7 @@ import { useColoringStore } from "../store/useColoringStore";
 import { useFractalStore } from "../store/useFractalStore";
 import { useGraphicsStore } from "../store/useGraphicsStore";
 import { useInputStore } from "../store/useInputStore";
-import { useMemoryStore } from "../store/useMemoryStore";
+import { useModifierStore } from "../store/useModifierStore";
 import { usePaletteStore } from "../store/usePaletteStore";
 import { useViewStore } from "../store/useViewStore";
 
@@ -15,11 +15,11 @@ export function useFractalEngine(canvasRef?: Ref<HTMLCanvasElement | null>) {
   const input = useInputStore();
   const view = useViewStore();
   const palette = usePaletteStore();
-  const memory = useMemoryStore();
+  const modifier = useModifierStore();
   const coloring = useColoringStore();
   const graphics = useGraphicsStore();
 
-  const state = { fractal, input, view, palette, memory, coloring, graphics };
+  const state = { fractal, input, view, palette, modifier, coloring, graphics };
 
   const init = () => {
     if (canvasRef?.value && !engineInstance.value) {
@@ -34,7 +34,9 @@ export function useFractalEngine(canvasRef?: Ref<HTMLCanvasElement | null>) {
   const syncShader = () => {
     engineInstance.value?.updateActiveShader({
       formulaId: fractal.formulaId,
-      memoryMode: memory.currentMode,
+      memoryMode: modifier.slots.memory,
+      zMode: modifier.slots.zMod,
+      cMode: modifier.slots.cMod,
       coloringMode: coloring.currentMode,
       useSSAA: graphics.useSSAA,
     });
@@ -64,7 +66,9 @@ export function useFractalEngine(canvasRef?: Ref<HTMLCanvasElement | null>) {
   watch(
     [
       () => fractal.formulaId,
-      () => memory.currentMode,
+      () => modifier.slots.memory,
+      () => modifier.slots.zMod,
+      () => modifier.slots.cMod,
       () => coloring.currentMode,
       () => graphics.useSSAA,
     ],

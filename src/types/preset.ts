@@ -1,9 +1,5 @@
-import type {
-  ColoringMode,
-  FractalParams,
-  FractalType,
-  MemoryMode,
-} from "./fractal";
+import type { ModifierID } from "../constants/modifiers";
+import type { ColoringMode, FractalParams, FractalType } from "./fractal";
 import type { Palette, PointerBindings } from "./ui";
 
 export interface Preset {
@@ -11,7 +7,9 @@ export interface Preset {
   label: string;
   fractalType: FractalType;
   formulaId: string;
-  memoryMode: MemoryMode;
+  memoryMode: ModifierID;
+  cMode: ModifierID;
+  zMode: ModifierID;
   coloringMode: ColoringMode;
   fractalParams: FractalParams;
   bindings: PointerBindings;

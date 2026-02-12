@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useMemoryStore } from "../../store/useMemoryStore";
+import { useModifierStore } from "../../store/useModifierStore";
 import BaseDropdown from "../ui/BaseDropdown.vue";
 
-const memory = useMemoryStore();
+const modifier = useModifierStore();
 
 // This is much more stable than doing it in-line
 const activeLabel = computed(() => {
   return (
-    memory.modes.find((m) => m.value === memory.currentMode)?.label || "None"
+    modifier.allOptions.find((m) => m.value === modifier.slots.memory)?.label ||
+    "None"
   );
 });
 </script>
@@ -16,8 +17,8 @@ const activeLabel = computed(() => {
 <template>
   <BaseDropdown
     label="Memory Operator"
-    v-model="memory.currentMode"
-    :options="memory.modes"
+    v-model="modifier.slots.memory"
+    :options="modifier.allOptions"
     identityKey="value"
     :displayValue="activeLabel"
   />

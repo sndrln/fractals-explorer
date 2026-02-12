@@ -1,13 +1,13 @@
 import { onMounted, onUnmounted } from "vue";
-import { useFractalStore } from "../store/useFractalStore";
-import { usePaletteStore } from "../store/usePaletteStore";
-import { useInputStore } from "../store/useInputStore";
-import { useViewStore } from "../store/useViewStore";
 import { useColoringStore } from "../store/useColoringStore";
-import { useMemoryStore } from "../store/useMemoryStore";
-import { captureThumbnail, downloadImage } from "../utils/screenshot";
+import { useFractalStore } from "../store/useFractalStore";
+import { useInputStore } from "../store/useInputStore";
+import { useModifierStore } from "../store/useModifierStore";
+import { usePaletteStore } from "../store/usePaletteStore";
 import { usePresetStore } from "../store/usePresetStore";
 import { useUIStore } from "../store/useUIstore";
+import { useViewStore } from "../store/useViewStore";
+import { captureThumbnail, downloadImage } from "../utils/screenshot";
 
 export function useKeyboardShortcuts() {
   const fractal = useFractalStore();
@@ -16,15 +16,28 @@ export function useKeyboardShortcuts() {
   const view = useViewStore();
   const ui = useUIStore();
   const coloring = useColoringStore();
-  const memory = useMemoryStore();
   const preset = usePresetStore();
+  const modifier = useModifierStore();
 
   const handleKeyDown = (e: KeyboardEvent) => {
     // Prevent triggering while typing in text boxes
     const target = e.target as HTMLElement;
     if (target.tagName === "INPUT" || target.tagName === "TEXTAREA") return;
 
-    // Navigation
+    if (e.code === "KeyQ" || e.code === "KeyE") {
+      e.preventDefault();
+      const direction = e.code === "KeyQ" ? -1 : 1;
+
+      if (e.shiftKey) {
+        modifier.stepOperator("memory", direction);
+      } else if (e.ctrlKey || e.metaKey) {
+        modifier.stepOperator("cMod", direction);
+      } else {
+        modifier.stepOperator("zMod", direction);
+      }
+      return;
+    }
+
     const arrowKeys = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"];
     if (arrowKeys.includes(e.code)) {
       e.preventDefault();
@@ -35,17 +48,14 @@ export function useKeyboardShortcuts() {
         e.shiftKey ? coloring.nextMode() : palette.nextPalette();
       } else if (e.code === "ArrowLeft") {
         if (e.shiftKey) preset.prevPreset();
-        else if (e.ctrlKey || e.metaKey) memory.prevOperator();
         else fractal.prevFormula();
       } else if (e.code === "ArrowRight") {
         if (e.shiftKey) preset.nextPreset();
-        else if (e.ctrlKey || e.metaKey) memory.nextOperator();
         else fractal.nextFormula();
       }
       return;
     }
 
-    // Command Shortcuts
     switch (e.code) {
       case "Space":
         e.preventDefault();

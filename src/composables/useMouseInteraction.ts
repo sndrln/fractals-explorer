@@ -19,7 +19,7 @@ export function useMouseInteraction(canvasRef: {
     const x = (e.clientX - rect.left - canvas.clientWidth / 2) / baseDimention;
     const y = -(e.clientY - rect.top - canvas.clientHeight / 2) / baseDimention;
 
-    input.updateMouse(x, y);
+    input.updateMouse(x, y, e.shiftKey);
   };
 
   const handleMouseMove = (e: MouseEvent) => {

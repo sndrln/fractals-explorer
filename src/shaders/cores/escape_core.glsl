@@ -23,23 +23,21 @@ vec3 core_logic(vec2 uv) {
   for (float i = 0.0; i < 1000.0; i++) {
     if (i >= maxIterations) break;
 
-    vec2 zOld = z;
-    vec2 zNext = fractalStep(z, c, powerVec, zPrev);
-    // c = complexMul(c, getMemoryTransform(memFactor)) + zNext;
+    vec2 zTemp = z;
 
-    // Apply Memory
+    z = applyZModifier(z);
+    z = fractalStep(z, c, powerVec, zPrev);
+
     if (i > 0.0) {
-      zNext += complexMul(getMemoryTransform(zPrev), memFactor);
+      z += complexMul(applyMemoryModifier(zPrev), memFactor);
     }
 
-    // State Update
-    zPrev = zOld;
-    z = zNext;
+    c = applyCModifier(c);
 
-    // Coloring Injection
+    zPrev = zTemp;
+
+    // Coloring
     apply_coloring(z, zPrev, osc, colorAcc);
-
-    // Break Condition
     if (length(z) > escapeRadius) break;
     iterations++;
   }

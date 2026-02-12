@@ -36,7 +36,7 @@ vec3 core_logic(vec2 uv) {
     // State Update
     float diff = length(zNext - z);
     minDiff = min(minDiff, diff);
-    zPrev = getMemoryTransform(zOld);
+    zPrev = applyMemoryModifier(zOld);
     z = zNext;
 
     // Coloring Injection

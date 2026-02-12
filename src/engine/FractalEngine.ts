@@ -6,10 +6,13 @@ import kleinianCore from "../shaders/cores/kleinian_core.glsl?raw";
 import newtonCore from "../shaders/cores/newton_core.glsl?raw";
 import novaCore from "../shaders/cores/nova_core.glsl?raw";
 import mainTemplate from "../shaders/main_template.frag?raw";
+import cModes from "../shaders/shared/c_modes.glsl?raw";
 import coloringModes from "../shaders/shared/coloring_modes.glsl?raw";
 import commonHeader from "../shaders/shared/common_header.glsl?raw";
 import complexMath from "../shaders/shared/complex_math.glsl?raw";
 import memoryModes from "../shaders/shared/memory_modes.glsl?raw";
+import modifiers from "../shaders/shared/modifiers.glsl?raw";
+import zModes from "../shaders/shared/z_modes.glsl?raw";
 
 import type { FractalParams } from "../types/fractal";
 import { processShader } from "../utils/shaderLoader";
@@ -17,7 +20,10 @@ import { processShader } from "../utils/shaderLoader";
 const shaderLibrary = {
   complex_math: complexMath,
   common_header: commonHeader,
+  modifiers: modifiers,
   memory_modes: memoryModes,
+  z_modes: zModes,
+  c_modes: cModes,
   coloring_modes: coloringModes,
   escape_core: escapeCore,
   newton_core: newtonCore,
@@ -68,10 +74,12 @@ export class FractalEngine {
   public updateActiveShader(config: {
     formulaId: string;
     memoryMode: string;
+    zMode: string;
+    cMode: string;
     coloringMode: string;
     useSSAA: boolean;
   }) {
-    const cacheKey = `${config.formulaId}_${config.memoryMode}_COL_${config.coloringMode}_SSAA_${config.useSSAA}`;
+    const cacheKey = `${config.formulaId}_${config.memoryMode}_${config.zMode}_${config.cMode}_COL_${config.coloringMode}_SSAA_${config.useSSAA}`;
 
     if (this.programCache.has(cacheKey)) {
       this.activeProgram = this.programCache.get(cacheKey)!;
@@ -90,12 +98,17 @@ export class FractalEngine {
         // 1. DEFINES
         ${config.useSSAA ? "#define USE_SSAA" : ""}
         #define MEM_${config.memoryMode}
+        #define ZMOD_${config.zMode}
+        #define CMOD_${config.cMode}
         #define COL_${config.coloringMode}
 
         // 2. HEADERS & MATH (The Foundation)
         ${shaderLibrary.common_header}
         ${shaderLibrary.complex_math}
+        ${shaderLibrary.modifiers}
         ${shaderLibrary.memory_modes}
+        ${shaderLibrary.z_modes}
+        ${shaderLibrary.c_modes}
         ${shaderLibrary.coloring_modes} // This now contains apply_coloring()
 
         // 3. FORMULA (The specific math step)

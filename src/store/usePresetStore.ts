@@ -6,7 +6,7 @@ import { generateId } from "../utils/generateId";
 import { useColoringStore } from "./useColoringStore";
 import { useFractalStore } from "./useFractalStore";
 import { useInputStore } from "./useInputStore";
-import { useMemoryStore } from "./useMemoryStore";
+import { useModifierStore } from "./useModifierStore";
 import { usePaletteStore } from "./usePaletteStore";
 import { useViewStore } from "./useViewStore";
 
@@ -15,7 +15,7 @@ export const usePresetStore = defineStore("presets", () => {
   const view = useViewStore();
   const palette = usePaletteStore();
   const input = useInputStore();
-  const memory = useMemoryStore();
+  const modifier = useModifierStore();
   const coloring = useColoringStore();
   const router = useRouter();
 
@@ -49,7 +49,9 @@ export const usePresetStore = defineStore("presets", () => {
     currentPresetId.value = preset.id;
 
     fractal.formulaId = preset.formulaId;
-    memory.currentMode = preset.memoryMode || "NONE";
+    modifier.slots.memory = preset.memoryMode || "NONE";
+    modifier.slots.cMod = preset.cMode || "NONE";
+    modifier.slots.zMod = preset.zMode || "NONE";
     coloring.currentMode = preset.coloringMode || "DEFAULT";
     fractal.params.slider = { ...preset.fractalParams };
     fractal.updateAnchorParams();
@@ -86,7 +88,9 @@ export const usePresetStore = defineStore("presets", () => {
       label,
       fractalType: fractal.currentType,
       formulaId: fractal.formulaId,
-      memoryMode: memory.currentMode,
+      memoryMode: modifier.slots.memory,
+      zMode: modifier.slots.zMod,
+      cMode: modifier.slots.cMod,
       coloringMode: coloring.currentMode,
       fractalParams: { ...fractal.params.slider },
       bindings: JSON.parse(JSON.stringify(input.bindings)),

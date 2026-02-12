@@ -8,8 +8,8 @@ import type { FractalParams } from "../../types/fractal";
 const props = defineProps<{
   modelValue: number;
   step: number;
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
   color: string;
   paramKey: keyof FractalParams;
 }>();

@@ -20,23 +20,6 @@ export interface FractalParams {
   kleinianSphere: number;
 }
 
-export type MemoryMode =
-  | "NONE"
-  | "ABS_BOTH"
-  | "ABS_X"
-  | "ABS_Y"
-  | "CONJUGATE"
-  | "REVERSE"
-  | "INVERT"
-  | "SIN"
-  | "COS"
-  | "TAN"
-  | "EXP"
-  | "RECIPROCAL"
-  | "POW3"
-  | "FOLD"
-  | "SWIZZLE";
-
 export type ColoringMode =
   | "DEFAULT"
   | "ORBIT_TRAP"
