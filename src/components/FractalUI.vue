@@ -35,9 +35,9 @@ const activePanel = computed(() => {
 #ui-shell {
   position: absolute;
   width: 360px;
-  height: 100vh;
   z-index: 100;
   background: rgba(10, 10, 10, 0.85);
+  border-bottom-right-radius: 10px;
   backdrop-filter: blur(5px);
 }
 

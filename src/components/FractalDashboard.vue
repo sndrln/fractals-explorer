@@ -98,15 +98,13 @@ const graphics = useGraphicsStore();
 
     <section class="dashboard-section">
       <PresetGallery />
-
-      <div class="action-row"></div>
     </section>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .dashboard-container {
-  padding: 0 8px;
+  padding: 0 8px 8px;
   display: flex;
   flex-direction: column;
   gap: 12px;

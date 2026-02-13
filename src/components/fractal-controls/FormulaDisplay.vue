@@ -205,7 +205,7 @@ const currentFormulaId = computed(() => fractal.formulaId);
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 70px;
+  min-height: 81px;
 }
 
 .spider-layout {

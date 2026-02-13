@@ -156,7 +156,6 @@ const isGroupBound = (group: SliderGroup) => {
 <style lang="scss" scoped>
 .parameter-section {
   background: var(--bg-surface);
-  border-radius: 12px;
   border: 1px solid var(--border-subtle);
   overflow: hidden;
 }
@@ -165,7 +164,7 @@ const isGroupBound = (group: SliderGroup) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 8px 12px;
+  padding: 4px 8px;
   background: rgba(255, 255, 255, 0.02);
   border-bottom: 1px solid var(--border-subtle);
 
@@ -201,12 +200,15 @@ const isGroupBound = (group: SliderGroup) => {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  margin: -12px -8px 0;
 }
 
 .sliders-wrapper {
-  display: flex;
-  flex-direction: column;
   gap: 4px;
+
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 0.3s ease-in-out;
 }
 
 .slider-group {

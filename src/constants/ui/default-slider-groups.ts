@@ -34,27 +34,11 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
   ],
   newton: [
     {
-      label: "Power (P)",
-      parameterId: "power",
-      sliders: [
-        { parameterUnitId: "power" },
-        { parameterUnitId: "powerI", unitSuffix: "i", showPlus: true },
-      ],
-    },
-    {
       label: "Relaxation (a)",
       parameterId: "relaxation",
       sliders: [
         { parameterUnitId: "relaxation" },
         { parameterUnitId: "relaxationI", unitSuffix: "i", showPlus: true },
-      ],
-    },
-    {
-      label: "Memory (zₙ₋₁)",
-      parameterId: "memory",
-      sliders: [
-        { parameterUnitId: "memoryR" },
-        { parameterUnitId: "memoryI", unitSuffix: "i", showPlus: true },
       ],
     },
     {
@@ -65,8 +49,6 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
         { parameterUnitId: "subtrahendI", unitSuffix: "i", showPlus: true },
       ],
     },
-  ],
-  nova: [
     {
       label: "Power (P)",
       parameterId: "power",
@@ -76,19 +58,25 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
       ],
     },
     {
-      label: "Relaxation (a)",
-      parameterId: "relaxation",
+      label: "Memory (zₙ₋₁)",
+      parameterId: "memory",
       sliders: [
-        { parameterUnitId: "relaxation" },
-        { parameterUnitId: "relaxationI", unitSuffix: "i", showPlus: true },
+        { parameterUnitId: "memoryR" },
+        { parameterUnitId: "memoryI", unitSuffix: "i", showPlus: true },
       ],
     },
+  ],
+  nova: [
     {
-      label: "Subtrahend (s)",
-      parameterId: "subtrahend",
+      label: "Julia Morph",
+      parameterId: "juliaMorph",
       sliders: [
-        { parameterUnitId: "subtrahend" },
-        { parameterUnitId: "subtrahendI", unitSuffix: "i", showPlus: true },
+        {
+          parameterUnitId: "juliaMorph",
+          min: 0.0,
+          max: 1.0,
+          step: 0.01,
+        },
       ],
     },
     {
@@ -100,23 +88,36 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
       ],
     },
     {
+      label: "Relaxation (a)",
+      parameterId: "relaxation",
+      sliders: [
+        { parameterUnitId: "relaxation" },
+        { parameterUnitId: "relaxationI", unitSuffix: "i", showPlus: true },
+      ],
+    },
+
+    {
+      label: "Subtrahend (s)",
+      parameterId: "subtrahend",
+      sliders: [
+        { parameterUnitId: "subtrahend" },
+        { parameterUnitId: "subtrahendI", unitSuffix: "i", showPlus: true },
+      ],
+    },
+    {
+      label: "Power (P)",
+      parameterId: "power",
+      sliders: [
+        { parameterUnitId: "power" },
+        { parameterUnitId: "powerI", unitSuffix: "i", showPlus: true },
+      ],
+    },
+    {
       label: "Memory (zₙ₋₁)",
       parameterId: "memory",
       sliders: [
         { parameterUnitId: "memoryR" },
         { parameterUnitId: "memoryI", unitSuffix: "i", showPlus: true },
-      ],
-    },
-    {
-      label: "Julia Morph",
-      parameterId: "juliaMorph",
-      sliders: [
-        {
-          parameterUnitId: "juliaMorph",
-          min: 0.0,
-          max: 1.0,
-          step: 0.01,
-        },
       ],
     },
   ],
