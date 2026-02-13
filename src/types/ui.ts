@@ -1,9 +1,8 @@
-import type { ColorKey } from "../constants/ui/theme";
-import type { ParameterUnitId } from "./parameter";
+import type { ParameterId, ParameterUnitId } from "./parameter";
 
 export interface SliderGroup {
+  parameterId: ParameterId;
   label: string;
-  colorKey: ColorKey;
   sliders: SliderSchema[];
 }
 

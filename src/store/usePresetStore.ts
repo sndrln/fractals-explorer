@@ -7,7 +7,6 @@ import { useCameraStore } from "./useCameraStore";
 import { useColoringStore } from "./useColoringStore";
 import { useFractalStore } from "./useFractalStore";
 import { useInputStore } from "./useInputStore";
-import { useModifierStore } from "./useModifierStore";
 import { usePaletteStore } from "./usePaletteStore";
 
 export const usePresetStore = defineStore("presets", () => {
@@ -15,7 +14,7 @@ export const usePresetStore = defineStore("presets", () => {
   const camera = useCameraStore();
   const palette = usePaletteStore();
   const input = useInputStore();
-  const modifier = useModifierStore();
+  // const modifier = useModifierStore();
   const coloring = useColoringStore();
   const router = useRouter();
 

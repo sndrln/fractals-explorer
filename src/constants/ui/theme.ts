@@ -1,18 +1,17 @@
-import type { ParameterUnitId } from "../../types/parameter";
+import type { ParameterId, ParameterUnitId } from "../../types/parameter";
 
-export const UI_COLORS = {
+export const UI_COLORS: Record<ParameterId, string> = {
   power: "var(--color-warning)",
+  powerSecondary: "var(--color-warning",
   seed: "var(--color-info)",
   juliaMorph: "var(--color-accent)",
   memory: "var(--color-success)",
-  iter: "var(--text-primary)",
-  default: "var(--color-primary)",
   relaxation: "var(--color-accent)",
   subtrahend: "var(--color-primary)",
   kleinian: "var(--color-info)",
 } as const;
 
-export type ColorKey = keyof typeof UI_COLORS;
+export const DEFAULT_PARAMETER_COLOR = `var(--text-primary)`;
 
 export const PARAMETER_COLOR_MAP: Record<ParameterUnitId, string> = {
   seedR: UI_COLORS.seed,

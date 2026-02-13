@@ -29,7 +29,7 @@ export const FORMULAS: FormulaDefinition[] = [
     //   ...BASE_CONTROL_GROUPS.escape,
     //   {
     //     label: "Julia Morph",
-    //     colorKey: "julia",
+    //     parameterId: "julia",
     //     sliders: [{ paramKey: "juliaMorph", min: 0, max: 5 }],
     //   },
     // ],

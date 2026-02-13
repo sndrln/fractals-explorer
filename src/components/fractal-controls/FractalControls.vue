@@ -7,13 +7,16 @@ import { useInputStore } from "../../store/useInputStore";
 import { FORMULAS } from "../../constants/formulas";
 import { DEFAULT_SLIDER_CONSTRAINTS } from "../../constants/ui/default-slider-constraints";
 import { DEFAULT_SLIDER_GROUPS } from "../../constants/ui/default-slider-groups";
+import { useUiPanelStore } from "../../store/useUiPanelstore";
 import type { SliderGroup, SliderSchema } from "../../types/ui";
 import IconRandom from "../icons/IconRandom.vue";
 import IconReset from "../icons/IconReset.vue";
+import IconSettings from "../icons/IconSettings.vue"; // Assuming you have this
 import ParameterSlider from "./ParameterSlider.vue";
 
 const fractal = useFractalStore();
 const input = useInputStore();
+const uiPanel = useUiPanelStore(); // Added
 const { getColor } = useFractalTheme();
 
 const activeControls = computed<SliderGroup[]>(() => {
@@ -44,6 +47,10 @@ const handleGroupLabelClick = (group: SliderGroup) => {
       x: sliders[0].parameterUnitId,
     });
   }
+};
+
+const openParameterSettings = (parameterId: any) => {
+  uiPanel.setActiveParameter(parameterId);
 };
 
 const isGroupBound = (group: SliderGroup) => {
@@ -84,15 +91,31 @@ const isGroupBound = (group: SliderGroup) => {
         v-for="group in activeControls"
         :key="group.label"
         class="slider-group"
-        :class="{ 'group-active': isGroupBound(group) }"
+        :class="{
+          'group-active': isGroupBound(group),
+          'settings-open': uiPanel.activeParameter === group.parameterId,
+        }"
       >
-        <div
-          class="label clickable"
-          :style="{ color: getColor(group.colorKey) }"
-          @click="handleGroupLabelClick(group)"
-        >
-          {{ group.label }}:
-          <span v-if="isGroupBound(group)" class="live-indicator">●</span>
+        <div class="label-container">
+          <div
+            class="label clickable"
+            :style="{ color: getColor(group.parameterId) }"
+            @click="handleGroupLabelClick(group)"
+          >
+            {{ group.label }}:
+            <span v-if="isGroupBound(group)" class="live-indicator">●</span>
+          </div>
+
+          <button
+            class="gear-button"
+            :class="{
+              'is-active': uiPanel.activeParameter === group.parameterId,
+            }"
+            @click="openParameterSettings(group.parameterId)"
+            title="Parameter Settings"
+          >
+            <IconSettings class="gear-icon" />
+          </button>
         </div>
 
         <div class="slider-stack">
@@ -102,7 +125,7 @@ const isGroupBound = (group: SliderGroup) => {
           >
             <span
               v-if="slider.showPlus"
-              :style="{ color: getColor(group.colorKey) }"
+              :style="{ color: getColor(group.parameterId) }"
               class="math-operator"
               >+</span
             >
@@ -110,7 +133,7 @@ const isGroupBound = (group: SliderGroup) => {
             <ParameterSlider
               v-model="fractal.parameters.slider[slider.parameterUnitId]"
               :parameterUnitId="slider.parameterUnitId"
-              :color="getColor(group.colorKey)"
+              :color="getColor(group.parameterId)"
               :is-bound="!!input.isParamBound(slider.parameterUnitId)"
               v-bind="getSliderProps(slider)"
               @change="fractal.updateAnchorParameters()"
@@ -118,7 +141,7 @@ const isGroupBound = (group: SliderGroup) => {
 
             <span
               v-if="slider.unitSuffix"
-              :style="{ color: getColor(group.colorKey) }"
+              :style="{ color: getColor(group.parameterId) }"
               class="slider-suffix"
             >
               {{ slider.unitSuffix }}
@@ -232,6 +255,58 @@ const isGroupBound = (group: SliderGroup) => {
   display: inline-block;
   vertical-align: middle;
   animation: pulse 2s infinite;
+}
+
+.label-container {
+  display: flex;
+  align-items: center;
+  width: 130px; /* Increased slightly to fit gear */
+  gap: 4px;
+}
+
+.label {
+  flex: 1;
+  font-size: 11px;
+  opacity: 0.8;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.gear-button {
+  background: transparent;
+  border: none;
+  padding: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-dim);
+  opacity: 0;
+  transition: all 0.2s ease;
+
+  .gear-icon {
+    width: 12px;
+    height: 12px;
+  }
+
+  &:hover {
+    color: var(--text-primary);
+    transform: rotate(45deg);
+  }
+
+  &.is-active {
+    opacity: 1;
+    color: var(--accent-color);
+  }
+}
+
+.slider-group:hover .gear-button {
+  opacity: 0.6;
+}
+
+.gear-button:hover {
+  opacity: 1 !important;
 }
 
 @keyframes pulse {

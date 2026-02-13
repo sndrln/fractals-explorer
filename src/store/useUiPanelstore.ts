@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import type { ParameterId } from "../types/parameter";
 import type { ActivePanelTab } from "../types/ui";
 
 export const useUiPanelStore = defineStore("uiPanel", () => {
@@ -7,7 +8,7 @@ export const useUiPanelStore = defineStore("uiPanel", () => {
   const isFractalSelectionOpen = ref(false);
   const activeTab = ref<ActivePanelTab>("controls");
 
-  // const selectedParameterKey = ref<ParameterKey | null>(null); // to be added
+  const activeParameter = ref<ParameterId | null>(null);
 
   const toggleUiPanel = () =>
     (isUiPanelVisible.value = !isUiPanelVisible.value);
@@ -17,13 +18,18 @@ export const useUiPanelStore = defineStore("uiPanel", () => {
     activeTab.value = activeTab.value === "settings" ? "controls" : "settings";
     isFractalSelectionOpen.value = false;
   };
+  const setActiveParameter = (parameterId: ParameterId | null) => {
+    activeParameter.value = parameterId;
+  };
 
   return {
     isUiPanelVisible,
     isFractalSelectionOpen,
     activeTab,
+    activeParameter,
     toggleUiPanel,
     toggleFractalSelection,
     toggleSettings,
+    setActiveParameter,
   };
 });

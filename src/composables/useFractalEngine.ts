@@ -5,6 +5,7 @@ import { useColoringStore } from "../store/useColoringStore";
 import { useFractalStore } from "../store/useFractalStore";
 import { useGraphicsStore } from "../store/useGraphicsStore";
 import { useInputStore } from "../store/useInputStore";
+import { useLfoStore } from "../store/useLfoStore";
 import { useModifierStore } from "../store/useModifierStore";
 import { usePaletteStore } from "../store/usePaletteStore";
 
@@ -18,6 +19,7 @@ export function useFractalEngine(canvasRef?: Ref<HTMLCanvasElement | null>) {
   const modifier = useModifierStore();
   const coloring = useColoringStore();
   const graphics = useGraphicsStore();
+  const lfo = useLfoStore();
 
   const state = {
     fractal,
@@ -27,6 +29,7 @@ export function useFractalEngine(canvasRef?: Ref<HTMLCanvasElement | null>) {
     modifier,
     coloring,
     graphics,
+    lfo,
   };
 
   const init = () => {

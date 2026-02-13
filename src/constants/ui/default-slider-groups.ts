@@ -4,12 +4,12 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
   escape: [
     {
       label: "Julia Morph",
-      colorKey: "juliaMorph",
+      parameterId: "juliaMorph",
       sliders: [{ parameterUnitId: "juliaMorph" }],
     },
     {
       label: "Coordinate / Seed",
-      colorKey: "seed",
+      parameterId: "seed",
       sliders: [
         { parameterUnitId: "seedR" },
         { parameterUnitId: "seedI", unitSuffix: "i", showPlus: true },
@@ -17,7 +17,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Power",
-      colorKey: "power",
+      parameterId: "power",
       sliders: [
         { parameterUnitId: "power" },
         { parameterUnitId: "powerI", unitSuffix: "i", showPlus: true },
@@ -25,7 +25,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Memory (zₙ₋₁)",
-      colorKey: "memory",
+      parameterId: "memory",
       sliders: [
         { parameterUnitId: "memoryR" },
         { parameterUnitId: "memoryI", unitSuffix: "i", showPlus: true },
@@ -35,7 +35,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
   newton: [
     {
       label: "Power (P)",
-      colorKey: "power",
+      parameterId: "power",
       sliders: [
         { parameterUnitId: "power" },
         { parameterUnitId: "powerI", unitSuffix: "i", showPlus: true },
@@ -43,7 +43,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Relaxation (a)",
-      colorKey: "relaxation",
+      parameterId: "relaxation",
       sliders: [
         { parameterUnitId: "relaxation" },
         { parameterUnitId: "relaxationI", unitSuffix: "i", showPlus: true },
@@ -51,7 +51,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Memory (zₙ₋₁)",
-      colorKey: "memory",
+      parameterId: "memory",
       sliders: [
         { parameterUnitId: "memoryR" },
         { parameterUnitId: "memoryI", unitSuffix: "i", showPlus: true },
@@ -59,7 +59,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Subtrahend",
-      colorKey: "subtrahend",
+      parameterId: "subtrahend",
       sliders: [
         { parameterUnitId: "subtrahend" },
         { parameterUnitId: "subtrahendI", unitSuffix: "i", showPlus: true },
@@ -69,7 +69,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
   nova: [
     {
       label: "Power (P)",
-      colorKey: "power",
+      parameterId: "power",
       sliders: [
         { parameterUnitId: "power" },
         { parameterUnitId: "powerI", unitSuffix: "i", showPlus: true },
@@ -77,7 +77,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Relaxation (a)",
-      colorKey: "relaxation",
+      parameterId: "relaxation",
       sliders: [
         { parameterUnitId: "relaxation" },
         { parameterUnitId: "relaxationI", unitSuffix: "i", showPlus: true },
@@ -85,7 +85,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Subtrahend (s)",
-      colorKey: "subtrahend",
+      parameterId: "subtrahend",
       sliders: [
         { parameterUnitId: "subtrahend" },
         { parameterUnitId: "subtrahendI", unitSuffix: "i", showPlus: true },
@@ -93,7 +93,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Nova Constant (c)",
-      colorKey: "seed",
+      parameterId: "seed",
       sliders: [
         { parameterUnitId: "seedR" },
         { parameterUnitId: "seedI", unitSuffix: "i", showPlus: true },
@@ -101,7 +101,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Memory (zₙ₋₁)",
-      colorKey: "memory",
+      parameterId: "memory",
       sliders: [
         { parameterUnitId: "memoryR" },
         { parameterUnitId: "memoryI", unitSuffix: "i", showPlus: true },
@@ -109,7 +109,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Julia Morph",
-      colorKey: "juliaMorph",
+      parameterId: "juliaMorph",
       sliders: [
         {
           parameterUnitId: "juliaMorph",
@@ -123,7 +123,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
   kleinian: [
     {
       label: "Seed A",
-      colorKey: "seed",
+      parameterId: "seed",
       sliders: [
         { parameterUnitId: "seedR" },
         { parameterUnitId: "seedI", unitSuffix: "i" },
@@ -131,7 +131,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Seed B",
-      colorKey: "subtrahend",
+      parameterId: "subtrahend",
       sliders: [
         { parameterUnitId: "subtrahend" },
         { parameterUnitId: "subtrahendI", unitSuffix: "i" },
@@ -139,7 +139,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Radius",
-      colorKey: "relaxation",
+      parameterId: "relaxation",
       sliders: [
         { parameterUnitId: "relaxation" },
         { parameterUnitId: "kleinianSphere" },
@@ -147,12 +147,12 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Box Fold",
-      colorKey: "kleinian",
+      parameterId: "kleinian",
       sliders: [{ parameterUnitId: "kleinianBox", min: 0, max: 2 }],
     },
     {
       label: "Warp",
-      colorKey: "power",
+      parameterId: "power",
       sliders: [
         { parameterUnitId: "power" },
         { parameterUnitId: "powerI", unitSuffix: "i" },
@@ -160,7 +160,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Memory",
-      colorKey: "memory",
+      parameterId: "memory",
       sliders: [
         { parameterUnitId: "memoryR" },
         { parameterUnitId: "memoryI", unitSuffix: "i" },
@@ -168,7 +168,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
     },
     {
       label: "Seed Morph",
-      colorKey: "juliaMorph",
+      parameterId: "juliaMorph",
       sliders: [{ parameterUnitId: "juliaMorph", min: 0, max: 1 }],
     },
   ],

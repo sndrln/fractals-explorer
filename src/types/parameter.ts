@@ -85,3 +85,13 @@ export type ModifierId =
 export type ModifiedParameter = "z" | "c" | "zPrev";
 
 export type ConditionId = "ALWAYS" | "Z_REAL_POSITIVE" | "Z_IMAG_POSITIVE";
+
+export interface LFOConfig {
+  id: string;
+  frequency: number;
+  amplitude: number;
+  phase: number;
+  active: boolean;
+}
+
+export type LFORecord = Partial<Record<ParameterUnitId, LFOConfig[]>>;

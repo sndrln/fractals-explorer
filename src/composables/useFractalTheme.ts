@@ -1,17 +1,17 @@
 import { computed } from "vue";
 import {
-  type ColorKey,
+  DEFAULT_PARAMETER_COLOR,
   PARAMETER_COLOR_MAP,
   UI_COLORS,
 } from "../constants/ui/theme";
 import { useFractalStore } from "../store/useFractalStore";
-import type { ParameterUnitId } from "../types/parameter";
+import type { ParameterId, ParameterUnitId } from "../types/parameter";
 
 export function useFractalTheme() {
   const fractal = useFractalStore();
 
-  const getColor = (key: ColorKey): string => {
-    return UI_COLORS[key] || UI_COLORS.default;
+  const getColor = (parameterId: ParameterId): string => {
+    return UI_COLORS[parameterId] || DEFAULT_PARAMETER_COLOR;
   };
 
   const getVarColor = (parameterUnitId: ParameterUnitId): string => {
@@ -31,13 +31,13 @@ export function useFractalTheme() {
       // z is Coordinate (Blue) in Julia, White in Mandelbrot
       zStyle: {
         ...baseStyle,
-        color: isJuliaMode ? UI_COLORS.seed : UI_COLORS.iter,
+        color: isJuliaMode ? UI_COLORS.seed : DEFAULT_PARAMETER_COLOR,
         opacity: isJuliaMode ? 1.0 : 0.6,
       },
       // c is Seed (Blue) in Mandelbrot, White in Julia
       cStyle: {
         ...baseStyle,
-        color: !isJuliaMode ? UI_COLORS.seed : UI_COLORS.iter,
+        color: !isJuliaMode ? UI_COLORS.seed : DEFAULT_PARAMETER_COLOR,
         opacity: !isJuliaMode ? 1.0 : 0.6,
       },
     };

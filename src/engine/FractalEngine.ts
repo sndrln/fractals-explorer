@@ -14,6 +14,7 @@ import memoryModes from "../shaders/shared/memory_modes.glsl?raw";
 import modifiers from "../shaders/shared/modifiers.glsl?raw";
 import zModes from "../shaders/shared/z_modes.glsl?raw";
 import type {
+  LFOConfig,
   ModifiedParameter,
   ModifierConfig,
   ParameterUnitId,
@@ -162,22 +163,11 @@ export class FractalEngine {
     const evenWidth = Math.floor(width) & ~1;
     const evenHeight = Math.floor(height) & ~1;
 
-    // ONLY set the internal drawing buffer
     this.canvas.width = evenWidth;
     this.canvas.height = evenHeight;
 
     this.gl.viewport(0, 0, evenWidth, evenHeight);
   }
-
-  updateLFOs = (state: any, time: number, totalDuration = 15) => {
-    const progress = time / totalDuration;
-
-    const loopCount = 1;
-    const angle = progress * Math.PI * 2.0 * loopCount;
-
-    // state.fractal.parameters.slider.powerI = 0.5 + Math.sin(angle) * 0.5;
-    state.fractal.parameters.slider.memoryI = Math.cos(angle) * 0.25;
-  };
 
   public render(state: any, manualTime?: number) {
     if (!this.gl || !this.activeProgram) return;
@@ -244,8 +234,29 @@ export class FractalEngine {
         liveVal += state.input.mouse.smoothedY * sens;
       }
 
-      this.gl.uniform1f(loc, liveVal);
       state.fractal.parameters.live[key] = liveVal;
+    });
+
+    keys.forEach((key) => {
+      const loc = this.uniformLocations[key];
+      if (!loc) return;
+
+      const baseVal = state.fractal.parameters.live[key];
+
+      let lfoOffset = 0;
+      const lfos = state.lfo.assignments[key];
+
+      if (lfos && lfos.length > 0) {
+        lfos.forEach((lfo: LFOConfig) => {
+          if (!lfo.active) return;
+          // Standard Sine Wave: Amp * sin(freq * t + phase)
+          lfoOffset +=
+            lfo.amplitude * Math.sin(time * lfo.frequency * 10 + lfo.phase);
+        });
+      }
+
+      const finalValue = baseVal + lfoOffset;
+      this.gl.uniform1f(loc, finalValue);
     });
 
     // Palette
@@ -266,7 +277,6 @@ export class FractalEngine {
     this.gl.vertexAttribPointer(pos, 2, this.gl.FLOAT, false, 0, 0);
     this.gl.drawArrays(this.gl.TRIANGLES, 0, 6);
 
-    this.updateLFOs(state, time, 15);
     if (manualTime === undefined && !this.isRecording) {
       this.animationFrameId = requestAnimationFrame(() => this.render(state));
     }

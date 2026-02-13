@@ -7,6 +7,7 @@ import BaseSlider from "./fractal-controls/BaseSlider.vue";
 import ColoringMode from "./fractal-controls/ColoringMode.vue";
 import FormulaDisplay from "./fractal-controls/FormulaDisplay.vue";
 import FractalControls from "./fractal-controls/FractalControls.vue";
+import ParameterSettings from "./fractal-controls/ParameterSettings.vue";
 import PresetGallery from "./fractal-controls/PresetGallery.vue";
 import InputAxisBindings from "./InputAxisBindings.vue";
 import PaletteSelector from "./PaletteSelector.vue";
@@ -38,6 +39,7 @@ const graphics = useGraphicsStore();
     <FormulaDisplay />
     <section class="dashboard-section">
       <FractalControls />
+      <ParameterSettings />
       <InputAxisBindings />
     </section>
 

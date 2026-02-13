@@ -2,7 +2,7 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { FORMULAS } from "../constants/formulas";
 import { useFractalStore } from "../store/useFractalStore";
-import { useUiPanelStore } from "../store/useUIstore";
+import { useUiPanelStore } from "../store/useUiPanelstore";
 import FormulaDisplay from "./fractal-controls/FormulaDisplay.vue";
 
 const fractal = useFractalStore();

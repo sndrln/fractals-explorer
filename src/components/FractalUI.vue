@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from "vue";
-import { useUiPanelStore } from "../store/useUIstore";
+import { useUiPanelStore } from "../store/useUiPanelstore";
 import FractalDashboard from "./FractalDashboard.vue";
 import FractalHeader from "./FractalHeader.vue";
 import FractalNavigation from "./FractalNavigation.vue";
