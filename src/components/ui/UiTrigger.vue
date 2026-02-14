@@ -40,19 +40,18 @@ const ui = useUiPanelStore();
   top: 0;
   width: 2px;
   height: 100%;
-  background: var(--accent-color, #4facfe);
+  background: var(--bg-elevated);
   opacity: 0;
   transition:
     opacity 0.3s ease,
     width 0.3s ease;
-  box-shadow: 2px 0 15px var(--accent-color, #4facfe);
 }
 
 .hint-arrow {
   color: white;
   font-size: 14px;
   opacity: 0;
-  transform: translateX(-5px);
+  transform: translateX(-10px);
   transition: all 0.3s ease;
   user-select: none;
   text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);

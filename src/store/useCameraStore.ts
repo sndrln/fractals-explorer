@@ -26,13 +26,13 @@ export const useCameraStore = defineStore("camera", {
     },
 
     smoothZoom(delta: number): void {
-      const interaction = useInputStore();
+      const input = useInputStore();
       const zoomSpeed = 0.2;
       const factor = delta > 0 ? 1 + zoomSpeed : 1 - zoomSpeed;
       const newZoom = this.zoom * factor;
 
-      const dx = interaction.mouse.x * (this.zoom - newZoom);
-      const dy = interaction.mouse.y * (this.zoom - newZoom);
+      const dx = input.mouse.x * (this.zoom - newZoom);
+      const dy = input.mouse.y * (this.zoom - newZoom);
 
       gsap.to(this, {
         zoom: newZoom,

@@ -104,8 +104,7 @@ export const useFractalStore = defineStore("fractal", {
         if (key === "juliaMorph") return;
 
         const baseVal = this.parameters.anchor[key] as number;
-        // Simple randomization relative to the anchor point
-        const offset = (Math.random() - 0.5) * input.sensitivity;
+        const offset = (Math.random() - 0.5) * input.effectiveSensitivity;
         targetValues[key] = baseVal + offset;
       });
 

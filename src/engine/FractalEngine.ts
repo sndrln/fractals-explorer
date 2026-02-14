@@ -277,23 +277,33 @@ export class FractalEngine {
     const keys = Object.keys(
       state.fractal.parameters.slider,
     ) as Array<ParameterUnitId>;
+    // Inside the render loop / parameter update section
     keys.forEach((key) => {
-      const loc = this.uniformLocations[key];
-      if (!loc) return;
-
       const baseVal = state.fractal.parameters.slider[key];
-      const sens =
-        (key.toLowerCase().includes("power") ? 0.3 : 1.0) *
-        state.input.sensitivity;
 
-      let liveVal = baseVal;
-      if (state.input.bindings.x.includes(key)) {
-        liveVal += state.input.mouse.smoothedX * sens;
-      } else if (state.input.bindings.y.includes(key)) {
-        liveVal += state.input.mouse.smoothedY * sens;
+      if (state.input.isPaused) {
+        // Keep it locked to the committed base value
+        state.fractal.parameters.live[key] = baseVal;
+      } else {
+        const sens =
+          (key.toLowerCase().includes("power") ? 0.3 : 1.0) *
+          state.input.effectiveSensitivity;
+
+        // Calculate delta from the anchor point
+        const offsetX =
+          (state.input.mouse.smoothedX - state.input.mouse.anchorX) * sens;
+        const offsetY =
+          (state.input.mouse.smoothedY - state.input.mouse.anchorY) * sens;
+
+        let liveVal = baseVal;
+        if (state.input.bindings.x.includes(key)) {
+          liveVal += offsetX;
+        } else if (state.input.bindings.y.includes(key)) {
+          liveVal += offsetY;
+        }
+
+        state.fractal.parameters.live[key] = liveVal;
       }
-
-      state.fractal.parameters.live[key] = liveVal;
     });
 
     keys.forEach((key) => {

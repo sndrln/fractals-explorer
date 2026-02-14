@@ -93,7 +93,7 @@ export const usePresetStore = defineStore("presets", () => {
       parameterValues: cleanValues,
       // modifiers: JSON.parse(JSON.stringify(modifier.modifiers)),
       coloringMode: coloring.currentMode,
-      sensitivity: input.sensitivity,
+      sensitivity: input.effectiveSensitivity,
       cameraZoom: camera.zoom,
       cameraOffset: { ...camera.offset },
       palette: JSON.parse(JSON.stringify(palette.selectedPalette)),

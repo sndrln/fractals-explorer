@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import type { ParameterUnitId } from "../types/parameter";
 import type { PointerAxis } from "../types/ui";
+import { useCameraStore } from "./useCameraStore";
 import { useFractalStore } from "./useFractalStore";
 
 export const useInputStore = defineStore("input", {
@@ -12,8 +13,10 @@ export const useInputStore = defineStore("input", {
       inputY: 0,
       smoothedX: 0,
       smoothedY: 0,
+      anchorX: 0,
+      anchorY: 0,
     },
-    sensitivity: 1.0,
+    baseSensitivity: 1.0,
     activeAxis: null as PointerAxis,
     lockedAxis: null as PointerAxis,
 
@@ -26,7 +29,12 @@ export const useInputStore = defineStore("input", {
     isVelocityMode: false,
     isPaused: false,
   }),
-
+  getters: {
+    effectiveSensitivity(state) {
+      const camera = useCameraStore();
+      return state.baseSensitivity * camera.zoom;
+    },
+  },
   actions: {
     updateMouse(x: number, y: number, isShiftPressed: boolean) {
       this.mouse.x = x;
@@ -52,7 +60,7 @@ export const useInputStore = defineStore("input", {
     },
 
     setSensitivity(val: number) {
-      this.sensitivity = val;
+      this.baseSensitivity = val;
     },
 
     tickSmoothing() {
@@ -129,6 +137,15 @@ export const useInputStore = defineStore("input", {
 
     togglePause() {
       this.isPaused = !this.isPaused;
+
+      if (this.isPaused) {
+        this.commitLiveValues([...this.bindings.x, ...this.bindings.y]);
+      } else {
+        // 2. IMPORTANT: Set the anchor to current smoothed position
+        // This makes the delta (smoothedX - anchorX) equal to 0 the instant we unpause.
+        this.mouse.anchorX = this.mouse.smoothedX;
+        this.mouse.anchorY = this.mouse.smoothedY;
+      }
     },
   },
 });

@@ -110,7 +110,7 @@ const onDrag = (e: MouseEvent) => {
   if (e.altKey) return;
 
   const sensitivity = props.step || 0.01;
-  const delta = (e.clientX - startX) * sensitivity * input.sensitivity;
+  const delta = (e.clientX - startX) * sensitivity * input.effectiveSensitivity;
 
   const rawVal = startValue + delta;
 

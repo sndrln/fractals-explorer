@@ -9,7 +9,6 @@ import BaseDropdown from "../ui/BaseDropdown.vue";
 const presets = usePresetStore();
 const fractal = useFractalStore();
 
-const dropdown = ref<InstanceType<typeof BaseDropdown> | null>(null);
 const saveInputRef = ref<HTMLInputElement | null>(null);
 
 const isSaving = ref(false);
