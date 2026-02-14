@@ -12,24 +12,8 @@ import InputAxisBindings from "./InputAxisBindings.vue";
 import PaletteSelector from "./PaletteSelector.vue";
 
 const fractal = useFractalStore();
-const view = useCameraStore();
+const camera = useCameraStore();
 const input = useInputStore();
-// const modifier = useModifierStore();
-
-// const zModLabel = computed(() => {
-//   const option = modifier.allOptions.find(
-//     (opt) => opt.value === modifier.slots.zMod,
-//   );
-//   return option ? option.label : "None";
-// });
-
-// // Finds the label for the C-Mod slot
-// const cModLabel = computed(() => {
-//   const option = modifier.allOptions.find(
-//     (opt) => opt.value === modifier.slots.cMod,
-//   );
-//   return option ? option.label : "None";
-// });
 </script>
 
 <template>
@@ -45,7 +29,7 @@ const input = useInputStore();
       <div class="slider-container">
         <span class="slider-label">Sensitivity</span>
         <BaseSlider
-          v-model="input.sensitivity"
+          v-model="input.baseSensitivity"
           :min="0"
           :max="2"
           default-value="1"
@@ -53,7 +37,7 @@ const input = useInputStore();
       </div>
       <div class="slider-container">
         <span class="slider-label">Zoom</span>
-        <BaseSlider v-model="view.zoom" is-zoom :base-reference="2.5" />
+        <BaseSlider v-model="camera.zoom" is-zoom :base-reference="2.5" />
       </div>
       <div class="slider-container">
         <span class="slider-label">Iterations</span>
@@ -67,27 +51,6 @@ const input = useInputStore();
       <div class="slider-container"></div>
       <!-- intentional for 1/4 width division  -->
     </div>
-
-    <!-- <MemoryMode />
-    <div class="settings-section">
-      <label class="control-label">Structure (Z-Mod)</label>
-      <BaseDropdown
-        v-model="modifier.slots.zMod"
-        identityKey="value"
-        :options="modifier.allOptions"
-        :displayValue="zModLabel"
-      />
-    </div>
-
-    <div class="settings-section">
-      <label class="control-label">Evolution (C-Mod)</label>
-      <BaseDropdown
-        v-model="modifier.slots.cMod"
-        identityKey="value"
-        :options="modifier.allOptions"
-        :displayValue="cModLabel"
-      />
-    </div> -->
     <section class="modes-grid">
       <PaletteSelector />
       <ColoringMode />

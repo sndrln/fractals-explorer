@@ -173,7 +173,7 @@ const isGroupBound = (group: SliderGroup) => {
     font-weight: 800;
     text-transform: uppercase;
     letter-spacing: 0.1em;
-    color: var(--text-muted);
+    color: var(--text-primary);
   }
 }
 

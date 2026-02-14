@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { palettes } from "../constants/palettes";
 import { usePaletteStore } from "../store/usePaletteStore";
 import { getPaletteCSS } from "../utils/getPaletteCss";
@@ -9,7 +9,16 @@ import BaseDropdown from "./ui/BaseDropdown.vue";
 
 const palette = usePaletteStore();
 const dropdown = ref<InstanceType<typeof BaseDropdown> | null>(null);
-const handlePalettePick = (index: number) => {
+
+const paletteOptions = computed(() => {
+  return palettes.map((p, index) => ({ value: index, colors: p }));
+});
+
+const handlePaletteSelect = (opt: any) => {
+  palette.setPaletteByIndex(opt.value);
+};
+
+const handleGridClick = (index: number) => {
   palette.setPaletteByIndex(index);
   dropdown.value?.close();
 };
@@ -22,10 +31,16 @@ const handlePalettePick = (index: number) => {
         ref="dropdown"
         label="Color Palette"
         v-model="palette.currentIndex"
-        :options="palettes"
+        :options="paletteOptions"
+        identityKey="value"
+        @select="handlePaletteSelect"
+        menuWidth="240px"
       >
-        <template #trigger="{ isOpen }">
-          <div class="interactive-surface palette-trigger">
+        <template #trigger="{ isOpen, isFocused }">
+          <div
+            class="interactive-surface palette-trigger"
+            :class="{ 'is-focused': isFocused }"
+          >
             <div
               class="preview-bar"
               :style="{ background: getPaletteCSS(palette.selectedPalette) }"
@@ -44,7 +59,7 @@ const handlePalettePick = (index: number) => {
                 active: !palette.isRandom && palette.currentIndex === index,
               }"
               :style="{ background: getPaletteCSS(p) }"
-              @click="handlePalettePick(index)"
+              @click="handleGridClick(index)"
             >
               <div
                 v-if="!palette.isRandom && palette.currentIndex === index"
@@ -76,7 +91,6 @@ const handlePalettePick = (index: number) => {
   gap: 8px;
   width: 100%;
 }
-
 .dropdown-wrapper {
   min-width: 0;
   width: 100%;
@@ -90,6 +104,11 @@ const handlePalettePick = (index: number) => {
   align-items: center;
   gap: 10px;
   cursor: pointer;
+  min-width: 0;
+
+  &.is-focused {
+    border-color: var(--accent-color);
+  }
 
   .preview-bar {
     flex-grow: 1;
@@ -104,8 +123,6 @@ const handlePalettePick = (index: number) => {
   grid-template-columns: repeat(4, 1fr);
   gap: 8px;
   padding: 8px;
-  max-height: 220px;
-  overflow-y: auto;
 }
 
 .palette-brick {
@@ -123,6 +140,16 @@ const handlePalettePick = (index: number) => {
   &.active {
     border: 2px solid var(--accent-color);
   }
+}
+
+.check {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: white;
+  text-shadow: 0 0 4px black;
+  font-weight: bold;
 }
 
 .randomize-btn {

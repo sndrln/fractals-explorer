@@ -42,7 +42,6 @@ const handleDelete = (id: string) => {
 
 const handleSelect = (preset: any) => {
   presets.applyPreset(preset);
-  dropdown.value?.close();
 };
 </script>
 
@@ -56,17 +55,20 @@ const handleSelect = (preset: any) => {
           v-model="presets.currentPresetId"
           :options="presets.savedPresets"
           identity-key="id"
-          menu-class="upward-menu"
+          @select="handleSelect"
         >
-          <template #trigger="{ isOpen }">
-            <div class="interactive-surface preset-trigger">
+          <template #trigger="{ isOpen, isFocused }">
+            <div
+              class="interactive-surface preset-trigger"
+              :class="{ 'is-focused': isFocused }"
+            >
               <span class="truncate">{{ presets.currentPresetName }}</span>
               <IconChevron :is-open="isOpen" />
             </div>
           </template>
 
           <template #option="{ option }">
-            <div class="preset-item" @click="handleSelect(option)">
+            <div class="preset-item">
               <div class="preset-info">
                 <span class="preset-name">{{ option.label }}</span>
                 <span class="preset-meta">{{ option.formulaId }}</span>
@@ -102,7 +104,6 @@ const handleSelect = (preset: any) => {
         >
           <IconSave />
         </button>
-
         <div v-else class="confirm-cancel-group">
           <button class="button-primary confirm" @click="confirmSave">✓</button>
           <button class="button-primary cancel" @click="cancelSave">×</button>
@@ -113,12 +114,8 @@ const handleSelect = (preset: any) => {
 </template>
 
 <style scoped lang="scss">
-/* Note: box-sizing is now handled by your new global reset! */
-
 .manager-grid {
   display: grid;
-  /* Action slot is 32px when button, 52px when two buttons. 
-     Or keep it 1fr + 64px to ensure no jumping */
   grid-template-columns: 1fr auto;
   gap: 8px;
   width: 100%;
@@ -135,6 +132,20 @@ const handleSelect = (preset: any) => {
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
+  min-width: 0;
+
+  &.is-focused {
+    border-color: var(--accent-color);
+  }
+}
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  flex-grow: 1;
+  text-align: left;
+  margin-right: 8px;
 }
 
 .save-input {
@@ -175,22 +186,23 @@ const handleSelect = (preset: any) => {
   }
 }
 
-:deep(.upward-menu) {
-  bottom: calc(100% + 4px);
-  top: auto;
-}
-
 .preset-item {
   display: flex;
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  padding: 8px 12px;
+
   .preset-info {
     display: flex;
     flex-direction: column;
+    min-width: 0;
+    flex-grow: 1;
+
     .preset-name {
       font-size: 0.85rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
     .preset-meta {
       font-size: 0.65rem;
@@ -204,6 +216,12 @@ const handleSelect = (preset: any) => {
   color: var(--color-danger);
   font-size: 1.2rem;
   opacity: 0.3;
+  padding: 0 8px;
+  margin-left: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+
   &:hover {
     opacity: 1;
   }
