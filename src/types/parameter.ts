@@ -46,6 +46,10 @@ export interface ModifierMetadata {
   description?: string;
 }
 
+export interface ConditionMetadata {
+  label: string;
+}
+
 export type ModifierId =
   | "NONE"
   | "ABS_BOTH"
@@ -84,7 +88,14 @@ export type ModifierId =
 
 export type ModifiedParameter = "z" | "c" | "zPrev";
 
-export type ConditionId = "ALWAYS" | "Z_REAL_POSITIVE" | "Z_IMAG_POSITIVE";
+export type ConditionId =
+  | "ALWAYS"
+  | "Z_REAL_POSITIVE"
+  | "Z_IMAG_POSITIVE"
+  | "Z_MAG_GT_1"
+  | "Z_ANGLE_POSITIVE"
+  | "Z_REAL_GT_IMAG"
+  | "Z_ABS_REAL_GT_ABS_IMAG";
 
 export interface LFOConfig {
   id: string;

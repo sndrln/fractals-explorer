@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { computed } from "vue";
+import { useFractalTheme } from "../../composables/useFractalTheme";
 import { PARAMETER_MAP } from "../../constants/parameter-map";
 import { useLfoStore } from "../../store/useLfoStore";
 import { useUiPanelStore } from "../../store/useUiPanelstore";
 import type { ParameterUnitId } from "../../types/parameter";
 import BaseSlider from "../fractal-controls/BaseSlider.vue";
+import ModifierControl from "./ModifierControl.vue";
 
 const uiPanel = useUiPanelStore();
 const lfoStore = useLfoStore();
+const fractalTheme = useFractalTheme();
 
 // Close the panel
 const close = () => uiPanel.setActiveParameter(null);
@@ -33,11 +36,24 @@ const getLfosForUnit = (unitId: ParameterUnitId) => {
       </header>
 
       <div class="scroll-container">
-        <section class="modifiers-section">
+        <section
+          v-if="uiPanel.activeParameter === 'seed'"
+          class="modifiers-section"
+        >
           <div class="section-title">Modifiers</div>
-          <div class="placeholder-card">
-            Modifiers for {{ uiPanel.activeParameter }} coming soon...
-          </div>
+          <ModifierControl target="z" :color="fractalTheme.getColor('seed')" />
+          <ModifierControl target="c" :color="fractalTheme.getColor('seed')" />
+        </section>
+
+        <section
+          v-if="uiPanel.activeParameter === 'memory'"
+          class="modifiers-section"
+        >
+          <div class="section-title">Modifiers</div>
+          <ModifierControl
+            target="zPrev"
+            :color="fractalTheme.getColor('memory')"
+          />
         </section>
 
         <section

@@ -22,17 +22,42 @@ vec3 core_logic(vec2 uv) {
   // 3. CORE LOOP
   for (float i = 0.0; i < 1000.0; i++) {
     if (i >= maxIterations) break;
-
     vec2 zTemp = z;
 
-    z = applyZModifier(z);
+    // --- Z MODIFIER ---
+    #ifndef ZMOD_NONE
+    z = mix(
+      z,
+      APPLY_ZMOD(z),
+      zModIntensity * getConditionMask(z, zModCondition)
+    );
+    #endif
+
     z = fractalStep(z, c, powerVec, zPrev);
 
     if (i > 0.0) {
-      z += complexMul(applyMemoryModifier(zPrev), memFactor);
+      // --- MEMORY MODIFIER ---
+      #ifndef MEM_NONE
+      // Uses zPrev to decide if it should modify zPrev (Internal Consistency)
+      vec2 memVal = mix(
+        zPrev,
+        APPLY_MEM(zPrev),
+        zPrevModIntensity * getConditionMask(z, zPrevModCondition)
+      );
+      z += complexMul(memVal, memFactor);
+      #else
+      z += complexMul(zPrev, memFactor);
+      #endif
     }
 
-    c = applyCModifier(c);
+    // --- C MODIFIER ---
+    #ifndef CMOD_NONE
+    c = mix(
+      c,
+      APPLY_CMOD(c),
+      cModIntensity * getConditionMask(z, cModCondition)
+    );
+    #endif
 
     zPrev = zTemp;
 

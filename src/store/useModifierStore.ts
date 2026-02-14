@@ -48,13 +48,17 @@ export const useModifierStore = defineStore("modifiers", () => {
     const defines: Record<string, boolean> = {};
 
     for (const [slot, config] of Object.entries(modifiers.value)) {
+      // 1. Only bake if it's not NONE
       if (config.modifierId !== "NONE") {
-        // Example: "Z" + "_" + "SIN" -> "Z_SIN"
-        const key = `${slot.toUpperCase()}_${config.modifierId}`;
-        defines[key] = true;
+        const prefix = slot === "zPrev" ? "MEM" : slot.toUpperCase() + "MOD";
+
+        // Define the Modifier: e.g., ZMOD_SIN
+        defines[`${prefix}_${config.modifierId}`] = true;
+
+        // Define the Condition: e.g., ZMOD_COND_X_POS
+        defines[`${prefix}_COND_${config.conditionId}`] = true;
       }
     }
-
     return defines;
   });
 

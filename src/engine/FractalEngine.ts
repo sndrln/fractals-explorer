@@ -6,13 +6,10 @@ import kleinianCore from "../shaders/cores/kleinian_core.glsl?raw";
 import newtonCore from "../shaders/cores/newton_core.glsl?raw";
 import novaCore from "../shaders/cores/nova_core.glsl?raw";
 import mainTemplate from "../shaders/main_template.frag?raw";
-import cModes from "../shaders/shared/c_modes.glsl?raw";
 import coloringModes from "../shaders/shared/coloring_modes.glsl?raw";
 import commonHeader from "../shaders/shared/common_header.glsl?raw";
 import complexMath from "../shaders/shared/complex_math.glsl?raw";
-import memoryModes from "../shaders/shared/memory_modes.glsl?raw";
 import modifiers from "../shaders/shared/modifiers.glsl?raw";
-import zModes from "../shaders/shared/z_modes.glsl?raw";
 import type {
   LFOConfig,
   ModifiedParameter,
@@ -26,9 +23,6 @@ const shaderLibrary = {
   complex_math: complexMath,
   common_header: commonHeader,
   modifiers: modifiers,
-  memory_modes: memoryModes,
-  z_modes: zModes,
-  c_modes: cModes,
   coloring_modes: coloringModes,
   escape_core: escapeCore,
   newton_core: newtonCore,
@@ -47,9 +41,55 @@ const UNIFORM_NAMES = [
   "contrast",
   "osc",
   "phase",
+
+  "zModIntensity",
+  "zModCondition",
+  "cModIntensity",
+  "cModCondition",
+  "zPrevModIntensity",
+  "zPrevModCondition",
   ...Object.keys(DEFAULT_PARAMETER_VALUES),
 ];
 
+const getModMath = (id: string) => {
+  const map: Record<string, string> = {
+    NONE: "v",
+    ABS_BOTH: "mod_abs_both(v)",
+    ABS_X: "mod_abs_x(v)",
+    ABS_Y: "mod_abs_y(v)",
+    CONJUGATE: "mod_conjugate(v)",
+    REVERSE: "mod_reverse(v)",
+    INVERT: "mod_invert(v)",
+    FOLD: "mod_fold(v, vec2(1.0))",
+    SWIZZLE: "mod_swizzle(v)",
+    SIN: "complexSin(v)",
+    COS: "complexCos(v)",
+    TAN: "complexTan(v)",
+    SINH: "complexSinh(v)",
+    COSH: "complexCosh(v)",
+    TANH: "complexTanh(v)",
+    EXP: "complexExp(v)",
+    LOG: "complexLog(v)",
+    SQRT: "complexSqrt(v)",
+    DIV_SQ: "mod_div_sq(v)",
+    POW3: "complexPower(v, vec2(3.0, 0.0))",
+    KALEIDOSCOPE: "mod_kaleidoscope(v, 3.0)",
+    POLAR: "mod_polar(v)",
+    SPHERE_INVERSION: "mod_sphere_inversion(v, 1.0)",
+    TILE: "mod_tile(v)",
+    CREASE: "mod_crease(v)",
+    SAWTOOTH: "mod_sawtooth(v)",
+    WAVEFOLD: "mod_wavefold(v)",
+    SHIFT_INVERT: "mod_shift_invert(v)",
+    VOXELIZE: "mod_voxelize(v)",
+    TAN_WARP: "mod_tan_warp(v)",
+    CROSS_FOLD: "mod_cross_fold(v)",
+    SPIRAL: "mod_spiral(v)",
+    CIRCLE_PULSE: "mod_circle_pulse(v)",
+    GLITCH: "mod_glitch(v)",
+  };
+  return map[id] || "v";
+};
 export class FractalEngine {
   private gl: WebGLRenderingContext;
   private canvas: HTMLCanvasElement;
@@ -105,13 +145,14 @@ export class FractalEngine {
         #define CMOD_${config.modifiers.c.modifierId}
         #define COL_${config.coloringMode}
 
+        #define APPLY_ZMOD(v) ${getModMath(config.modifiers.z.modifierId)}
+        #define APPLY_CMOD(v) ${getModMath(config.modifiers.c.modifierId)}
+        #define APPLY_MEM(v) ${getModMath(config.modifiers.zPrev.modifierId)}
+
         // 2. HEADERS & MATH (The Foundation)
         ${shaderLibrary.common_header}
         ${shaderLibrary.complex_math}
         ${shaderLibrary.modifiers}
-        ${shaderLibrary.memory_modes}
-        ${shaderLibrary.z_modes}
-        ${shaderLibrary.c_modes}
         ${shaderLibrary.coloring_modes} // This now contains apply_coloring()
 
         // 3. FORMULA (The specific math step)
@@ -258,6 +299,41 @@ export class FractalEngine {
       const finalValue = baseVal + lfoOffset;
       this.gl.uniform1f(loc, finalValue);
     });
+
+    this.gl.uniform1f(
+      this.uniformLocations.zModIntensity,
+      state.modifier.modifiers.z.intensity,
+    );
+    this.gl.uniform1f(
+      this.uniformLocations.cModIntensity,
+      state.modifier.modifiers.c.intensity,
+    );
+    this.gl.uniform1f(
+      this.uniformLocations.zPrevModIntensity,
+      state.modifier.modifiers.zPrev.intensity,
+    );
+
+    const conditionMap: Record<string, number> = {
+      ALWAYS: 0,
+      Z_REAL_POSITIVE: 1,
+      Z_IMAG_POSITIVE: 2,
+      Z_MAG_GT_1: 3,
+      Z_ANGLE_POSITIVE: 4,
+      Z_REAL_GT_IMAG: 5,
+      Z_ABS_REAL_GT_ABS_IMAG: 6,
+    };
+    this.gl.uniform1i(
+      this.uniformLocations.zModCondition,
+      conditionMap[state.modifier.modifiers.z.conditionId],
+    );
+    this.gl.uniform1i(
+      this.uniformLocations.cModCondition,
+      conditionMap[state.modifier.modifiers.c.conditionId],
+    );
+    this.gl.uniform1i(
+      this.uniformLocations.zPrevModCondition,
+      conditionMap[state.modifier.modifiers.zPrev.conditionId],
+    );
 
     // Palette
     const { brightness, contrast, osc, phase } = state.palette.selectedPalette;

@@ -1,4 +1,9 @@
-import type { ModifierId, ModifierMetadata } from "../types/parameter";
+import type {
+  ConditionId,
+  ConditionMetadata,
+  ModifierId,
+  ModifierMetadata,
+} from "../types/parameter";
 
 export const MODIFIER_METADATA: Record<ModifierId, ModifierMetadata> = {
   NONE: { label: "None" },
@@ -35,4 +40,14 @@ export const MODIFIER_METADATA: Record<ModifierId, ModifierMetadata> = {
   SPIRAL: { label: "Log Spiral" },
   CIRCLE_PULSE: { label: "Circle Pulse" },
   GLITCH: { label: "The Glitch" },
+};
+
+export const CONDITION_METADATA: Record<ConditionId, ConditionMetadata> = {
+  ALWAYS: { label: "Always" },
+  Z_REAL_POSITIVE: { label: "if Re(z) > 0" },
+  Z_IMAG_POSITIVE: { label: "if Im(z) > 0" },
+  Z_MAG_GT_1: { label: "if |z| > 1" },
+  Z_ANGLE_POSITIVE: { label: "if arg(z) > 0" },
+  Z_REAL_GT_IMAG: { label: "if Re(z) > Im(z)" },
+  Z_ABS_REAL_GT_ABS_IMAG: { label: "if |Re(z)| > |Im(z)|" },
 };
