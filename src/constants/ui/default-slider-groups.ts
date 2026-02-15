@@ -8,7 +8,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
       sliders: [{ parameterUnitId: "juliaMorph" }],
     },
     {
-      label: "Coordinate / Seed",
+      label: "Seed / Coord",
       parameterId: "seed",
       sliders: [
         { parameterUnitId: "seedR" },
@@ -80,7 +80,7 @@ export const DEFAULT_SLIDER_GROUPS: Record<string, SliderGroup[]> = {
       ],
     },
     {
-      label: "Nova Constant (c)",
+      label: "Seed / Coord",
       parameterId: "seed",
       sliders: [
         { parameterUnitId: "seedR" },

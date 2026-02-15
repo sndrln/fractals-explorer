@@ -28,9 +28,9 @@ vec3 core_logic(vec2 uv) {
     vec2 zNext = fractalStep(z, currentSeed, powerVec, zPrev);
 
     // Apply Memory
-    if (i > 0.0) {
-      zNext += complexMul(applyMemoryModifier(zPrev), memFactor);
-    }
+    // if (i > 0.0) {
+    //   zNext += complexMul(applyMemoryModifier(zPrev), memFactor);
+    // }
 
     // State Update
     zPrev = zOld;

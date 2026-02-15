@@ -83,9 +83,9 @@ export const usePresetStore = defineStore("presets", () => {
   function saveCurrentAsPreset(label: string) {
     const cleanValues = { ...fractal.parameters.slider };
     delete (cleanValues as any)._gsap;
-
+    const id = generateId();
     const newPreset: Preset = {
-      id: generateId(),
+      id,
       label,
       fractalType: fractal.currentType,
       formulaId: fractal.formulaId,
@@ -102,6 +102,7 @@ export const usePresetStore = defineStore("presets", () => {
 
     savedPresets.value.push(newPreset);
     localStorage.setItem("fractal_presets", JSON.stringify(savedPresets.value));
+    currentPresetId.value = id;
   }
 
   function deletePreset(id: string) {

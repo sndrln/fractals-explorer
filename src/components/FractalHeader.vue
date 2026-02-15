@@ -3,7 +3,7 @@ import { computed } from "vue";
 import { FORMULAS } from "../constants/formulas";
 import { useFractalStore } from "../store/useFractalStore";
 
-import { useUiPanelStore } from "../store/useUiPanelstore";
+import { useUiPanelStore } from "../store/useUiPanelStore";
 import IconMinimize from "./icons/IconMinimize.vue";
 import IconSettings from "./icons/IconSettings.vue";
 

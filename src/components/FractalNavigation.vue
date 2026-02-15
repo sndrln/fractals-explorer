@@ -2,8 +2,8 @@
 import { computed, onMounted, onUnmounted, ref } from "vue";
 import { FORMULAS } from "../constants/formulas";
 import { useFractalStore } from "../store/useFractalStore";
-import { useUiPanelStore } from "../store/useUiPanelstore";
-import FormulaDisplay from "./fractal-controls/FormulaDisplay.vue";
+import { useUiPanelStore } from "../store/useUiPanelStore";
+import FormulaRenderer from "./fractal-controls/FormulaRenderer.vue";
 
 const fractal = useFractalStore();
 const uiPanel = useUiPanelStore();
@@ -88,7 +88,7 @@ const getThumb = (id: string) =>
           </div>
           <div class="meta">
             <div class="name">{{ f.name }}</div>
-            <FormulaDisplay class="formula-mini" />
+            <FormulaRenderer class="formula-mini" :notation="f.mathNotation" />
           </div>
         </div>
       </div>
@@ -118,18 +118,23 @@ const getThumb = (id: string) =>
     font-weight: 700;
     text-transform: uppercase;
     cursor: pointer;
+    &:hover {
+      background: var(--bg-elevated);
+    }
     &.active {
-      background: var(--accent);
-      color: white;
+      color: var(--accent);
     }
     .num {
       margin-right: 4px;
+    }
+
+    & + button {
+      border-left: 1px solid var(--border-subtle);
     }
   }
 }
 
 .grid {
-  flex: 1;
   overflow-y: auto;
   padding: 12px;
   display: grid;
@@ -163,10 +168,13 @@ const getThumb = (id: string) =>
       object-fit: cover;
     }
     .index {
+      padding: 1px 5px;
       position: absolute;
       bottom: 4px;
       right: 6px;
       font-size: 9px;
+      border-radius: 4px;
+      background: var(--bg-elevated);
       color: white;
     }
   }
@@ -179,7 +187,7 @@ const getThumb = (id: string) =>
     margin-bottom: 2px;
   }
   .formula-mini {
-    font-size: 9px;
+    font-size: 14px;
   }
 }
 

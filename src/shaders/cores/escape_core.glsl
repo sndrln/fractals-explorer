@@ -38,7 +38,6 @@ vec3 core_logic(vec2 uv) {
     if (i > 0.0) {
       // --- MEMORY MODIFIER ---
       #ifndef MEM_NONE
-      // Uses zPrev to decide if it should modify zPrev (Internal Consistency)
       vec2 memVal = mix(
         zPrev,
         APPLY_MEM(zPrev),

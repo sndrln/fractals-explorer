@@ -9,7 +9,7 @@ import { useMouseInteraction } from "./composables/useMouseInteraction";
 import { useFractalStore } from "./store/useFractalStore";
 import { useInputStore } from "./store/useInputStore";
 import { usePresetStore } from "./store/usePresetStore";
-import { useUiPanelStore } from "./store/useUiPanelstore";
+import { useUiPanelStore } from "./store/useUiPanelStore";
 import type { FormulaId } from "./types/fractal";
 
 const canvasRef = ref<HTMLCanvasElement | null>(null);

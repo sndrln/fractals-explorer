@@ -6,7 +6,7 @@ import { useInputStore } from "../store/useInputStore";
 import { useModifierStore } from "../store/useModifierStore";
 import { usePaletteStore } from "../store/usePaletteStore";
 import { usePresetStore } from "../store/usePresetStore";
-import { useUiPanelStore } from "../store/useUiPanelstore";
+import { useUiPanelStore } from "../store/useUiPanelStore";
 import { captureThumbnail, downloadImage } from "../utils/screenshot";
 
 export function useKeyboardShortcuts() {

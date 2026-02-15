@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUiPanelStore } from "../../store/useUiPanelstore";
+import { useUiPanelStore } from "../../store/useUiPanelStore";
 
 const ui = useUiPanelStore();
 </script>
